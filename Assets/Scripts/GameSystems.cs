@@ -9,7 +9,7 @@
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using TMPro;
 
 public class GameSystems : MonoBehaviour
 {
@@ -23,10 +23,10 @@ public class GameSystems : MonoBehaviour
     public GameObject shopPanel;        // toggled with Q
 
     // ---- HUD (Mary / VictorG) ----
-    public Text goldText;               // "Gold: 50"
-    public Text gearText;               // "Gear: W+1 A+0 | Heal:25%"
-    public Text questText;              // "Raiders: 3/7"
-    public Text tipText;                // short hints
+    public TMP_Text goldText;               // "Gold: 50"
+    public TMP_Text gearText;               // "Gear: W+1 A+0 | Heal:25%"
+    public TMP_Text questText;              // "Raiders: 3/7"
+    public TMP_Text tipText;                // short hints
 
     // ---- Weapon Choice (Mary) ----
     public GameObject weaponChoicePanel;    // buttons call OnClickWeaponTier(int tier)

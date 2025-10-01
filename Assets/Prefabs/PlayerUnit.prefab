@@ -206,7 +206,7 @@ MonoBehaviour:
   healGainPerPickup: 0.25
   weaponTier: 0
   armorTier: 0
-  worldCanvasPrefab: {fileID: 0}
+  worldCanvasPrefab: {fileID: 7676193684207507378, guid: 69e40d5777600ea4f90beb47877a1162, type: 3}
   uiHeight: 2
 --- !u!114 &6979222524176516872
 MonoBehaviour:

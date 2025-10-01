@@ -26,11 +26,11 @@ public class UnitExtras : MonoBehaviour
     public int armorTier = 0;
 
     [Header("World UI (Arthur + Kameron)")]
-    public Canvas worldCanvasPrefab;   // contains Slider "HP" and Slider "Rage"
+    public Canvas worldCanvasPrefab;   // contains Image "HP" and Image "Rage"
     public float uiHeight = 2.0f;
 
-    Slider hpSlider;
-    Slider rageSlider;
+    Image hpImage;
+    Image rageImage;
     NavMeshAgent agent;
 
     void Start()
@@ -40,13 +40,13 @@ public class UnitExtras : MonoBehaviour
 
         Canvas c = Instantiate(worldCanvasPrefab, transform);
         c.transform.localPosition = new Vector3(0, uiHeight, 0);
-        foreach (Slider s in c.GetComponentsInChildren<Slider>())
+        foreach (Image img in c.GetComponentsInChildren<Image>())
         {
-            if (s.name == "HP")   hpSlider   = s;
-            if (s.name == "Rage") rageSlider = s;
+            if (img.name == "HP")   hpImage   = img;
+            if (img.name == "Rage") rageImage = img;
         }
-        hpSlider.value = hp / maxHP;
-        rageSlider.value = 0;
+        hpImage.fillAmount = hp / maxHP;
+        rageImage.fillAmount = 0;
 
         UpdateGearHUD();
     }
@@ -64,7 +64,7 @@ public class UnitExtras : MonoBehaviour
         {
             hp = maxHP;
             healCharge = 0f;
-            hpSlider.value = hp / maxHP;
+            hpImage.fillAmount = hp / maxHP;
             UpdateGearHUD();
         }
     }
@@ -72,7 +72,7 @@ public class UnitExtras : MonoBehaviour
     public void TakeDamage(float dmg)
     {
         hp = Mathf.Max(0, hp - dmg);
-        hpSlider.value = hp / maxHP;
+        hpImage.fillAmount = hp / maxHP;
         if (hp <= 0) Die();
     }
 
@@ -102,7 +102,7 @@ public class UnitExtras : MonoBehaviour
     }
 
     // Kameron: rage UI is updated by AutoCombat
-    public void SetRageUI(float normalized) { rageSlider.value = normalized; }
+    public void SetRageUI(float normalized) { rageImage.fillAmount = normalized; }
 
     void UpdateGearHUD()
     {
