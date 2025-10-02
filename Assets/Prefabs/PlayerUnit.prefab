@@ -261,8 +261,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08c3309bd49393c4a919d3f54a30dac9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healCharge: 0
-  gainPerPickup: 0.25
+  healCharge: 0.5
+  gainPerPickup: 0.5
 --- !u!114 &5407347400189408761
 MonoBehaviour:
   m_ObjectHideFlags: 0
