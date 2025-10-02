@@ -12,6 +12,7 @@ public class Arthur_WorldHPBar : MonoBehaviour
 
     Image healthFillImage;
     Image rageFillImage;
+    Transform canvasTransform;
 
     void Start()
     {
@@ -20,8 +21,9 @@ public class Arthur_WorldHPBar : MonoBehaviour
             return;
         }
 
-        Canvas canvasInstance = Instantiate(worldCanvasPrefab, transform);
-        canvasInstance.transform.localPosition = new Vector3(0f, uiHeight, 0f);
+    Canvas canvasInstance = Instantiate(worldCanvasPrefab, transform);
+    canvasTransform = canvasInstance.transform;
+    canvasTransform.localPosition = new Vector3(0f, uiHeight, 0f);
 
         foreach (Image image in canvasInstance.GetComponentsInChildren<Image>())
         {
@@ -83,5 +85,23 @@ public class Arthur_WorldHPBar : MonoBehaviour
             }
         }
         Destroy(gameObject);
+    }
+
+    void LateUpdate()
+    {
+        if (canvasTransform == null)
+        {
+            return;
+        }
+
+        Camera mainCamera = Camera.main;
+        if (mainCamera == null)
+        {
+            return;
+        }
+
+        Vector3 cameraForward = mainCamera.transform.forward;
+        Vector3 cameraUp = mainCamera.transform.up;
+        canvasTransform.rotation = Quaternion.LookRotation(cameraForward, cameraUp);
     }
 }
