@@ -39,6 +39,6 @@ public class Mary_HUD : MonoBehaviour
         int armorTier = gear ? gear.armorTier : 0;
         int healPercent = heal ? Mathf.RoundToInt(heal.healCharge * 100f) : 0;
 
-        GameGlue.I.gearText.text = "Gear: W+" + weaponTier + " A+" + armorTier + " | Heal:" + healPercent + "%";
+        GameGlue.I.gearText.text = unit.name + " Gear: W+" + weaponTier + " A+" + armorTier + " | Heal:" + healPercent + "%";
     }
 }
