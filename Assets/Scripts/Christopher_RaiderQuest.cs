@@ -18,8 +18,11 @@ public class Christopher_RaiderQuest : MonoBehaviour
 
     IEnumerator Start()
     {
-        // Wait one frame so HUD references (GameGlue questText) have a chance to wire up.
-        yield return null;
+        // Wait until HUD wiring provides a quest text field.
+        while (GameGlue.I == null || GameGlue.I.questText == null)
+        {
+            yield return null;
+        }
         RefreshQuestText();
     }
 

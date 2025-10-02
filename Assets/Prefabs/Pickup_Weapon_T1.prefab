@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3623284513864868161}
   - component: {fileID: 2849220299321574057}
   - component: {fileID: 7567891397612049789}
+  - component: {fileID: 2292179218079815552}
   m_Layer: 0
   m_Name: Pickup_Weapon_T1
   m_TagString: Untagged
@@ -136,3 +137,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363967544562491596}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2292179218079815552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 363967544562491596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f5a808aaf907b44dab0f45cdbe4e1f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isWeapon: 1
+  tier: 1
+  goldValue: 5
+  healBonus: 0.25
