@@ -1,5 +1,5 @@
 // Lionel_HealCharge.cs
-// Heal meter 0..1. If ≤50% HP and full, H triggers a full heal.
+// Heal meter 0..1. Press H with a full charge to heal to max.
 using UnityEngine;
 
 public class Lionel_HealCharge : MonoBehaviour
@@ -13,7 +13,7 @@ public class Lionel_HealCharge : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.H) && hpBar && hpBar.hp <= hpBar.maxHP*0.5f && healCharge >= 1f)
+        if (Input.GetKeyDown(KeyCode.H) && hpBar && healCharge >= 1f)
         {
             hpBar.hp = hpBar.maxHP;
             healCharge = 0f;
