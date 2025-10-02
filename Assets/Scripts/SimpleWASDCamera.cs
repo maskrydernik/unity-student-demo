@@ -6,14 +6,40 @@ public class SimpleWASDCamera : MonoBehaviour
 {
     void Update()
     {
-        float s = 12f * (Input.GetKey(KeyCode.LeftShift) ? 2f : 1f) * Time.deltaTime;
-        Vector3 f = transform.forward; f.y = 0; f.Normalize();
-        Vector3 r = transform.right; r.y = 0; r.Normalize();
-        Vector3 d = Vector3.zero;
-        if (Input.GetKey(KeyCode.W)) d += f;
-        if (Input.GetKey(KeyCode.S)) d -= f;
-        if (Input.GetKey(KeyCode.D)) d += r;
-        if (Input.GetKey(KeyCode.A)) d -= r;
-        transform.position += d * s;
+        float speed = 12f;
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            speed *= 2f;
+        }
+
+        float movementStep = speed * Time.deltaTime;
+
+        Vector3 forward = transform.forward;
+        forward.y = 0f;
+        forward.Normalize();
+
+        Vector3 right = transform.right;
+        right.y = 0f;
+        right.Normalize();
+
+        Vector3 direction = Vector3.zero;
+        if (Input.GetKey(KeyCode.W))
+        {
+            direction += forward;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            direction -= forward;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            direction += right;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            direction -= right;
+        }
+
+        transform.position += direction * movementStep;
     }
 }

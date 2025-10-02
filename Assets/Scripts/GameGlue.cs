@@ -19,17 +19,52 @@ public class GameGlue : MonoBehaviour
     public TMP_Text questText;
     public TMP_Text tipText;
 
-    void Awake(){ I = this; }
+    void Awake()
+    {
+        I = this;
+    }
 
-    public void AddGold(int d){ gold += d; RefreshHUD(); }
-    public void AddKeys(int d){ keys += d; RefreshHUD(); }
-    public void AddHouse(int d){ houses += d; RefreshHUD(); }
+    public void AddGold(int delta)
+    {
+        gold += delta;
+        RefreshHUD();
+    }
 
-    public void SetGearText(string s){ if (gearText) gearText.text = s; }
-    public void Hint(string s){ if (tipText) tipText.text = s; }
+    public void AddKeys(int delta)
+    {
+        keys += delta;
+        RefreshHUD();
+    }
+
+    public void AddHouse(int delta)
+    {
+        houses += delta;
+        RefreshHUD();
+    }
+
+    public void SetGearText(string value)
+    {
+        if (gearText != null)
+        {
+            gearText.text = value;
+        }
+    }
+
+    public void Hint(string message)
+    {
+        if (tipText != null)
+        {
+            tipText.text = message;
+        }
+    }
 
     public void RefreshHUD()
     {
-        if (goldText) goldText.text = "Gold: " + gold + " | Houses: " + houses + " | Keys: " + keys;
+        if (goldText == null)
+        {
+            return;
+        }
+
+        goldText.text = "Gold: " + gold + " | Houses: " + houses + " | Keys: " + keys;
     }
 }

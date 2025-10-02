@@ -11,7 +11,7 @@ public class Nicholas_AutoCombat : MonoBehaviour
     public float attackInterval = 1f;
     public float searchRadius = 8f;
 
-    float atkTimer;
+    float attackTimer;
     NavMeshAgent agent;
     Steven_GearStats gear;
     Arthur_WorldHPBar hp;
@@ -29,39 +29,76 @@ public class Nicholas_AutoCombat : MonoBehaviour
 
     void Update()
     {
-        atkTimer -= Time.deltaTime;
-        var t = FindNearestEnemy();
-        if (t == null) return;
+        attackTimer -= Time.deltaTime;
 
-        float dist = Vector3.Distance(transform.position, t.transform.position);
-        if (dist > range) agent.SetDestination(t.transform.position);
-
-        if (atkTimer <= 0f && dist <= range)
+        Nicholas_AutoCombat target = FindNearestEnemy();
+        if (target == null)
         {
-            atkTimer = attackInterval;
-            float dmg = gear ? gear.GetDamage() : 10f;
-            if (rage) dmg = rage.ComputeOutgoingDamage(dmg);
+            return;
+        }
 
-            var thp = t.GetComponent<Arthur_WorldHPBar>();
-            float pre = thp ? thp.hp : 0f;
+        float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
+        if (distanceToTarget > range && agent != null)
+        {
+            agent.SetDestination(target.transform.position);
+        }
 
-            float reduced = dmg * (t.GetComponent<Steven_GearStats>() ? t.GetComponent<Steven_GearStats>().GetArmorFactor() : 1f);
-            if (thp) thp.ApplyDamage(reduced);
+        if (attackTimer > 0f || distanceToTarget > range)
+        {
+            return;
+        }
 
-            if (pre > 0 && thp && thp.hp <= 0 && speedOnKill) speedOnKill.Gain();
-            if (rage) rage.NotifyHit();
+        attackTimer = attackInterval;
+        float damage = gear ? gear.GetDamage() : 10f;
+        if (rage != null)
+        {
+            damage = rage.ComputeOutgoingDamage(damage);
+        }
+
+        var targetHealth = target.GetComponent<Arthur_WorldHPBar>();
+        float previousHealth = targetHealth ? targetHealth.hp : 0f;
+
+        float armorFactor = 1f;
+        var targetGear = target.GetComponent<Steven_GearStats>();
+        if (targetGear != null)
+        {
+            armorFactor = targetGear.GetArmorFactor();
+        }
+
+        float finalDamage = damage * armorFactor;
+        if (targetHealth != null)
+        {
+            targetHealth.ApplyDamage(finalDamage);
+        }
+
+        if (previousHealth > 0f && targetHealth != null && targetHealth.hp <= 0f && speedOnKill != null)
+        {
+            speedOnKill.Gain();
+        }
+
+        if (rage != null)
+        {
+            rage.NotifyHit();
         }
     }
 
     Nicholas_AutoCombat FindNearestEnemy()
     {
-        Nicholas_AutoCombat best = null; float bestD = Mathf.Infinity;
-        foreach (var ac in FindObjectsByType<Nicholas_AutoCombat>(FindObjectsSortMode.None))
+        Nicholas_AutoCombat best = null;
+        float bestDistance = Mathf.Infinity;
+
+        foreach (var autoCombat in FindObjectsByType<Nicholas_AutoCombat>(FindObjectsSortMode.None))
         {
-            if (ac != this && ac.team != team)
+            if (autoCombat == this || autoCombat.team == team)
             {
-                float d = Vector3.Distance(transform.position, ac.transform.position);
-                if (d <= searchRadius && d < bestD){ bestD = d; best = ac; }
+                continue;
+            }
+
+            float distance = Vector3.Distance(transform.position, autoCombat.transform.position);
+            if (distance <= searchRadius && distance < bestDistance)
+            {
+                bestDistance = distance;
+                best = autoCombat;
             }
         }
         return best;

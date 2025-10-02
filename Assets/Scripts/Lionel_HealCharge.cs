@@ -9,11 +9,14 @@ public class Lionel_HealCharge : MonoBehaviour
 
     Arthur_WorldHPBar hpBar;
 
-    void Start(){ hpBar = GetComponent<Arthur_WorldHPBar>(); }
+    void Start()
+    {
+        hpBar = GetComponent<Arthur_WorldHPBar>();
+    }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.H) && hpBar && healCharge >= 1f)
+        if (Input.GetKeyDown(KeyCode.H) && hpBar != null && healCharge >= 1f)
         {
             hpBar.hp = hpBar.maxHP;
             healCharge = 0f;

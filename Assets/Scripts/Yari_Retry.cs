@@ -7,6 +7,9 @@ public class Yari_Retry : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
-            SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+        {
+            Scene currentScene = SceneManager.GetActiveScene();
+            SceneManager.LoadSceneAsync(currentScene.buildIndex);
+        }
     }
 }

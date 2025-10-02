@@ -6,6 +6,7 @@ using UnityEngine;
 public class Christopher_RaiderQuest : MonoBehaviour
 {
     public static Christopher_RaiderQuest I;
+
     [Header("Quest Settings")]
     public string raiderTag = "Raider";
     public int goal = 7;
@@ -14,7 +15,10 @@ public class Christopher_RaiderQuest : MonoBehaviour
     public string completionMessage = "All raiders defeated!";
     public GameObject spawnerRoot;
 
-    void Awake(){ I = this; }
+    void Awake()
+    {
+        I = this;
+    }
 
     IEnumerator Start()
     {
@@ -43,14 +47,17 @@ public class Christopher_RaiderQuest : MonoBehaviour
 
     void RefreshQuestText()
     {
-        if (!GameGlue.I || !GameGlue.I.questText) return;
-
-        string text = questLabel + ": " + count + "/" + goal;
-        if (count >= goal)
+        if (GameGlue.I == null || GameGlue.I.questText == null)
         {
-            text += "\n" + completionMessage;
+            return;
         }
 
-        GameGlue.I.questText.text = text;
+        string questLine = questLabel + ": " + count + "/" + goal;
+        if (count >= goal)
+        {
+            questLine += "\n" + completionMessage;
+        }
+
+        GameGlue.I.questText.text = questLine;
     }
 }

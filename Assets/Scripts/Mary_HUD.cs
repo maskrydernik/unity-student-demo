@@ -13,6 +13,11 @@ public class Mary_HUD : MonoBehaviour
 
     void Start()
     {
+        if (GameGlue.I == null)
+        {
+            return;
+        }
+
         GameGlue.I.goldText = goldText;
         GameGlue.I.gearText = gearText;
         GameGlue.I.questText = questText;
@@ -23,15 +28,18 @@ public class Mary_HUD : MonoBehaviour
     // VictorG: Refresh gear HUD for a specific unit
     public static void RefreshGearHUD(GameObject unit)
     {
-        if (GameGlue.I == null || GameGlue.I.gearText == null) return;
-        
+        if (GameGlue.I == null || GameGlue.I.gearText == null)
+        {
+            return;
+        }
+
         var gear = unit.GetComponent<Steven_GearStats>();
         var heal = unit.GetComponent<Lionel_HealCharge>();
-        
-        int w = gear ? gear.weaponTier : 0;
-        int a = gear ? gear.armorTier : 0;
-        int h = heal ? Mathf.RoundToInt(heal.healCharge * 100) : 0;
-        
-        GameGlue.I.gearText.text = "Gear: W+" + w + " A+" + a + " | Heal:" + h + "%";
+
+        int weaponTier = gear ? gear.weaponTier : 0;
+        int armorTier = gear ? gear.armorTier : 0;
+        int healPercent = heal ? Mathf.RoundToInt(heal.healCharge * 100f) : 0;
+
+        GameGlue.I.gearText.text = "Gear: W+" + weaponTier + " A+" + armorTier + " | Heal:" + healPercent + "%";
     }
 }

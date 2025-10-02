@@ -9,52 +9,72 @@ public class Anthony_Hats : MonoBehaviour
     public float yOffset = 2.1f;
     public int sortingOrder = 50;
 
-    Transform root;
-    SpriteRenderer sr;
-    int idx = -1;
+    Transform hatRoot;
+    SpriteRenderer hatRenderer;
+    int currentHatIndex = -1;
 
     void Start()
     {
-        root = new GameObject("Hat").transform;
-        root.SetParent(transform, false);
-        root.localPosition = new Vector3(0,yOffset,0);
-        sr = root.gameObject.AddComponent<SpriteRenderer>();
-        sr.sortingOrder = sortingOrder;
-        Apply(-1);
+        CreateHatRenderer();
+        ApplyHat(-1);
     }
 
     void LateUpdate()
     {
         var cam = Camera.main;
-        if (cam) root.forward = cam.transform.forward;
-        if (Input.GetKeyDown(KeyCode.Tab) && IsSelected()) Cycle();
+        if (cam != null)
+        {
+            hatRoot.forward = cam.transform.forward;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab) && IsSelected())
+        {
+            CycleHat();
+        }
     }
 
-    void Cycle()
+    void CreateHatRenderer()
+    {
+        hatRoot = new GameObject("Hat").transform;
+        hatRoot.SetParent(transform, false);
+        hatRoot.localPosition = new Vector3(0f, yOffset, 0f);
+
+        hatRenderer = hatRoot.gameObject.AddComponent<SpriteRenderer>();
+        hatRenderer.sortingOrder = sortingOrder;
+    }
+
+    void CycleHat()
     {
         if (hats.Count == 0)
         {
-            Apply(-1);
-            idx = -1;
+            ApplyHat(-1);
+            currentHatIndex = -1;
             return;
         }
 
-        int next = idx + 1;
-        if (next >= hats.Count) next = -1;
+        int nextIndex = currentHatIndex + 1;
+        if (nextIndex >= hats.Count)
+        {
+            nextIndex = -1; // wrap around to no hat
+        }
 
-        Apply(next);
-        idx = next;
-    }
-
-    void Apply(int hatIdx)
-    {
-        sr.sprite = hatIdx < 0 ? null : hats[hatIdx];
+        ApplyHat(nextIndex);
+        currentHatIndex = nextIndex;
     }
 
     bool IsSelected()
     {
         var unit = GetComponent<Unit>();
-        if (unit) return unit.IsSelected;
+        if (unit != null)
+        {
+            return unit.IsSelected;
+        }
+
         return true;
+    }
+
+    void ApplyHat(int hatIndex)
+    {
+        hatRenderer.sprite = hatIndex < 0 ? null : hats[hatIndex];
     }
 }

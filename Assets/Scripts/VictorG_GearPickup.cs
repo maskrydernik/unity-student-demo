@@ -12,16 +12,30 @@ public class VictorG_GearPickup : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        var g = other.GetComponent<Steven_GearStats>();
-        var l = other.GetComponent<Lionel_HealCharge>();
+        var gear = other.GetComponent<Steven_GearStats>();
+        var healCharge = other.GetComponent<Lionel_HealCharge>();
 
-        if (g != null)
+        if (gear == null)
         {
-            if (isWeapon) g.SetWeaponTier(tier); else g.SetArmorTier(tier);
-            if (l != null) l.healCharge = Mathf.Clamp01(l.healCharge + healBonus);
-            GameGlue.I.AddGold(goldValue);
-            Mary_HUD.RefreshGearHUD(other.gameObject);
-            Destroy(gameObject);
+            return;
         }
+
+        if (isWeapon)
+        {
+            gear.SetWeaponTier(tier);
+        }
+        else
+        {
+            gear.SetArmorTier(tier);
+        }
+
+        if (healCharge != null)
+        {
+            healCharge.healCharge = Mathf.Clamp01(healCharge.healCharge + healBonus);
+        }
+
+        GameGlue.I.AddGold(goldValue);
+        Mary_HUD.RefreshGearHUD(other.gameObject);
+        Destroy(gameObject);
     }
 }

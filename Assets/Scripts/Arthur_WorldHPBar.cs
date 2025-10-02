@@ -10,42 +10,77 @@ public class Arthur_WorldHPBar : MonoBehaviour
     public float hp = 100f;
     public float uiHeight = 2f;
 
-    Image hpImage;
-    Image rageImage;
+    Image healthFillImage;
+    Image rageFillImage;
 
     void Start()
     {
-        if (worldCanvasPrefab)
+        if (worldCanvasPrefab == null)
         {
-            Canvas c = Instantiate(worldCanvasPrefab, transform);
-            c.transform.localPosition = new Vector3(0, uiHeight, 0);
-            foreach (var img in c.GetComponentsInChildren<Image>())
-            {
-                if (img.name == "HP") hpImage = img;
-                if (img.name == "Rage") rageImage = img;
-            }
-            Sync();
+            return;
         }
+
+        Canvas canvasInstance = Instantiate(worldCanvasPrefab, transform);
+        canvasInstance.transform.localPosition = new Vector3(0f, uiHeight, 0f);
+
+        foreach (Image image in canvasInstance.GetComponentsInChildren<Image>())
+        {
+            if (image.name == "HP")
+            {
+                healthFillImage = image;
+            }
+
+            if (image.name == "Rage")
+            {
+                rageFillImage = image;
+            }
+        }
+
+        Sync();
     }
 
     public void ApplyDamage(float dmg)
     {
-        hp = Mathf.Max(0, hp - dmg);
+        hp = Mathf.Max(0f, hp - dmg);
         Sync();
-        if (hp <= 0) Die();
+
+        if (hp <= 0f)
+        {
+            Die();
+        }
     }
 
-    public void Sync(){ if (hpImage) hpImage.fillAmount = maxHP > 0 ? hp/maxHP : 0f; }
+    public void Sync()
+    {
+        if (healthFillImage == null)
+        {
+            return;
+        }
 
-    public void SetRageFill(float v){ if (rageImage) rageImage.fillAmount = Mathf.Clamp01(v); }
+        float fillAmount = maxHP > 0f ? hp / maxHP : 0f;
+        healthFillImage.fillAmount = fillAmount;
+    }
+
+    public void SetRageFill(float value)
+    {
+        if (rageFillImage == null)
+        {
+            return;
+        }
+
+        rageFillImage.fillAmount = Mathf.Clamp01(value);
+    }
 
     void Die()
     {
         // Quest notify and simple drop are handled by other scripts on this object, if present.
-        var ac = GetComponent<Nicholas_AutoCombat>();
-        if (ac != null && ac.team == Nicholas_AutoCombat.Team.Enemy)
+        var autoCombat = GetComponent<Nicholas_AutoCombat>();
+        if (autoCombat != null && autoCombat.team == Nicholas_AutoCombat.Team.Enemy)
         {
-            if (Christopher_RaiderQuest.I) Christopher_RaiderQuest.I.NotifyEnemyDeath(gameObject);
+            if (Christopher_RaiderQuest.I != null)
+            {
+                Christopher_RaiderQuest.I.NotifyEnemyDeath(gameObject);
+            }
         }
         Destroy(gameObject);
     }

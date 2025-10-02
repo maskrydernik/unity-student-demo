@@ -7,8 +7,22 @@ public class Unit : MonoBehaviour
 {
     public GameObject highlight;
     public NavMeshAgent agent;
-    public bool IsSelected{ get; private set; }
+    public bool IsSelected { get; private set; }
 
-    public void SetSelected(bool v){ IsSelected = v; if (highlight) highlight.SetActive(v); }
-    public void MoveTo(Vector3 world){ if(agent) agent.SetDestination(world); }
+    public void SetSelected(bool selected)
+    {
+        IsSelected = selected;
+        if (highlight != null)
+        {
+            highlight.SetActive(selected);
+        }
+    }
+
+    public void MoveTo(Vector3 worldPosition)
+    {
+        if (agent != null)
+        {
+            agent.SetDestination(worldPosition);
+        }
+    }
 }

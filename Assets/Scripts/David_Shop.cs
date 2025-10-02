@@ -13,26 +13,35 @@ public class David_Shop : MonoBehaviour
 
     void Update()
     {
-        if (shopPanel && Input.GetKeyDown(KeyCode.Q))
-            shopPanel.SetActive(!shopPanel.activeSelf);
+        if (shopPanel != null && Input.GetKeyDown(KeyCode.Q))
+        {
+            bool isActive = shopPanel.activeSelf;
+            shopPanel.SetActive(!isActive);
+        }
     }
 
     public void BuyUnit()
     {
-        if (!ValidateSpawn(unitPrefab, unitCost)) return;
+        if (!ValidateSpawn(unitPrefab, unitCost))
+        {
+            return;
+        }
 
         GameGlue.I.AddGold(-unitCost);
-        Transform point = spawnPoint ? spawnPoint : transform;
+        Transform point = spawnPoint != null ? spawnPoint : transform;
         Instantiate(unitPrefab, point.position, point.rotation);
         GameGlue.I.Hint("Recruited a unit");
     }
 
     public void BuyBuilding()
     {
-        if (!ValidateSpawn(buildingPrefab, buildingCost)) return;
+        if (!ValidateSpawn(buildingPrefab, buildingCost))
+        {
+            return;
+        }
 
         GameGlue.I.AddGold(-buildingCost);
-        Transform point = spawnPoint ? spawnPoint : transform;
+        Transform point = spawnPoint != null ? spawnPoint : transform;
         Instantiate(buildingPrefab, point.position, point.rotation);
         GameGlue.I.AddHouse(1);
         GameGlue.I.Hint("Constructed a building");
@@ -40,13 +49,13 @@ public class David_Shop : MonoBehaviour
 
     bool ValidateSpawn(GameObject prefab, int cost)
     {
-        if (!GameGlue.I)
+        if (GameGlue.I == null)
         {
             Debug.LogWarning("GameGlue instance missing; cannot process purchase");
             return false;
         }
 
-        if (!prefab)
+        if (prefab == null)
         {
             GameGlue.I.Hint("No prefab assigned");
             return false;
@@ -58,7 +67,7 @@ public class David_Shop : MonoBehaviour
             return false;
         }
 
-        if (!spawnPoint)
+        if (spawnPoint == null)
         {
             Debug.LogWarning(name + " missing spawn point; using self position");
         }

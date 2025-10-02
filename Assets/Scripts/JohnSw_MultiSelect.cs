@@ -10,7 +10,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
     public Image dragRectImage;
     public List<Unit> selection = new List<Unit>();
 
-    Camera cam;
+    Camera mainCamera;
     Canvas dragCanvas;
     RectTransform dragRectTransform;
     RectTransform dragRectParent;
@@ -22,15 +22,19 @@ public class JohnSw_MultiSelect : MonoBehaviour
 
     void Start()
     {
-        cam = Camera.main;
-        if (dragRectImage)
+        mainCamera = Camera.main;
+
+        if (dragRectImage != null)
         {
             // Setup drag rect properly
             dragRectImage.gameObject.SetActive(false);
             dragRectTransform = dragRectImage.rectTransform;
             dragRectParent = dragRectTransform.parent as RectTransform;
             dragCanvas = dragRectImage.canvas;
-            if (!dragCanvas) dragCanvas = dragRectImage.GetComponentInParent<Canvas>();
+            if (dragCanvas == null)
+            {
+                dragCanvas = dragRectImage.GetComponentInParent<Canvas>();
+            }
             dragRectTransform.pivot = new Vector2(0.5f, 0.5f);
             dragRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
             dragRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
@@ -43,6 +47,11 @@ public class JohnSw_MultiSelect : MonoBehaviour
 
     void Update()
     {
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main;
+        }
+
         HandleSelection();
         HandleMovement();
     }
@@ -91,7 +100,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
             selection.RemoveAll(u => u == null);
         }
 
-        if (dragRectImage)
+        if (dragRectImage != null)
         {
             dragRectImage.gameObject.SetActive(true);
             dragStartLocal = ScreenToLocal(dragStart);
@@ -101,29 +110,35 @@ public class JohnSw_MultiSelect : MonoBehaviour
 
     void UpdateDragVisual(Vector2 currentScreenPosition)
     {
-    if (!dragRectTransform || !dragRectParent) return;
+        if (dragRectTransform == null || dragRectParent == null)
+        {
+            return;
+        }
 
-    Vector2 startLocal = dragStartLocal;
-    Vector2 currentLocal = ScreenToLocal(currentScreenPosition);
-    Vector2 min = Vector2.Min(startLocal, currentLocal);
-    Vector2 max = Vector2.Max(startLocal, currentLocal);
-    Vector2 center = (min + max) * 0.5f;
-    Vector2 size = max - min;
+        Vector2 startLocal = dragStartLocal;
+        Vector2 currentLocal = ScreenToLocal(currentScreenPosition);
+        Vector2 min = Vector2.Min(startLocal, currentLocal);
+        Vector2 max = Vector2.Max(startLocal, currentLocal);
+        Vector2 center = (min + max) * 0.5f;
+        Vector2 size = max - min;
 
-    dragRectTransform.anchoredPosition = center;
-    dragRectTransform.sizeDelta = new Vector2(Mathf.Abs(size.x), Mathf.Abs(size.y));
+        dragRectTransform.anchoredPosition = center;
+        dragRectTransform.sizeDelta = new Vector2(Mathf.Abs(size.x), Mathf.Abs(size.y));
     }
 
     Vector2 ScreenToLocal(Vector2 screenPos)
     {
-        if (!dragRectParent) return screenPos;
+        if (dragRectParent == null)
+        {
+            return screenPos;
+        }
         Camera uiCam = null;
         if (dragCanvas)
         {
             if (dragCanvas.renderMode == RenderMode.ScreenSpaceCamera)
                 uiCam = dragCanvas.worldCamera;
             else if (dragCanvas.renderMode == RenderMode.WorldSpace)
-                uiCam = dragCanvas.worldCamera ? dragCanvas.worldCamera : cam;
+                uiCam = dragCanvas.worldCamera ? dragCanvas.worldCamera : mainCamera;
         }
 
         Vector2 local;
@@ -134,7 +149,10 @@ public class JohnSw_MultiSelect : MonoBehaviour
     void CompleteDrag(Vector2 endScreenPosition)
     {
         dragging = false;
-        if (dragRectImage) dragRectImage.gameObject.SetActive(false);
+        if (dragRectImage != null)
+        {
+            dragRectImage.gameObject.SetActive(false);
+        }
 
         Vector2 min = Vector2.Min(dragStart, endScreenPosition);
         Vector2 max = Vector2.Max(dragStart, endScreenPosition);
@@ -151,7 +169,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
         foreach (Unit u in FindObjectsByType<Unit>(FindObjectsSortMode.None))
         {
             if (!u) continue;
-            Vector3 screenPos = cam.WorldToScreenPoint(u.transform.position);
+            Vector3 screenPos = mainCamera.WorldToScreenPoint(u.transform.position);
             if (screenPos.z <= 0) continue;
             if (screenPos.x < min.x || screenPos.x > max.x) continue;
             if (screenPos.y < min.y || screenPos.y > max.y) continue;
@@ -189,7 +207,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
             selection.RemoveAll(u => u == null);
         }
 
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hits = Physics.RaycastAll(ray, 1000f);
 
         foreach (RaycastHit hit in hits)
@@ -223,7 +241,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1) && selection.Count > 0)
         {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             
             if (Physics.Raycast(ray, out hit, 1000f))

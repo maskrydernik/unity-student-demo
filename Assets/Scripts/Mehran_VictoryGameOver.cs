@@ -8,20 +8,55 @@ public class Mehran_VictoryGameOver : MonoBehaviour
     public GameObject gameOverPanel;
     public float checkInterval = 1f;
 
-    float t; bool ended;
+    float checkTimer;
+    bool ended;
 
     void Update()
     {
-        if (ended) return;
-        t -= Time.deltaTime; if (t > 0) return; t = checkInterval;
-
-        int player=0, enemy=0;
-        foreach (var ac in FindObjectsByType<Nicholas_AutoCombat>(FindObjectsSortMode.None))
+        if (ended)
         {
-            if (ac.team == Nicholas_AutoCombat.Team.Player) player++; else enemy++;
+            return;
         }
 
-        if (player <= 0){ ended = true; if (gameOverPanel) gameOverPanel.SetActive(true); GameGlue.I.Hint("Game Over. Press R."); }
-        else if (enemy <= 0){ ended = true; if (victoryPanel) victoryPanel.SetActive(true); GameGlue.I.Hint("Victory. Press R."); }
+        checkTimer -= Time.deltaTime;
+        if (checkTimer > 0f)
+        {
+            return;
+        }
+
+        checkTimer = checkInterval;
+
+        int playerCount = 0;
+        int enemyCount = 0;
+        foreach (var autoCombat in FindObjectsByType<Nicholas_AutoCombat>(FindObjectsSortMode.None))
+        {
+            if (autoCombat.team == Nicholas_AutoCombat.Team.Player)
+            {
+                playerCount++;
+            }
+            else
+            {
+                enemyCount++;
+            }
+        }
+
+        if (playerCount <= 0)
+        {
+            ended = true;
+            if (gameOverPanel != null)
+            {
+                gameOverPanel.SetActive(true);
+            }
+            GameGlue.I.Hint("Game Over. Press R.");
+        }
+        else if (enemyCount <= 0)
+        {
+            ended = true;
+            if (victoryPanel != null)
+            {
+                victoryPanel.SetActive(true);
+            }
+            GameGlue.I.Hint("Victory. Press R.");
+        }
     }
 }

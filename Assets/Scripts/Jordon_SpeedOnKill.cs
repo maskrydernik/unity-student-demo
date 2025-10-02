@@ -9,11 +9,21 @@ public class Jordon_SpeedOnKill : MonoBehaviour
     public float gainOnKill = 20f;
     NavMeshAgent agent;
 
-    void Start(){ agent = GetComponent<NavMeshAgent>(); if (agent) agent.speed = moveSpeed; }
+    void Start()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        if (agent != null)
+        {
+            agent.speed = moveSpeed;
+        }
+    }
 
     public void Gain()
     {
         moveSpeed += gainOnKill;
-        if (agent) agent.speed = moveSpeed;
+        if (agent != null)
+        {
+            agent.speed = moveSpeed;
+        }
     }
 }

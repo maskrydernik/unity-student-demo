@@ -8,9 +8,25 @@ public class Steven_GearStats : MonoBehaviour
     public int weaponTier = 0; // 0..5
     public int armorTier = 0;  // 0..5
 
-    public void SetWeaponTier(int t){ weaponTier = Mathf.Clamp(t,0,5); Mary_HUD.RefreshGearHUD(gameObject); }
-    public void SetArmorTier (int t){ armorTier  = Mathf.Clamp(t,0,5); Mary_HUD.RefreshGearHUD(gameObject); }
+    public void SetWeaponTier(int tier)
+    {
+        weaponTier = Mathf.Clamp(tier, 0, 5);
+        Mary_HUD.RefreshGearHUD(gameObject);
+    }
 
-    public float GetDamage(){ return baseDamage * (1f + 0.25f * weaponTier); }
-    public float GetArmorFactor(){ return 1f - 0.10f * armorTier; }
+    public void SetArmorTier(int tier)
+    {
+        armorTier = Mathf.Clamp(tier, 0, 5);
+        Mary_HUD.RefreshGearHUD(gameObject);
+    }
+
+    public float GetDamage()
+    {
+        return baseDamage * (1f + 0.25f * weaponTier);
+    }
+
+    public float GetArmorFactor()
+    {
+        return 1f - 0.10f * armorTier;
+    }
 }

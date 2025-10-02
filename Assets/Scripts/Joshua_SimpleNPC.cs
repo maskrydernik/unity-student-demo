@@ -17,11 +17,18 @@ public class Joshua_SimpleNPC : MonoBehaviour
     void Update()
     {
         UpdateProximity();
-        if (!inside) return;
+        if (!inside)
+        {
+            return;
+        }
+
         if (!dialog && Input.GetKeyDown(KeyCode.T))
         {
             dialog = true;
-            GameGlue.I.Hint(greeting + " [1] " + option1 + "  [2] " + option2);
+            if (GameGlue.I != null)
+            {
+                GameGlue.I.Hint(greeting + " [1] " + option1 + "  [2] " + option2);
+            }
         }
         else if (dialog && Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -45,7 +52,10 @@ public class Joshua_SimpleNPC : MonoBehaviour
 
         if (inside && !wasInside)
         {
-            if (GameGlue.I) GameGlue.I.Hint("Press T to talk.");
+            if (GameGlue.I != null)
+            {
+                GameGlue.I.Hint("Press T to talk.");
+            }
         }
         else if (!inside && wasInside)
         {
@@ -53,7 +63,10 @@ public class Joshua_SimpleNPC : MonoBehaviour
             {
                 dialog = false;
             }
-            if (GameGlue.I) GameGlue.I.Hint("");
+            if (GameGlue.I != null)
+            {
+                GameGlue.I.Hint(string.Empty);
+            }
         }
     }
 
