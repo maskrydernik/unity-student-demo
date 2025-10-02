@@ -27,14 +27,34 @@ public class Anthony_Hats : MonoBehaviour
     {
         var cam = Camera.main;
         if (cam) root.forward = cam.transform.forward;
-        if (Input.GetKeyDown(KeyCode.Tab)) Cycle();
+        if (Input.GetKeyDown(KeyCode.Tab) && IsSelected()) Cycle();
     }
 
     void Cycle()
     {
-        idx = (idx + 1) % (hats.Count + 1);
-        Apply(idx - 1);
+        if (hats.Count == 0)
+        {
+            Apply(-1);
+            idx = -1;
+            return;
+        }
+
+        int next = idx + 1;
+        if (next >= hats.Count) next = -1;
+
+        Apply(next);
+        idx = next;
     }
 
-    void Apply(int hatIdx){ sr.sprite = hatIdx < 0 ? null : hats[hatIdx]; }
+    void Apply(int hatIdx)
+    {
+        sr.sprite = hatIdx < 0 ? null : hats[hatIdx];
+    }
+
+    bool IsSelected()
+    {
+        var unit = GetComponent<Unit>();
+        if (unit) return unit.IsSelected;
+        return true;
+    }
 }
