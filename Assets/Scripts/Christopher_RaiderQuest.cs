@@ -14,12 +14,14 @@ public class Christopher_RaiderQuest : MonoBehaviour
     public int goal = 7;
     public int count = 0;
     public string questLabel = "Raiders";
-    public string completionMessage = "All raiders defeated!";
+    public string completionMessage = "All Raiders Killed the Village is Saved!";
+    public GameObject quest;
+    public GameObject spawnPointVictory;
 
     [Header("Spawning")]
     public GameObject raiderPrefab;
     public Transform spawnPoint;
-    public float secondsBetweenSpawns = 30f;
+    public float secondsBetweenSpawns = 10f;
 
     bool questComplete = false;
     List<GameObject> activeRaiders = new List<GameObject>();
@@ -76,6 +78,7 @@ public class Christopher_RaiderQuest : MonoBehaviour
         if (count >= goal)
         {
             line += "\n" + completionMessage;
+            Instantiate(quest, spawnPointVictory.transform); 
         }
 
         GameGlue.I.questText.text = line;
