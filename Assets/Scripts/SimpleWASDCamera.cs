@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class SimpleWASDCamera : MonoBehaviour
 {
+    [Tooltip("Units per second while moving without sprinting.")]
+    public float moveSpeed = 12f;
+
+    [Tooltip("Multiplier applied to move speed while Left Shift is held.")]
+    public float sprintMultiplier = 2f;
+
     void Update()
     {
-        float speed = 12f;
+
+        //  float scroll = Input.GetAxis("Mouse ScrollWheel");
+
+        float currentSpeed = moveSpeed;
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            speed *= 2f;
+            currentSpeed *= sprintMultiplier;
         }
-
-        float movementStep = speed * Time.deltaTime;
 
         Vector3 forward = transform.forward;
         forward.y = 0f;
@@ -23,23 +30,15 @@ public class SimpleWASDCamera : MonoBehaviour
         right.Normalize();
 
         Vector3 direction = Vector3.zero;
-        if (Input.GetKey(KeyCode.W))
-        {
-            direction += forward;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            direction -= forward;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            direction += right;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            direction -= right;
-        }
+        if (Input.GetKey(KeyCode.W)) direction += forward;
+        if (Input.GetKey(KeyCode.S)) direction -= forward;
+        if (Input.GetKey(KeyCode.D)) direction += right;
+        if (Input.GetKey(KeyCode.A)) direction -= right;
 
-        transform.position += direction * movementStep;
+        if (direction.sqrMagnitude > 0f)
+        {
+            direction.Normalize();
+            transform.position += direction * currentSpeed * Time.deltaTime;
+        }
     }
 }

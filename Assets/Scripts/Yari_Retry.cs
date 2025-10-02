@@ -10,6 +10,8 @@ public class Yari_Retry : MonoBehaviour
         {
             Scene currentScene = SceneManager.GetActiveScene();
             SceneManager.LoadSceneAsync(currentScene.buildIndex);
+
+            // SceneManager.LoadScene(0); 
         }
     }
 }
