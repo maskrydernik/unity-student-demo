@@ -1,6 +1,5 @@
 // Mary_HUD.cs
 // Owns HUD text fields and exposes simple setters used by others.
-// Now includes VictorG's gear display functionality.
 using UnityEngine;
 using TMPro;
 
@@ -25,7 +24,7 @@ public class Mary_HUD : MonoBehaviour
         GameGlue.I.RefreshHUD();
     }
 
-    // VictorG: Refresh gear HUD for a specific unit
+    // Refresh gear HUD for a specific unit
     public static void RefreshGearHUD(GameObject unit)
     {
         if (GameGlue.I == null || GameGlue.I.gearText == null)

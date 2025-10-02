@@ -234,7 +234,7 @@ MonoBehaviour:
   team: 0
   range: 2
   attackInterval: 1
-  searchRadius: 8
+  searchRadius: 6
 --- !u!114 &3724156681259096805
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 3.5
-  gainOnKill: 0.15
+  gainOnKill: 20
 --- !u!114 &2390142649710898222
 MonoBehaviour:
   m_ObjectHideFlags: 0

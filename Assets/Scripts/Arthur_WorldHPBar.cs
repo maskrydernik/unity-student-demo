@@ -83,6 +83,12 @@ public class Arthur_WorldHPBar : MonoBehaviour
             {
                 Christopher_RaiderQuest.I.NotifyEnemyDeath(gameObject);
             }
+
+            var drop = GetComponent<Ryan_SimpleDrop>();
+            if (drop != null && drop.dropPrefab != null)
+            {
+                Instantiate(drop.dropPrefab, transform.position, Quaternion.identity);
+            }
         }
         Destroy(gameObject);
     }
