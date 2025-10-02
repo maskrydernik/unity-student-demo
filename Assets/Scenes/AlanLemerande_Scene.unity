@@ -973,6 +973,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ee1100c76befb4409590698c854055e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 12
+  sprintMultiplier: 2
 --- !u!1 &387248994
 GameObject:
   m_ObjectHideFlags: 0
@@ -4047,7 +4049,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 4e87962f53b095c4a8d4351afaf283f5, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 628cfeb9b509df34eb07fa1a6f0a5fb3, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &2100864607
 Transform:
@@ -4146,6 +4148,8 @@ MonoBehaviour:
   count: 0
   questLabel: Raiders
   completionMessage: All raiders defeated!
+  quest: {fileID: 0}
+  spawnPointVictory: {fileID: 0}
   raiderPrefab: {fileID: 8459521501654886793, guid: 628c440a194f3374ca980ae7a52cd39d, type: 3}
   spawnPoint: {fileID: 2040464913}
   secondsBetweenSpawns: 5
