@@ -103,5 +103,7 @@ public class Arthur_WorldHPBar : MonoBehaviour
         Vector3 cameraForward = mainCamera.transform.forward;
         Vector3 cameraUp = mainCamera.transform.up;
         canvasTransform.rotation = Quaternion.LookRotation(cameraForward, cameraUp);
+        // transform.LookAt(position);
+
     }
 }
