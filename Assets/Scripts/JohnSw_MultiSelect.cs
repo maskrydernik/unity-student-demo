@@ -1,5 +1,6 @@
 // JohnSw_MultiSelect.cs
 // Minimal working selection: Click to select, Shift+drag for multi-select, Right-click to move.
+// DISABLE Manager.cs if you use this script!
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +17,15 @@ public class JohnSw_MultiSelect : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
-        if (dragRectImage) dragRectImage.gameObject.SetActive(false);
+        if (dragRectImage)
+        {
+            // Setup drag rect properly
+            dragRectImage.gameObject.SetActive(false);
+            var rt = dragRectImage.rectTransform;
+            rt.pivot = new Vector2(0, 0);
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(0, 0);
+        }
     }
 
     void Update()
@@ -34,7 +43,11 @@ public class JohnSw_MultiSelect : MonoBehaviour
         {
             dragging = true;
             dragStart = Input.mousePosition;
-            if (dragRectImage) dragRectImage.gameObject.SetActive(true);
+            if (dragRectImage)
+            {
+                dragRectImage.gameObject.SetActive(true);
+                Debug.Log("Started drag selection");
+            }
         }
 
         // Update drag rectangle
@@ -61,6 +74,10 @@ public class JohnSw_MultiSelect : MonoBehaviour
             Vector2 min = Vector2.Min(dragStart, Input.mousePosition);
             Vector2 max = Vector2.Max(dragStart, Input.mousePosition);
             
+            // Clear previous selection when shift dragging
+            foreach (Unit u in selection) u.SetSelected(false);
+            selection.Clear();
+            
             foreach (Unit u in FindObjectsByType<Unit>(FindObjectsSortMode.None))
             {
                 Vector3 screenPos = cam.WorldToScreenPoint(u.transform.position);
@@ -68,19 +85,17 @@ public class JohnSw_MultiSelect : MonoBehaviour
                     screenPos.x >= min.x && screenPos.x <= max.x && 
                     screenPos.y >= min.y && screenPos.y <= max.y)
                 {
-                    if (!selection.Contains(u))
-                    {
-                        selection.Add(u);
-                        u.SetSelected(true);
-                    }
+                    selection.Add(u);
+                    u.SetSelected(true);
                 }
             }
             
             if (GameGlue.I) GameGlue.I.Hint("Selected " + selection.Count + " units");
+            Debug.Log("Drag select found: " + selection.Count + " units");
         }
 
         // Single click without shift
-        if (!shift && Input.GetMouseButtonDown(0))
+        if (!shift && Input.GetMouseButtonDown(0) && !dragging)
         {
             // Clear old selection
             foreach (Unit u in selection) u.SetSelected(false);
@@ -100,6 +115,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
                     selection.Add(u);
                     u.SetSelected(true);
                     if (GameGlue.I) GameGlue.I.Hint("Selected 1 unit");
+                    Debug.Log("Selected unit: " + u.name);
                     break;
                 }
             }
@@ -119,7 +135,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
                 {
                     u.MoveTo(hit.point);
                 }
-                if (GameGlue.I) GameGlue.I.Hint("Moving units");
+                if (GameGlue.I) GameGlue.I.Hint("Moving " + selection.Count + " units");
             }
         }
     }
