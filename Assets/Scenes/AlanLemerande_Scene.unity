@@ -983,7 +983,7 @@ GameObject:
   m_Component:
   - component: {fileID: 387248995}
   m_Layer: 0
-  m_Name: SpawnPoint
+  m_Name: ShopSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2487,41 +2487,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 91de45bec6055084eb8a9e23ae57062b, type: 3}
---- !u!1 &1179786430
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1179786431}
-  m_Layer: 5
-  m_Name: RaiderSpawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1179786431
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1179786430}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 155, y: 226.5}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1285042259
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2532,7 +2497,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7791730250580132040, guid: 628c440a194f3374ca980ae7a52cd39d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.804607
+      value: -1.83
       objectReference: {fileID: 0}
     - target: {fileID: 7791730250580132040, guid: 628c440a194f3374ca980ae7a52cd39d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2540,7 +2505,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7791730250580132040, guid: 628c440a194f3374ca980ae7a52cd39d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 9.933728
+      value: 12.67
       objectReference: {fileID: 0}
     - target: {fileID: 7791730250580132040, guid: 628c440a194f3374ca980ae7a52cd39d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3880,6 +3845,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b6041b2a22404340ac0627edf9fceca, type: 3}
+--- !u!1 &2040464912
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2040464913}
+  m_Layer: 0
+  m_Name: RaiderSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2040464913
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2040464912}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.68, y: 0, z: 12.66}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2049656495
 GameObject:
   m_ObjectHideFlags: 0
@@ -3912,7 +3908,7 @@ MonoBehaviour:
   greeting: Hello.
   option1: Help (+10 gold)
   option2: Decline
-  talkRange: 3
+  talkRange: 2
 --- !u!4 &2049656498
 Transform:
   m_ObjectHideFlags: 0
@@ -4150,7 +4146,9 @@ MonoBehaviour:
   count: 0
   questLabel: Raiders
   completionMessage: All raiders defeated!
-  spawnerRoot: {fileID: 0}
+  raiderPrefab: {fileID: 8459521501654886793, guid: 628c440a194f3374ca980ae7a52cd39d, type: 3}
+  spawnPoint: {fileID: 2040464913}
+  secondsBetweenSpawns: 5
 --- !u!114 &2141060210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4227,11 +4225,11 @@ SceneRoots:
   - {fileID: 672849943}
   - {fileID: 2049656498}
   - {fileID: 387248995}
+  - {fileID: 2040464913}
   - {fileID: 458458394}
   - {fileID: 1964371364}
   - {fileID: 773499560}
   - {fileID: 1285042259}
-  - {fileID: 1179786431}
   - {fileID: 1817955197}
   - {fileID: 1864339196}
   - {fileID: 174441515}

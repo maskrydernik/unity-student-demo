@@ -1,11 +1,12 @@
 // Christopher_RaiderQuest.cs
-// Count raider kills up to a goal. Then disable a spawner object.
+// Spawns raiders, tracks how many you defeat, and wraps up the quest.
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class Christopher_RaiderQuest : MonoBehaviour
 {
+    // Allow other scripts to find this quest easily.
     public static Christopher_RaiderQuest I;
 
     [Header("Quest Settings")]
@@ -14,13 +15,14 @@ public class Christopher_RaiderQuest : MonoBehaviour
     public int count = 0;
     public string questLabel = "Raiders";
     public string completionMessage = "All raiders defeated!";
+
+    [Header("Spawning")]
     public GameObject raiderPrefab;
     public Transform spawnPoint;
     public float secondsBetweenSpawns = 30f;
-    public Transform evacuationTarget;
 
-    bool questComplete;
-    readonly System.Collections.Generic.List<GameObject> activeRaiders = new System.Collections.Generic.List<GameObject>();
+    bool questComplete = false;
+    List<GameObject> activeRaiders = new List<GameObject>();
 
     void Awake()
     {
@@ -29,49 +31,57 @@ public class Christopher_RaiderQuest : MonoBehaviour
 
     IEnumerator Start()
     {
-        // Wait until HUD wiring provides a quest text field.
+        // The HUD may not be ready on the first frame, so wait for it.
         while (GameGlue.I == null || GameGlue.I.questText == null)
         {
             yield return null;
         }
-        RefreshQuestText();
-        StartCoroutine(SpawnRaiders());
+
+        RegisterExistingRaiders();
+        UpdateQuestText();
+        StartCoroutine(SpawnLoop());
     }
 
     public void NotifyEnemyDeath(GameObject enemy)
     {
-        if (enemy.CompareTag(raiderTag))
+        if (!enemy.CompareTag(raiderTag))
         {
-            count = Mathf.Min(goal, count + 1);
-            activeRaiders.Remove(enemy);
-            RefreshQuestText();
+            return;
+        }
 
-            if (count >= goal)
-            {
-                questComplete = true;
-                if (GameGlue.I) GameGlue.I.Hint(completionMessage);
-                SendRemainingRaidersToExit();
-            }
+        count = Mathf.Min(goal, count + 1);
+        activeRaiders.Remove(enemy);
+        UpdateQuestText();
+
+        if (count < goal)
+        {
+            return;
+        }
+
+        questComplete = true;
+        if (GameGlue.I != null)
+        {
+            GameGlue.I.Hint(completionMessage);
         }
     }
 
-    void RefreshQuestText()
+    void UpdateQuestText()
     {
         if (GameGlue.I == null || GameGlue.I.questText == null)
         {
             return;
         }
 
-        string questLine = questLabel + ": " + count + "/" + goal;
+        string line = questLabel + ": " + count + "/" + goal;
         if (count >= goal)
         {
-            questLine += "\n" + completionMessage;
+            line += "\n" + completionMessage;
         }
 
-        GameGlue.I.questText.text = questLine;
+        GameGlue.I.questText.text = line;
     }
 
-    IEnumerator SpawnRaiders()
+    IEnumerator SpawnLoop()
     {
         while (!questComplete)
         {
@@ -80,11 +90,16 @@ public class Christopher_RaiderQuest : MonoBehaviour
             {
                 yield break;
             }
-            SpawnOneRaider();
+
+            RemoveNullRaiders();
+            if (ShouldSpawnAnotherRaider())
+            {
+                SpawnRaider();
+            }
         }
     }
 
-    void SpawnOneRaider()
+    void SpawnRaider()
     {
         if (raiderPrefab == null)
         {
@@ -92,62 +107,29 @@ public class Christopher_RaiderQuest : MonoBehaviour
         }
 
         Transform spawnTransform = spawnPoint != null ? spawnPoint : transform;
-        GameObject newRaider = Instantiate(raiderPrefab, spawnTransform.position, spawnTransform.rotation);
-        activeRaiders.Add(newRaider);
+        GameObject raider = Instantiate(raiderPrefab, spawnTransform.position, spawnTransform.rotation);
+        activeRaiders.Add(raider);
     }
 
-    void SendRemainingRaidersToExit()
+    void RegisterExistingRaiders()
     {
-        if (evacuationTarget == null)
-        {
-            return;
-        }
-
-        foreach (GameObject raider in activeRaiders.ToArray())
-        {
-            if (raider == null)
-            {
-                continue;
-            }
-
-            Vector3 destination = evacuationTarget.position;
-
-            Unit unit = raider.GetComponent<Unit>();
-            if (unit != null)
-            {
-                unit.MoveTo(destination);
-            }
-            else
-            {
-                NavMeshAgent agent = raider.GetComponent<NavMeshAgent>();
-                if (agent != null)
-                {
-                    agent.SetDestination(destination);
-                }
-            }
-
-            StartCoroutine(DestroyRaiderWhenArrived(raider, destination));
-        }
-
         activeRaiders.Clear();
+        GameObject[] existingRaiders = GameObject.FindGameObjectsWithTag(raiderTag);
+        foreach (GameObject raider in existingRaiders)
+        {
+            activeRaiders.Add(raider);
+        }
     }
 
-    IEnumerator DestroyRaiderWhenArrived(GameObject raider, Vector3 destination)
+    bool ShouldSpawnAnotherRaider()
     {
-        if (raider == null)
-        {
-            yield break;
-        }
+        int aliveCount = activeRaiders.Count;
+        int totalCreated = aliveCount + count;
+        return totalCreated < goal;
+    }
 
-        while (raider != null)
-        {
-            float distance = Vector3.Distance(raider.transform.position, destination);
-            if (distance <= 1f)
-            {
-                Destroy(raider);
-                yield break;
-            }
-            yield return null;
-        }
+    void RemoveNullRaiders()
+    {
+        activeRaiders.RemoveAll(raider => raider == null);
     }
 }

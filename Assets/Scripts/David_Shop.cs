@@ -29,6 +29,14 @@ public class David_Shop : MonoBehaviour
 
         GameGlue.I.AddGold(-unitCost);
         Transform point = spawnPoint != null ? spawnPoint : transform;
+
+                    /*
+                    Transform point;
+            if (spawnPoint != null)
+                point = spawnPoint;
+            else
+                point = transform;
+            */
         Instantiate(unitPrefab, point.position, point.rotation);
         GameGlue.I.Hint("Recruited a unit");
     }
