@@ -850,7 +850,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.17247772, y: -0.7812393, z: 0.24632373, w: 0.54702955}
-  m_LocalPosition: {x: 8, y: 8, z: 0}
+  m_LocalPosition: {x: 4.61, y: 4, z: 3.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -937,7 +937,7 @@ Transform:
   m_GameObject: {fileID: 387248994}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.14, y: 0, z: 0}
+  m_LocalPosition: {x: -3.14, y: 0, z: 4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1414,12 +1414,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragRectImage: {fileID: 2092012430}
-  unitMask:
-    serializedVersion: 2
-    m_Bits: 0
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 128
   selection: []
 --- !u!4 &672849943
 Transform:
@@ -2416,6 +2410,41 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 91de45bec6055084eb8a9e23ae57062b, type: 3}
+--- !u!1 &1179786430
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1179786431}
+  m_Layer: 5
+  m_Name: RaiderSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1179786431
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1179786430}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 155, y: 226.5}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1285042259
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3882,6 +3911,8 @@ MonoBehaviour:
   raiderTag: Raider
   goal: 7
   count: 0
+  questLabel: Raiders
+  completionMessage: All raiders defeated!
   spawnerRoot: {fileID: 0}
 --- !u!114 &2141060210
 MonoBehaviour:
@@ -3926,10 +3957,10 @@ MonoBehaviour:
   gold: 50
   keys: 0
   houses: 0
-  goldText: {fileID: 0}
-  gearText: {fileID: 0}
-  questText: {fileID: 0}
-  tipText: {fileID: 0}
+  goldText: {fileID: 1535903438}
+  gearText: {fileID: 735172034}
+  questText: {fileID: 1421118733}
+  tipText: {fileID: 726793369}
 --- !u!4 &2141060213
 Transform:
   m_ObjectHideFlags: 0
@@ -3963,3 +3994,4 @@ SceneRoots:
   - {fileID: 1964371364}
   - {fileID: 773499560}
   - {fileID: 1285042259}
+  - {fileID: 1179786431}

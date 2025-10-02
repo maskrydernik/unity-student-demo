@@ -296,7 +296,7 @@ MonoBehaviour:
   - {fileID: -1400617538, guid: 2da10da3f7a8117419fa099d9778376a, type: 3}
   - {fileID: -1280522737, guid: 2da10da3f7a8117419fa099d9778376a, type: 3}
   - {fileID: 331816714, guid: 2da10da3f7a8117419fa099d9778376a, type: 3}
-  yOffset: 2.1
+  yOffset: 0.89
   sortingOrder: 50
 --- !u!1001 &6470237839363047381
 PrefabInstance:

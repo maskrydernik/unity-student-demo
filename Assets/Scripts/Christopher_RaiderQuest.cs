@@ -1,24 +1,53 @@
 // Christopher_RaiderQuest.cs
 // Count raider kills up to a goal. Then disable a spawner object.
+using System.Collections;
 using UnityEngine;
 
 public class Christopher_RaiderQuest : MonoBehaviour
 {
     public static Christopher_RaiderQuest I;
+    [Header("Quest Settings")]
     public string raiderTag = "Raider";
     public int goal = 7;
     public int count = 0;
+    public string questLabel = "Raiders";
+    public string completionMessage = "All raiders defeated!";
     public GameObject spawnerRoot;
 
     void Awake(){ I = this; }
+
+    IEnumerator Start()
+    {
+        // Wait one frame so HUD references (GameGlue questText) have a chance to wire up.
+        yield return null;
+        RefreshQuestText();
+    }
 
     public void NotifyEnemyDeath(GameObject enemy)
     {
         if (enemy.CompareTag(raiderTag))
         {
             count = Mathf.Min(goal, count + 1);
-            if (GameGlue.I.questText) GameGlue.I.questText.text = "Raiders: " + count + "/" + goal;
-            if (count >= goal && spawnerRoot) spawnerRoot.SetActive(false);
+            RefreshQuestText();
+
+            if (count >= goal)
+            {
+                if (spawnerRoot) spawnerRoot.SetActive(false);
+                if (GameGlue.I) GameGlue.I.Hint(completionMessage);
+            }
         }
+    }
+
+    void RefreshQuestText()
+    {
+        if (!GameGlue.I || !GameGlue.I.questText) return;
+
+        string text = questLabel + ": " + count + "/" + goal;
+        if (count >= goal)
+        {
+            text += "\n" + completionMessage;
+        }
+
+        GameGlue.I.questText.text = text;
     }
 }
