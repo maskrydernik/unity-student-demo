@@ -31,9 +31,12 @@ public class JohnSw_MultiSelect : MonoBehaviour
             dragRectParent = dragRectTransform.parent as RectTransform;
             dragCanvas = dragRectImage.canvas;
             if (!dragCanvas) dragCanvas = dragRectImage.GetComponentInParent<Canvas>();
-            dragRectTransform.pivot = new Vector2(0, 0);
-            dragRectTransform.anchorMin = new Vector2(0, 0);
-            dragRectTransform.anchorMax = new Vector2(0, 0);
+            dragRectTransform.pivot = new Vector2(0.5f, 0.5f);
+            dragRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            dragRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            dragRectTransform.anchoredPosition = Vector2.zero;
+            dragRectTransform.sizeDelta = Vector2.zero;
+            dragRectTransform.SetAsLastSibling();
         }
     }
 
@@ -99,15 +102,17 @@ public class JohnSw_MultiSelect : MonoBehaviour
 
     void UpdateDragVisual(Vector2 currentScreenPosition)
     {
-        if (!dragRectTransform || !dragRectParent) return;
+    if (!dragRectTransform || !dragRectParent) return;
 
-        Vector2 startLocal = dragStartLocal;
-        Vector2 currentLocal = ScreenToLocal(currentScreenPosition);
-        Vector2 min = Vector2.Min(startLocal, currentLocal);
-        Vector2 max = Vector2.Max(startLocal, currentLocal);
+    Vector2 startLocal = dragStartLocal;
+    Vector2 currentLocal = ScreenToLocal(currentScreenPosition);
+    Vector2 min = Vector2.Min(startLocal, currentLocal);
+    Vector2 max = Vector2.Max(startLocal, currentLocal);
+    Vector2 center = (min + max) * 0.5f;
+    Vector2 size = max - min;
 
-        dragRectTransform.anchoredPosition = min;
-        dragRectTransform.sizeDelta = max - min;
+    dragRectTransform.anchoredPosition = center;
+    dragRectTransform.sizeDelta = new Vector2(Mathf.Abs(size.x), Mathf.Abs(size.y));
     }
 
     Vector2 ScreenToLocal(Vector2 screenPos)
