@@ -37,6 +37,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
             dragRectTransform.anchoredPosition = Vector2.zero;
             dragRectTransform.sizeDelta = Vector2.zero;
             dragRectTransform.SetAsLastSibling();
+            dragRectImage.raycastTarget = false;
         }
     }
 
@@ -96,8 +97,6 @@ public class JohnSw_MultiSelect : MonoBehaviour
             dragStartLocal = ScreenToLocal(dragStart);
             UpdateDragVisual(dragStart);
         }
-
-        Debug.Log("Started drag selection (" + (additive ? "additive" : "fresh") + ")");
     }
 
     void UpdateDragVisual(Vector2 currentScreenPosition)
@@ -177,7 +176,6 @@ public class JohnSw_MultiSelect : MonoBehaviour
         }
 
         if (GameGlue.I) GameGlue.I.Hint("Selected " + selection.Count + " units");
-        Debug.Log("Drag select found: " + dragResults.Count + " units (total " + selection.Count + ")");
     }
 
     void SelectByRaycast(bool additive)
@@ -207,7 +205,6 @@ public class JohnSw_MultiSelect : MonoBehaviour
                     u.SetSelected(true);
                 }
                 if (GameGlue.I) GameGlue.I.Hint("Selected " + selection.Count + " unit" + (selection.Count == 1 ? "" : "s"));
-                Debug.Log("Selected unit: " + u.name + " (total " + selection.Count + ")");
                 break;
             }
         }

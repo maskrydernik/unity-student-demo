@@ -19,25 +19,50 @@ public class David_Shop : MonoBehaviour
 
     public void BuyUnit()
     {
-        if (GameGlue.I.gold < unitCost) { GameGlue.I.Hint("Need " + unitCost + " gold"); return; }
+        if (!ValidateSpawn(unitPrefab, unitCost)) return;
+
         GameGlue.I.AddGold(-unitCost);
-        var go = Instantiate(unitPrefab, spawnPoint.position, Quaternion.identity);
-        // Minimal auto-wire
-        if (!go.GetComponent<Nicholas_AutoCombat>()) go.AddComponent<Nicholas_AutoCombat>();
-        if (!go.GetComponent<Steven_GearStats>()) go.AddComponent<Steven_GearStats>();
-        if (!go.GetComponent<Arthur_WorldHPBar>()) go.AddComponent<Arthur_WorldHPBar>();
-        if (!go.GetComponent<Lionel_HealCharge>()) go.AddComponent<Lionel_HealCharge>();
-        if (!go.GetComponent<Anthony_Hats>()) go.AddComponent<Anthony_Hats>();
-        if (!go.GetComponent<Jordon_SpeedOnKill>()) go.AddComponent<Jordon_SpeedOnKill>();
-        if (!go.GetComponent<UnityEngine.AI.NavMeshAgent>()) go.AddComponent<UnityEngine.AI.NavMeshAgent>();
-        if (!go.GetComponent<Unit>()) go.AddComponent<Unit>();
+        Transform point = spawnPoint ? spawnPoint : transform;
+        Instantiate(unitPrefab, point.position, point.rotation);
+        GameGlue.I.Hint("Recruited a unit");
     }
 
     public void BuyBuilding()
     {
-        if (GameGlue.I.gold < buildingCost) { GameGlue.I.Hint("Need " + buildingCost + " gold"); return; }
+        if (!ValidateSpawn(buildingPrefab, buildingCost)) return;
+
         GameGlue.I.AddGold(-buildingCost);
-        Instantiate(buildingPrefab, spawnPoint.position, Quaternion.identity);
+        Transform point = spawnPoint ? spawnPoint : transform;
+        Instantiate(buildingPrefab, point.position, point.rotation);
         GameGlue.I.AddHouse(1);
+        GameGlue.I.Hint("Constructed a building");
+    }
+
+    bool ValidateSpawn(GameObject prefab, int cost)
+    {
+        if (!GameGlue.I)
+        {
+            Debug.LogWarning("GameGlue instance missing; cannot process purchase");
+            return false;
+        }
+
+        if (!prefab)
+        {
+            GameGlue.I.Hint("No prefab assigned");
+            return false;
+        }
+
+        if (GameGlue.I.gold < cost)
+        {
+            GameGlue.I.Hint("Need " + cost + " gold");
+            return false;
+        }
+
+        if (!spawnPoint)
+        {
+            Debug.LogWarning(name + " missing spawn point; using self position");
+        }
+
+        return true;
     }
 }
