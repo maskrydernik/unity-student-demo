@@ -209,7 +209,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hits = Physics.RaycastAll(ray, 1000f);
-
+    
         foreach (RaycastHit hit in hits)
         {
             Unit u = hit.collider.GetComponent<Unit>();
