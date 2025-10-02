@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3111047725589335293}
   - component: {fileID: 1044522214392717096}
   - component: {fileID: 3623284513864868161}
-  - component: {fileID: 8649778482485704453}
   - component: {fileID: 2849220299321574057}
   - component: {fileID: 7567891397612049789}
   m_Layer: 0
@@ -84,22 +83,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8649778482485704453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 363967544562491596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 896e55553a304a741bb886b43e504752, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isWeapon: 1
-  tier: 1
-  goldValue: 5
-  healChargeBonus: 0.25
 --- !u!23 &2849220299321574057
 MeshRenderer:
   m_ObjectHideFlags: 0
