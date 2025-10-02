@@ -1,22 +1,14 @@
 // Unit.cs
-// Minimal selection highlight and movement wrapper. Works with NavMeshAgent.
-// Replaces old Unit.cs. (Kept SetSelected and MoveTo API for continuity)
-
+// Minimal selection highlight and NavMeshAgent wrapper used by multiple scripts.
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Unit : MonoBehaviour
 {
-    public GameObject highlight;    // child object used as selection indicator
+    public GameObject highlight;
     public NavMeshAgent agent;
+    public bool IsSelected{ get; private set; }
 
-    public void SetSelected(bool v)
-    {
-        highlight.SetActive(v);
-    }
-
-    public void MoveTo(Vector3 world)
-    {
-        agent.SetDestination(world);
-    }
+    public void SetSelected(bool v){ IsSelected = v; if (highlight) highlight.SetActive(v); }
+    public void MoveTo(Vector3 world){ if(agent) agent.SetDestination(world); }
 }

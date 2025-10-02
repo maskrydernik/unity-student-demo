@@ -1,3 +1,5 @@
+// SimpleWASDCamera.cs
+// Utility component. Not credited to a person.
 using UnityEngine;
 
 public class SimpleWASDCamera : MonoBehaviour
