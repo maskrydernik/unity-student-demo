@@ -1,0 +1,377 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7370474427804421467
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1534706654343400002}
+  - component: {fileID: 652066773530269673}
+  - component: {fileID: 7015546605788065540}
+  - component: {fileID: 2452925845457745080}
+  - component: {fileID: 7993102713961623431}
+  - component: {fileID: 6395141877757686771}
+  m_Layer: 0
+  m_Name: Alan_Fighter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1534706654343400002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7370474427804421467}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &652066773530269673
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7370474427804421467}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 50
+  m_Sprite: {fileID: 71398185, guid: 2da10da3f7a8117419fa099d9778376a, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.535, y: 0.60125}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!50 &7015546605788065540
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7370474427804421467}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 3.5
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
+--- !u!70 &2452925845457745080
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7370474427804421467}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.5, y: 1}
+  m_Direction: 0
+--- !u!95 &7993102713961623431
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7370474427804421467}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6395141877757686771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7370474427804421467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 521b01eee95fcd5468374cd9b2db015c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fighterName: Fighter
+  team: 0
+  playerIndex: 0
+  isAI: 0
+  visualRoot: {fileID: 0}
+  rb: {fileID: 7015546605788065540}
+  bodyCollider: {fileID: 2452925845457745080}
+  animator: {fileID: 0}
+  walkSpeed: 6
+  jumpForce: 14
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  maxHP: 1000
+  maxMeter: 3000
+  attacks:
+  - name: 5L
+    button: 0
+    allowGround: 1
+    allowAir: 0
+    startup: 0.08
+    recovery: 0.18
+    moveDuring: 0
+    gravityScaleDuring: -1
+    cancelRule: 2
+    cancelFromTime: 0.1
+    cancelToTime: 0.2
+    windows:
+    - shape: 0
+      offset: {x: 1.2, y: 0.4}
+      size: {x: 1.2, y: 0.7}
+      radius: 0.6
+      start: 0.083
+      end: 0.16
+      damage: 60
+      guard: 2
+      hitstun: 0.23
+      blockstun: 0.16
+      knockback: {x: 7, y: 3.5}
+      causesLaunch: 0
+      causesHardKD: 0
+      meterGainOnHit: 120
+      meterGainOnBlock: 40
+      meterGainOnWhiff: 15
+      priority: 0
+      hitstopOverride: -1
+      armorBreak: 0
+      wallBounce: 0
+      groundBounce: 0
+    anim: {fileID: 0}
+    animatorTrigger: 
+    sfx: {fileID: 0}
+    autoTurnOnStart: 1
+    karaCancelIntoMove: 0
+    cancelIntoNames: []
+    meterCost: 0
+    negativeEdge: 0
+  - name: 5M
+    button: 1
+    allowGround: 1
+    allowAir: 0
+    startup: 0.12
+    recovery: 0.25
+    moveDuring: 0
+    gravityScaleDuring: -1
+    cancelRule: 2
+    cancelFromTime: 0.1
+    cancelToTime: 0.2
+    windows:
+    - shape: 0
+      offset: {x: 1.2, y: 0.4}
+      size: {x: 1.2, y: 0.7}
+      radius: 0.6
+      start: 0.083
+      end: 0.16
+      damage: 100
+      guard: 2
+      hitstun: 0.33
+      blockstun: 0.22
+      knockback: {x: 7, y: 3.5}
+      causesLaunch: 0
+      causesHardKD: 0
+      meterGainOnHit: 120
+      meterGainOnBlock: 40
+      meterGainOnWhiff: 15
+      priority: 0
+      hitstopOverride: -1
+      armorBreak: 0
+      wallBounce: 0
+      groundBounce: 0
+    anim: {fileID: 0}
+    animatorTrigger: 
+    sfx: {fileID: 0}
+    autoTurnOnStart: 1
+    karaCancelIntoMove: 0
+    cancelIntoNames: []
+    meterCost: 0
+    negativeEdge: 0
+  - name: 5H
+    button: 2
+    allowGround: 1
+    allowAir: 0
+    startup: 0.16
+    recovery: 0.33
+    moveDuring: 0
+    gravityScaleDuring: -1
+    cancelRule: 2
+    cancelFromTime: 0.1
+    cancelToTime: 0.2
+    windows:
+    - shape: 0
+      offset: {x: 1.2, y: 0.4}
+      size: {x: 1.2, y: 0.7}
+      radius: 0.6
+      start: 0.083
+      end: 0.16
+      damage: 140
+      guard: 2
+      hitstun: 0.42
+      blockstun: 0.26
+      knockback: {x: 7, y: 3.5}
+      causesLaunch: 0
+      causesHardKD: 0
+      meterGainOnHit: 120
+      meterGainOnBlock: 40
+      meterGainOnWhiff: 15
+      priority: 0
+      hitstopOverride: -1
+      armorBreak: 0
+      wallBounce: 0
+      groundBounce: 0
+    anim: {fileID: 0}
+    animatorTrigger: 
+    sfx: {fileID: 0}
+    autoTurnOnStart: 1
+    karaCancelIntoMove: 0
+    cancelIntoNames: []
+    meterCost: 0
+    negativeEdge: 0
+  hud:
+    autoCreateHUD: 1
+    createCanvasIfNone: 1
+    existingCanvas: {fileID: 0}
+    panelSize: {x: 420, y: 36}
+    barSize: {x: 360, y: 16}
+    meterSize: {x: 360, y: 8}
+    padding: {x: 16, y: 12}
+    healthColor: {r: 0.9, g: 0.1, b: 0.1, a: 1}
+    chipColor: {r: 1, g: 0.6, b: 0.2, a: 1}
+    meterColor: {r: 0.2, g: 0.6, b: 1, a: 1}
+    anchorByTeam: 1
+    mirrorRight: 1
+    font: {fileID: 0}
+  p_isGrounded: isGrounded
+  p_isWalking: isWalking
+  p_isCrouching: isCrouching
+  p_isAttacking: isAttacking
+  p_isKO: isKO
+  p_speedX: speedX
+  p_speedY: speedY
+  p_triggerAttack: 
+  controls:
+    left: 97
+    right: 100
+    up: 119
+    down: 115
+    jump: 107
+    dash: 108
+    light: 106
+    medium: 117
+    heavy: 105
+    special: 111
+    throwKey: 104
+    block: 304
+    parry: 112
+    useAxes: 0
+    axisHorizontal: Horizontal
+    axisVertical: Vertical
+    buttonLight: Fire1
+    buttonMedium: Fire2
+    buttonHeavy: Fire3
+    buttonSpecial: Jump
+    buttonThrow: Submit
+    buttonBlock: Cancel
+    buttonParry: Fire4
+    axisDeadzone: 0.25

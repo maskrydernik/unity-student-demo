@@ -1,8 +1,5 @@
 // Single, self-contained 2D fighter component. Drop on a GameObject with Rigidbody2D + Collider2D.
-// Supports: player/AI, per-fighter keybinds, auto UI (health/meter), attacks with startup/active/recovery,
-// block/parry/throw, hitstop, hitstun/blockstun, juggle limit, cancels/links, pushbox separation,
-// stage bounds, autoselect target, auto facing, animator params, debug gizmos.
-// No other scripts required.
+// Public API is minimal and REQUIRED. No public defaults. Component disables itself if any required field is unset.
 
 using System;
 using System.Collections.Generic;
@@ -12,331 +9,296 @@ using UnityEngine.UI;
 [DefaultExecutionOrder(-10)]
 public class SimpleFighter : MonoBehaviour
 {
-    // ???????????????????????????????????????????????????????????????????????????????
-    // Identity / Team / Targeting
-    // ???????????????????????????????????????????????????????????????????????????????
-    [Header("Identity")]
-    public string fighterName = "Fighter";
-    public int team = 0;                                 // Fighters with same team value don't hit each other
-    public int playerIndex = 0;                          // For UI anchoring
-    public bool isAI = false;
-    public bool autoFindOpponent = true;
-    public bool preferNearestTarget = true;
-    public SimpleFighter manualTarget;                   // Optional hard target
-    public float retargetInterval = 0.2f;
-
-    [Header("Facing")]
-    public bool autoFace = true;
-    public bool faceRight = true;                        // Manual override when autoFace=false
-    public bool flipVisualWithScale = true;
+    // ─────────────────────────────────────────────────────────────────────────────
+    // REQUIRED PUBLIC CONFIG (no defaults; must be set in Inspector)
+    // ─────────────────────────────────────────────────────────────────────────────
+    [Header("Identity - REQUIRED")]
+    [Tooltip("Name of this fighter")]
+    public string fighterName;
+    [Tooltip("Team number (fighters on same team won't hit each other)")]
+    public int team;
+    [Tooltip("UI slot ordering")]
+    public int playerIndex;
+    [Tooltip("Toggle simple AI input")]
+    public bool isAI;
+    [Tooltip("Visual root used for facing flip")]
     public Transform visualRoot;
 
-    // ???????????????????????????????????????????????????????????????????????????????
-    // Components / Scene Integration
-    // ???????????????????????????????????????????????????????????????????????????????
-    [Header("Components")]
+    [Header("Components - REQUIRED")]
     public Rigidbody2D rb;
     public Collider2D bodyCollider;
     public Animator animator;
 
-    [Header("Stage Bounds")]
-    public bool clampToStage = true;
-    public float stageLeftX = -12f;
-    public float stageRightX = 12f;
-    public float floorY = -1000f;                        // Safety floor clamp if you fall through
+    [Header("Core Movement - REQUIRED")]
+    [Tooltip("Walk speed in units/second")]
+    public float walkSpeed;
+    [Tooltip("Jump force")]
+    public float jumpForce;
+    [Tooltip("Layer mask for ground detection")]
+    public LayerMask groundMask;
 
-    // ???????????????????????????????????????????????????????????????????????????????
-    // Movement / Physics
-    // ???????????????????????????????????????????????????????????????????????????????
-    [Header("Movement")]
-    public float walkSpeed = 6f;
-    public float backWalkSpeed = 4.25f;
-    public float dashSpeed = 10f;
-    public float airDrift = 6f;
-    public float accelGround = 60f;
-    public float accelAir = 30f;
-    public float friction = 30f;
-    public float jumpForce = 14f;
-    public int maxJumps = 1;
-    public float coyoteTime = 0.08f;
-    public float jumpBuffer = 0.09f;
-    public float gravityScale = 3.5f;
-    public float fallGravityScale = 5.5f;
-    public float fastFallSpeed = 18f;
-    public float pushboxWidth = 0.9f;
-    public float pushboxHeight = 1.8f;
-    public float pushResolve = 0.1f;                     // Separation strength vs other fighters
-    public LayerMask groundMask = -1;
-    public float groundProbeDistance = 0.12f;
-    public Vector2 groundProbeOffset = new Vector2(0f, -0.95f);
+    [Header("Vitals - REQUIRED")]
+    [Tooltip("Maximum hit points")]
+    public float maxHP;
+    [Tooltip("Maximum super meter value")]
+    public int maxMeter;
 
-    // ???????????????????????????????????????????????????????????????????????????????
-    // Combat Core
-    // ???????????????????????????????????????????????????????????????????????????????
-    [Header("Vitals")]
-    public float maxHP = 1000f;
-    public float hp = 1000f;
-    public int maxMeter = 3000;
-    public int meter = 0;
-    public bool enableChip = true;
-    public float chipRate = 0.08f;                       // fraction of damage as chip on block
-    public float gutsMinDamage = 1f;                     // minimum damage after reductions
+    [Header("Move List - REQUIRED")]
+    [Tooltip("Define all normal/special moves here")]
+    public List<Attack> attacks;
 
-    [Header("Hitstun/Blockstun/Hitstop")]
-    public float hitstopOnHit = 0.06f;
-    public float hitstopOnBlock = 0.04f;
-    public float techWindow = 0.14f;                     // throw tech window
-    public float wakeupInvuln = 0.12f;
+    [Header("HUD - REQUIRED")]
+    public HUDConfig hud;
 
-    [Header("Juggle")]
-    public int juggleMax = 6;
-    public int juggleUsed = 0;
-    public float juggleResetTime = 1.2f;
+    [Header("Animator Param Names - REQUIRED")]
+    public string p_isGrounded;
+    public string p_isWalking;
+    public string p_isCrouching;
+    public string p_isAttacking;
+    public string p_isKO;
+    public string p_speedX;
+    public string p_speedY;
+    [Tooltip("Optional trigger sent when any attack starts; set empty to skip")]
+    public string p_triggerAttack;
 
-    // ???????????????????????????????????????????????????????????????????????????????
-    // Attacks
-    // ???????????????????????????????????????????????????????????????????????????????
+    [Header("Controls - REQUIRED")]
+    public InputBindings controls;
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // INTERNAL TUNABLES (private; sane defaults)
+    // ─────────────────────────────────────────────────────────────────────────────
+    // Facing/targeting
+    bool autoFace = true;
+    bool faceRight = true;
+    bool flipVisualWithScale = true;
+    const bool preferNearestTarget = true;
+    const float retargetInterval = 0.2f;
+
+    // Stage bounds
+    bool clampToStage = true;
+    float stageLeftX = -12f;
+    float stageRightX = 12f;
+    float floorY = -1000f;
+
+    // Movement extra
+    float backWalkSpeed = 4.25f;
+    float dashSpeed = 10f;
+    float airDrift = 6f;
+    float accelGround = 60f;
+    float accelAir = 30f;
+    float friction = 30f;
+    int maxJumps = 1;
+    float coyoteTime = 0.08f;
+    float jumpBuffer = 0.09f;
+    float gravityScale = 3.5f;
+    float fallGravityScale = 5.5f;
+    float fastFallSpeed = 18f;
+    float pushboxWidth = 0.9f;
+    float pushboxHeight = 1.8f;
+    float pushResolve = 0.1f;
+    float groundProbeDistance = 0.12f;
+    Vector2 groundProbeOffset = new Vector2(0f, -0.95f);
+
+    // Combat core
+    float hp;
+    int meter;
+    bool enableChip = true;
+    float chipRate = 0.08f;
+    float gutsMinDamage = 1f;
+
+    // Stun/stop
+    float hitstopOnHit = 0.06f;
+    float hitstopOnBlock = 0.04f;
+    float techWindow = 0.14f;
+    float wakeupInvuln = 0.12f;
+
+    // Juggle
+    int juggleMax = 6;
+    int juggleUsed = 0;
+    float juggleResetTime = 1.2f;
+
+    // Throws/Parry
+    float throwRange = 1.3f;
+    float throwStartup = 0.08f;
+    float throwKD = 0.8f;
+    int throwDamage = 140;
+    float parryWindow = 0.06f;
+    float parryFreezeBonus = 0.07f;
+
+    // HUD runtime
+    Canvas hudCanvas;
+    RectTransform hudPanel;
+    Image hpFill;
+    Image hpChip;
+    Image meterFill;
+    Text nameText;
+    float chipShown;
+    Texture2D whiteTex;
+    Sprite whiteSprite;
+
+    // Runtime State
+    public enum State { Idle, Walk, Jump, Fall, Crouch, Dash, Backdash, Attack, Hitstun, Blockstun, Knockdown, Tech, Grabbed, Throwing }
+    State state = State.Idle;
+    bool grounded;
+    bool crouching;
+    int jumpsUsed;
+    float coyoteTimer;
+    float jumpBufferTimer;
+    float hitstunTimer;
+    float blockstunTimer;
+    float knockdownTimer;
+    float freezeTimer;
+    float invulnTimer;
+    float techTimer;
+    float lastGroundedY;
+    float aiThinkTimer;
+    float lastRetarget;
+    float attackTimer;
+    Attack currentAttack;
+    float lastHitTime;
+    bool holdingBack;
+    bool holdingBlock;
+    bool holdingParry;
+    bool inputLight, inputMedium, inputHeavy, inputSpecial, inputThrow;
+    bool inputJump, inputDash, inputDown, inputUp;
+    float moveInput;
+    Vector2 desiredVelocity;
+    Vector2 externalVelocity;
+    Vector2 lastVelocity;
+    bool landingThisFrame;
+    bool queuedReversal;
+    HashSet<SimpleFighter> throwImmune = new HashSet<SimpleFighter>();
+    static readonly List<SimpleFighter> registry = new List<SimpleFighter>();
+    SimpleFighter cachedTarget;
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // Nested types
+    // ─────────────────────────────────────────────────────────────────────────────
     public enum Button { Light, Medium, Heavy, Special, Throw, Parry, None }
     public enum Shape { Box, Circle }
     public enum Guard { High, Low, Mid, Unblockable, Throw }
     public enum CancelRule { None, OnHit, OnHitOrBlock, Always }
-    public enum State { Idle, Walk, Jump, Fall, Crouch, Dash, Backdash, Attack, Hitstun, Blockstun, Knockdown, Tech, Grabbed, Throwing }
 
     [Serializable]
     public class InputBindings
     {
         [Header("Keyboard")]
-        public KeyCode left = KeyCode.A;
-        public KeyCode right = KeyCode.D;
-        public KeyCode up = KeyCode.W;
-        public KeyCode down = KeyCode.S;
-        public KeyCode jump = KeyCode.K;
-        public KeyCode dash = KeyCode.L;
-        public KeyCode light = KeyCode.J;
-        public KeyCode medium = KeyCode.U;
-        public KeyCode heavy = KeyCode.I;
-        public KeyCode special = KeyCode.O;
-        public KeyCode throwKey = KeyCode.H;
-        public KeyCode block = KeyCode.LeftShift;
-        public KeyCode parry = KeyCode.P;
+        public KeyCode left;
+        public KeyCode right;
+        public KeyCode up;
+        public KeyCode down;
+        public KeyCode jump;
+        public KeyCode dash;
+        public KeyCode light;
+        public KeyCode medium;
+        public KeyCode heavy;
+        public KeyCode special;
+        public KeyCode throwKey;
+        public KeyCode block;
+        public KeyCode parry;
 
         [Header("Axes/Gamepad")]
-        public bool useAxes = false;
-        public string axisHorizontal = "Horizontal";
-        public string axisVertical = "Vertical";
-        public string buttonLight = "Fire1";
-        public string buttonMedium = "Fire2";
-        public string buttonHeavy = "Fire3";
-        public string buttonSpecial = "Jump";
-        public string buttonThrow = "Submit";
-        public string buttonBlock = "Cancel";
-        public string buttonParry = "Fire4";
-        public float axisDeadzone = 0.25f;
+        public bool useAxes;
+        public string axisHorizontal;
+        public string axisVertical;
+        public string buttonLight;
+        public string buttonMedium;
+        public string buttonHeavy;
+        public string buttonSpecial;
+        public string buttonThrow;
+        public string buttonBlock;
+        public string buttonParry;
+        public float axisDeadzone;
     }
-    [Header("Controls")]
-    public InputBindings controls = new InputBindings();
 
     [Serializable]
     public class HitboxWindow
     {
-        public Shape shape = Shape.Box;
-        public Vector2 offset = new Vector2(1.2f, 0.4f);
-        public Vector2 size = new Vector2(1.2f, 0.7f);
-        public float radius = 0.6f;                      // used when shape==Circle
-        public float start = 0.083f;                     // seconds from attack start
-        public float end = 0.16f;                        // seconds from attack start
-        public int damage = 90;
-        public Guard guard = Guard.Mid;
-        public float hitstun = 0.33f;
-        public float blockstun = 0.20f;
-        public Vector2 knockback = new Vector2(7f, 3.5f);
-        public bool causesLaunch = false;
-        public bool causesHardKD = false;
-        public int meterGainOnHit = 120;
-        public int meterGainOnBlock = 40;
-        public int meterGainOnWhiff = 15;
-        public int priority = 0;
-        public float hitstopOverride = -1f;              // <0 uses global
-        public bool armorBreak = false;
-        public bool wallBounce = false;
-        public bool groundBounce = false;
+        public Shape shape;
+        public Vector2 offset;
+        public Vector2 size;
+        public float radius;
+        public float start;
+        public float end;
+        public int damage;
+        public Guard guard;
+        public float hitstun;
+        public float blockstun;
+        public Vector2 knockback;
+        public bool causesLaunch;
+        public bool causesHardKD;
+        public int meterGainOnHit;
+        public int meterGainOnBlock;
+        public int meterGainOnWhiff;
+        public int priority;
+        public float hitstopOverride;
+        public bool armorBreak;
+        public bool wallBounce;
+        public bool groundBounce;
         [NonSerialized] public HashSet<SimpleFighter> hitVictims = new HashSet<SimpleFighter>();
     }
 
     [Serializable]
     public class Attack
     {
-        public string name = "5L";
-        public Button button = Button.Light;
-        public bool allowGround = true;
-        public bool allowAir = false;
-        public float startup = 0.10f;
-        public float recovery = 0.25f;
-        public float moveDuring = 0f;                    // forward drift while attacking (facing dir)
-        public float gravityScaleDuring = -1f;           // -1 = unchanged
-        public CancelRule cancelRule = CancelRule.OnHitOrBlock;
-        public float cancelFromTime = 0.10f;
-        public float cancelToTime = 0.20f;
-        public List<HitboxWindow> windows = new List<HitboxWindow>()
-        {
-            new HitboxWindow()
-        };
-        public AnimationClip anim;                       // optional
-        public string animatorTrigger = "";              // or trigger name
-        public AudioClip sfx;                             // optional
-        public bool autoTurnOnStart = true;
-        public bool karaCancelIntoMove = false;
-        public string[] cancelIntoNames = new string[0];
-        public int meterCost = 0;
-        public bool negativeEdge = false;                // release to fire
+        public string name;
+        public Button button;
+        public bool allowGround;
+        public bool allowAir;
+        public float startup;
+        public float recovery;
+        public float moveDuring;
+        public float gravityScaleDuring;
+        public CancelRule cancelRule;
+        public float cancelFromTime;
+        public float cancelToTime;
+        public List<HitboxWindow> windows;
+        public AnimationClip anim;
+        public string animatorTrigger;
+        public AudioClip sfx;
+        public bool autoTurnOnStart;
+        public bool karaCancelIntoMove;
+        public string[] cancelIntoNames;
+        public int meterCost;
+        public bool negativeEdge;
     }
 
-    [Header("Move List")]
-    public List<Attack> attacks = new List<Attack>();
-    public List<string> chainRoutes = new List<string>() { "5L>5M>5H>Special" };
-
-    [Header("Throws/Parry")]
-    public float throwRange = 1.3f;
-    public float throwStartup = 0.08f;
-    public float throwKD = 0.8f;
-    public int throwDamage = 140;
-    public float parryWindow = 0.06f;
-    public float parryFreezeBonus = 0.07f;
-
-    // ???????????????????????????????????????????????????????????????????????????????
-    // UI / HUD
-    // ???????????????????????????????????????????????????????????????????????????????
     [Serializable]
     public class HUDConfig
     {
-        public bool autoCreateHUD = true;
-        public bool createCanvasIfNone = true;
+        public bool autoCreateHUD;
+        public bool createCanvasIfNone;
         public Canvas existingCanvas;
-        public Vector2 panelSize = new Vector2(420, 36);
-        public Vector2 barSize = new Vector2(360, 16);
-        public Vector2 meterSize = new Vector2(360, 8);
-        public Vector2 padding = new Vector2(16, 12);
-        public Color healthColor = new Color(0.9f, 0.1f, 0.1f);
-        public Color chipColor = new Color(1f, 0.6f, 0.2f);
-        public Color meterColor = new Color(0.2f, 0.6f, 1f);
-        public bool anchorByTeam = true;                 // left for lower playerIndex on team 0, right for team 1
-        public bool mirrorRight = true;
+        public Vector2 panelSize;
+        public Vector2 barSize;
+        public Vector2 meterSize;
+        public Vector2 padding;
+        public Color healthColor;
+        public Color chipColor;
+        public Color meterColor;
+        public bool anchorByTeam;
+        public bool mirrorRight;
         public Font font;
     }
-    [Header("HUD")]
-    public HUDConfig hud = new HUDConfig();
 
-    // runtime HUD refs
-    [NonSerialized] public Canvas hudCanvas;
-    [NonSerialized] public RectTransform hudPanel;
-    [NonSerialized] public Image hpFill;
-    [NonSerialized] public Image hpChip;
-    [NonSerialized] public Image meterFill;
-    [NonSerialized] public Text nameText;
-    [NonSerialized] public float chipShown;              // lerp for chip delay
-
-    // ???????????????????????????????????????????????????????????????????????????????
-    // Animator Parameters
-    // ???????????????????????????????????????????????????????????????????????????????
-    [Header("Animator Params")]
-    public string p_isGrounded = "isGrounded";
-    public string p_isWalking = "isWalking";
-    public string p_isCrouching = "isCrouching";
-    public string p_isAttacking = "isAttacking";
-    public string p_isKO = "isKO";
-    public string p_speedX = "speedX";
-    public string p_speedY = "speedY";
-    public string p_triggerAttack = "";                 // optional dynamic trigger set from Attack.animatorTrigger
-
-    // ???????????????????????????????????????????????????????????????????????????????
-    // Debug / Dev
-    // ???????????????????????????????????????????????????????????????????????????????
-    [Header("Debug")]
-    public bool drawHurtbox = true;
-    public bool drawPushbox = true;
-    public bool drawHitboxes = true;
-    public bool drawGroundProbe = true;
-    public Color gizHurt = new Color(0.2f, 1f, 0.2f, 0.25f);
-    public Color gizPush = new Color(1f, 1f, 0.2f, 0.25f);
-    public Color gizHit = new Color(1f, 0.2f, 0.2f, 0.25f);
-    public Color gizProbe = Color.cyan;
-
-    // ???????????????????????????????????????????????????????????????????????????????
-    // Internal State (public for full inspector control)
-    // ???????????????????????????????????????????????????????????????????????????????
-    [Header("Runtime State")]
-    public State state = State.Idle;
-    public bool grounded;
-    public bool crouching;
-    public int jumpsUsed;
-    public float coyoteTimer;
-    public float jumpBufferTimer;
-    public float hitstunTimer;
-    public float blockstunTimer;
-    public float knockdownTimer;
-    public float freezeTimer;
-    public float invulnTimer;
-    public float techTimer;
-    public bool canAct = true;
-    public float lastGroundedY;
-    public float aiThinkTimer;
-    public float lastRetarget;
-    public float attackTimer;          // time since current attack start
-    public Attack currentAttack;
-    public float lastHitTime;          // for juggle reset
-    public bool holdingBack;           // updated per-frame
-    public bool holdingBlock;
-    public bool holdingParry;
-    public bool inputLight, inputMedium, inputHeavy, inputSpecial, inputThrow;
-    public bool inputJump, inputDash, inputDown, inputUp;
-    public float moveInput;            // -1..1
-    public Vector2 desiredVelocity;
-    public Vector2 externalVelocity;   // for knockback etc.
-    public Vector2 lastVelocity;
-    public bool landingThisFrame;
-    public bool queuedReversal;        // example flag for wakeup
-    public HashSet<SimpleFighter> throwImmune = new HashSet<SimpleFighter>(); // throw tech
-    public Texture2D whiteTex;         // for UI sprite
-    public Sprite whiteSprite;
-
-    // Registry of fighters in scene
-    static readonly List<SimpleFighter> registry = new List<SimpleFighter>();
-
-    // ???????????????????????????????????????????????????????????????????????????????
-    // Unity lifecycle
-    // ???????????????????????????????????????????????????????????????????????????????
-    void Reset()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        bodyCollider = GetComponent<Collider2D>();
-        if (!rb) rb = gameObject.AddComponent<Rigidbody2D>();
-        rb.gravityScale = gravityScale;
-        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-        if (!bodyCollider) bodyCollider = gameObject.AddComponent<CapsuleCollider2D>();
-        // Default move list if empty
-        if (attacks.Count == 0)
-        {
-            var light = new Attack { name = "5L", button = Button.Light, startup = 0.08f, recovery = 0.18f };
-            light.windows[0].damage = 60; light.windows[0].hitstun = 0.23f; light.windows[0].blockstun = 0.16f;
-            var medium = new Attack { name = "5M", button = Button.Medium, startup = 0.12f, recovery = 0.25f };
-            medium.windows[0].damage = 100; medium.windows[0].hitstun = 0.33f; medium.windows[0].blockstun = 0.22f;
-            var heavy = new Attack { name = "5H", button = Button.Heavy, startup = 0.16f, recovery = 0.33f };
-            heavy.windows[0].damage = 140; heavy.windows[0].hitstun = 0.42f; heavy.windows[0].blockstun = 0.26f;
-            attacks.Add(light); attacks.Add(medium); attacks.Add(heavy);
-        }
-    }
-
+    // ─────────────────────────────────────────────────────────────────────────────
+    // Lifecycle
+    // ─────────────────────────────────────────────────────────────────────────────
     void Awake()
     {
-        if (!rb) rb = GetComponent<Rigidbody2D>();
-        if (!bodyCollider) bodyCollider = GetComponent<Collider2D>();
-        if (visualRoot == null) visualRoot = transform;
+        if (!ValidateRequiredFields()) { enabled = false; return; }
+
+        // Internal setup
         rb.gravityScale = gravityScale;
-        whiteTex = new Texture2D(1, 1, TextureFormat.RGBA32, false); whiteTex.SetPixel(0, 0, Color.white); whiteTex.Apply();
+
+        whiteTex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+        whiteTex.SetPixel(0, 0, Color.white);
+        whiteTex.Apply();
         whiteSprite = Sprite.Create(whiteTex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
 
-        hp = Mathf.Clamp(hp <= 0 ? maxHP : hp, 0, maxHP);
-        meter = Mathf.Clamp(meter, 0, maxMeter);
+        hp = maxHP;
+        hp = Mathf.Clamp(hp, 0, maxHP);
+        meter = Mathf.Clamp(0, 0, maxMeter);
 
         if (!registry.Contains(this)) registry.Add(this);
         SetupHUD();
@@ -349,43 +311,29 @@ public class SimpleFighter : MonoBehaviour
 
     void Update()
     {
-        // Local freeze (hitstop). Does not change Unity Time.timeScale.
         if (freezeTimer > 0f)
         {
             freezeTimer -= Time.unscaledDeltaTime;
             AnimatorUpdate(0f);
-            UpdateHUD(); // UI still updates
+            UpdateHUD();
             return;
         }
 
-        // Inputs
         ReadInputs();
 
-        // Ground probe
         bool wasGrounded = grounded;
         grounded = ProbeGround();
         landingThisFrame = (!wasGrounded && grounded);
-
         if (landingThisFrame) { jumpsUsed = 0; juggleUsed = 0; }
 
-        // Facing
         var tgt = AcquireTarget();
-        if (autoFace && tgt)
-        {
-            faceRight = (tgt.transform.position.x >= transform.position.x);
-        }
+        if (autoFace && tgt) faceRight = (tgt.transform.position.x >= transform.position.x);
         ApplyVisualFlip();
 
-        // State update
         TickState();
-
-        // Animator
         AnimatorUpdate(Time.deltaTime);
-
-        // HUD
         UpdateHUD();
 
-        // Stage clamp
         if (clampToStage)
         {
             var p = transform.position;
@@ -399,10 +347,8 @@ public class SimpleFighter : MonoBehaviour
     {
         if (freezeTimer > 0f) return;
 
-        // Gravity
         rb.gravityScale = grounded ? gravityScale : (rb.linearVelocity.y < -0.01f ? fallGravityScale : gravityScale);
 
-        // Movement and friction
         Vector2 v = rb.linearVelocity;
 
         if (state == State.Attack)
@@ -415,7 +361,6 @@ public class SimpleFighter : MonoBehaviour
         {
             float target = moveInput * (moveInput * FacingDir() >= 0f ? walkSpeed : backWalkSpeed);
             v.x = Mathf.MoveTowards(v.x, target, accelGround * Time.fixedDeltaTime);
-            // friction when no input
             if (Mathf.Abs(moveInput) < 0.01f) v.x = Mathf.MoveTowards(v.x, 0f, friction * Time.fixedDeltaTime);
         }
         else
@@ -424,26 +369,149 @@ public class SimpleFighter : MonoBehaviour
             v.x = Mathf.MoveTowards(v.x, target, accelAir * Time.fixedDeltaTime);
         }
 
-        // External velocity (knockback etc.)
         if (externalVelocity != Vector2.zero)
         {
             v += externalVelocity;
             externalVelocity = Vector2.zero;
         }
 
-        // Fast fall
         if (!grounded && inputDown && rb.linearVelocity.y < 0f) v.y = Mathf.Max(v.y, -fastFallSpeed);
 
         rb.linearVelocity = v;
         lastVelocity = v;
 
-        // Pushbox separation vs other fighters
         ResolvePushboxes();
     }
 
-    // ???????????????????????????????????????????????????????????????????????????????
-    // Input handling
-    // ???????????????????????????????????????????????????????????????????????????????
+    // ─────────────────────────────────────────────────────────────────────────────
+    // Validation
+    // ─────────────────────────────────────────────────────────────────────────────
+    bool ValidateRequiredFields()
+    {
+        bool ok = true;
+
+        void Fail(string msg)
+        {
+            Debug.LogError($"[SimpleFighter] '{gameObject.name}': {msg}", this);
+            ok = false;
+        }
+
+        // Identity
+        if (string.IsNullOrWhiteSpace(fighterName)) Fail("Fighter name is REQUIRED.");
+        if (visualRoot == null) Fail("Transform 'visualRoot' is REQUIRED.");
+        if (team < 0) Fail("Team must be >= 0.");
+        if (playerIndex < 0) Fail("Player index must be >= 0.");
+
+        // Components
+        if (rb == null) Fail("Rigidbody2D 'rb' is REQUIRED.");
+        if (bodyCollider == null) Fail("Collider2D 'bodyCollider' is REQUIRED.");
+        if (animator == null) Fail("Animator is REQUIRED.");
+
+        // Movement
+        if (walkSpeed <= 0f) Fail("Walk speed must be > 0.");
+        if (jumpForce <= 0f) Fail("Jump force must be > 0.");
+        if (groundMask == 0) Fail("Ground mask is REQUIRED.");
+
+        // Vitals
+        if (maxHP <= 0f) Fail("Max HP must be > 0.");
+        if (maxMeter <= 0) Fail("Max Meter must be > 0.");
+
+        // Animator param names
+        if (string.IsNullOrWhiteSpace(p_isGrounded)) Fail("Animator param 'p_isGrounded' is REQUIRED.");
+        if (string.IsNullOrWhiteSpace(p_isWalking)) Fail("Animator param 'p_isWalking' is REQUIRED.");
+        if (string.IsNullOrWhiteSpace(p_isCrouching)) Fail("Animator param 'p_isCrouching' is REQUIRED.");
+        if (string.IsNullOrWhiteSpace(p_isAttacking)) Fail("Animator param 'p_isAttacking' is REQUIRED.");
+        if (string.IsNullOrWhiteSpace(p_isKO)) Fail("Animator param 'p_isKO' is REQUIRED.");
+        if (string.IsNullOrWhiteSpace(p_speedX)) Fail("Animator param 'p_speedX' is REQUIRED.");
+        if (string.IsNullOrWhiteSpace(p_speedY)) Fail("Animator param 'p_speedY' is REQUIRED.");
+        // p_triggerAttack may be empty by design
+
+        // Controls
+        if (controls == null) Fail("Controls block is REQUIRED.");
+        else
+        {
+            if (controls.useAxes)
+            {
+                if (string.IsNullOrWhiteSpace(controls.axisHorizontal)) Fail("Axis 'Horizontal' name is REQUIRED.");
+                if (string.IsNullOrWhiteSpace(controls.axisVertical)) Fail("Axis 'Vertical' name is REQUIRED.");
+                if (string.IsNullOrWhiteSpace(controls.buttonLight)) Fail("Button 'Light' is REQUIRED.");
+                if (string.IsNullOrWhiteSpace(controls.buttonMedium)) Fail("Button 'Medium' is REQUIRED.");
+                if (string.IsNullOrWhiteSpace(controls.buttonHeavy)) Fail("Button 'Heavy' is REQUIRED.");
+                if (string.IsNullOrWhiteSpace(controls.buttonSpecial)) Fail("Button 'Special' is REQUIRED.");
+                if (string.IsNullOrWhiteSpace(controls.buttonThrow)) Fail("Button 'Throw' is REQUIRED.");
+                if (string.IsNullOrWhiteSpace(controls.buttonBlock)) Fail("Button 'Block' is REQUIRED.");
+                if (string.IsNullOrWhiteSpace(controls.buttonParry)) Fail("Button 'Parry' is REQUIRED.");
+                if (controls.axisDeadzone <= 0f) Fail("Axis deadzone must be > 0.");
+            }
+            else
+            {
+                if (controls.left == KeyCode.None) Fail("Key 'left' is REQUIRED.");
+                if (controls.right == KeyCode.None) Fail("Key 'right' is REQUIRED.");
+                if (controls.up == KeyCode.None) Fail("Key 'up' is REQUIRED.");
+                if (controls.down == KeyCode.None) Fail("Key 'down' is REQUIRED.");
+                if (controls.jump == KeyCode.None) Fail("Key 'jump' is REQUIRED.");
+                if (controls.dash == KeyCode.None) Fail("Key 'dash' is REQUIRED.");
+                if (controls.light == KeyCode.None) Fail("Key 'light' is REQUIRED.");
+                if (controls.medium == KeyCode.None) Fail("Key 'medium' is REQUIRED.");
+                if (controls.heavy == KeyCode.None) Fail("Key 'heavy' is REQUIRED.");
+                if (controls.special == KeyCode.None) Fail("Key 'special' is REQUIRED.");
+                if (controls.throwKey == KeyCode.None) Fail("Key 'throw' is REQUIRED.");
+                if (controls.block == KeyCode.None) Fail("Key 'block' is REQUIRED.");
+                if (controls.parry == KeyCode.None) Fail("Key 'parry' is REQUIRED.");
+            }
+        }
+
+        // Attacks
+        if (attacks == null || attacks.Count == 0) Fail("At least one Attack is REQUIRED.");
+        else
+        {
+            for (int i = 0; i < attacks.Count; i++)
+            {
+                var a = attacks[i];
+                if (a == null) { Fail($"Attack[{i}] is null."); continue; }
+                if (string.IsNullOrWhiteSpace(a.name)) Fail($"Attack[{i}] name is REQUIRED.");
+                if (!a.allowGround && !a.allowAir) Fail($"Attack[{i}] must allow ground or air.");
+                if (a.startup < 0f) Fail($"Attack[{i}] startup must be >= 0.");
+                if (a.recovery < 0f) Fail($"Attack[{i}] recovery must be >= 0.");
+                if (a.windows == null || a.windows.Count == 0) Fail($"Attack[{i}] needs at least one HitboxWindow.");
+                else
+                {
+                    for (int j = 0; j < a.windows.Count; j++)
+                    {
+                        var w = a.windows[j];
+                        if (w == null) { Fail($"Attack[{i}].Window[{j}] is null."); continue; }
+                        if (w.end <= w.start) Fail($"Attack[{i}].Window[{j}] end must be > start.");
+                        if (w.shape == Shape.Box && (w.size.x <= 0f || w.size.y <= 0f)) Fail($"Attack[{i}].Window[{j}] box size must be > 0.");
+                        if (w.shape == Shape.Circle && w.radius <= 0f) Fail($"Attack[{i}].Window[{j}] radius must be > 0.");
+                        if (w.damage <= 0) Fail($"Attack[{i}].Window[{j}] damage must be > 0.");
+                        if (w.hitstun < 0f || w.blockstun < 0f) Fail($"Attack[{i}].Window[{j}] stuns must be >= 0.");
+                    }
+                }
+            }
+        }
+
+        // HUD
+        if (hud == null) Fail("HUD config is REQUIRED.");
+        else if (hud.autoCreateHUD)
+        {
+            if (hud.panelSize.x <= 0f || hud.panelSize.y <= 0f) Fail("HUD panelSize must be set.");
+            if (hud.barSize.x <= 0f || hud.barSize.y <= 0f) Fail("HUD barSize must be set.");
+            if (hud.meterSize.x <= 0f || hud.meterSize.y <= 0f) Fail("HUD meterSize must be set.");
+            // Require either existing canvas or permission to create
+            if (hud.existingCanvas == null && !hud.createCanvasIfNone) Fail("Provide HUD canvas or enable createCanvasIfNone.");
+            if (hud.font == null) Fail("HUD font is REQUIRED.");
+        }
+
+        if (!ok)
+        {
+            Debug.LogError($"[SimpleFighter] '{gameObject.name}': VALIDATION FAILED - Component will be DISABLED.", this);
+        }
+        return ok;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // Input
+    // ─────────────────────────────────────────────────────────────────────────────
     void ReadInputs()
     {
         float hz = 0f; float vt = 0f;
@@ -480,27 +548,21 @@ public class SimpleFighter : MonoBehaviour
         inputDash = Input.GetKeyDown(controls.dash);
         inputJump = inputUp;
 
-        // Move input is from player perspective; walking back is negative relative to facing
         moveInput = Mathf.Clamp(hz, -1f, 1f);
-
-        // "Back" = opposite of facing; used for blocking
         float backSign = -FacingDir();
         holdingBack = moveInput * backSign > 0.3f;
 
-        // Jump buffers & coyote
         if (grounded) coyoteTimer = coyoteTime; else coyoteTimer -= Time.deltaTime;
         if (inputJump) jumpBufferTimer = jumpBuffer; else jumpBufferTimer -= Time.deltaTime;
 
-        // AI override
         if (isAI) AITick();
     }
 
-    // ???????????????????????????????????????????????????????????????????????????????
-    // State machine
-    // ???????????????????????????????????????????????????????????????????????????????
+    // ─────────────────────────────────────────────────────────────────────────────
+    // State
+    // ─────────────────────────────────────────────────────────────────────────────
     void TickState()
     {
-        // Common timers
         if (hitstunTimer > 0f) hitstunTimer -= Time.deltaTime;
         if (blockstunTimer > 0f) blockstunTimer -= Time.deltaTime;
         if (knockdownTimer > 0f) knockdownTimer -= Time.deltaTime;
@@ -508,56 +570,39 @@ public class SimpleFighter : MonoBehaviour
         if (techTimer > 0f) techTimer -= Time.deltaTime;
         if (Time.time - lastHitTime > juggleResetTime) juggleUsed = 0;
 
-        // Remove stuns -> idle
         if (state == State.Hitstun && hitstunTimer <= 0f) state = grounded ? State.Idle : State.Fall;
         if (state == State.Blockstun && blockstunTimer <= 0f) state = grounded ? State.Idle : State.Fall;
         if (state == State.Knockdown && knockdownTimer <= 0f) state = State.Idle;
 
-        // Attacking
         if (state == State.Attack)
         {
             attackTimer += Time.deltaTime;
-            // Active hit windows
             if (currentAttack != null)
             {
                 foreach (var w in currentAttack.windows)
-                {
                     if (attackTimer >= w.start && attackTimer <= w.end)
                         DoHitDetect(w);
-                }
-                // End attack on recovery complete
+
                 float total = currentAttack.startup;
                 foreach (var w in currentAttack.windows) total = Mathf.Max(total, w.end);
                 total += currentAttack.recovery;
                 if (attackTimer >= total) EndAttack();
-                // Cancel window
-                if (CanCancelFromCurrent())
-                {
-                    TryStartAttackByInput(); // chain/cancel if input pressed
-                }
+
+                if (CanCancelFromCurrent()) TryStartAttackByInput();
             }
         }
 
-        // Throw
         if (CanAct() && inputThrow) TryThrow();
-
-        // Parry
         if (CanAct() && holdingParry) TryParry();
-
-        // Start attacks from inputs
         if (CanAct()) TryStartAttackByInput();
 
-        // Movement transitions
         if (CanAct())
         {
             crouching = inputDown && grounded && Mathf.Abs(moveInput) < 0.2f;
             if (grounded)
             {
                 if (Mathf.Abs(moveInput) > 0.05f) state = State.Walk; else if (!crouching) state = State.Idle;
-                if (jumpBufferTimer > 0f && coyoteTimer > 0f && jumpsUsed < maxJumps)
-                {
-                    DoJump();
-                }
+                if (jumpBufferTimer > 0f && coyoteTimer > 0f && jumpsUsed < maxJumps) DoJump();
                 if (inputDash && Mathf.Sign(moveInput) == FacingDir()) DoDash(false);
                 else if (inputDash && Mathf.Sign(moveInput) == -FacingDir()) DoDash(true);
             }
@@ -600,17 +645,16 @@ public class SimpleFighter : MonoBehaviour
         rb.linearVelocity = new Vector2(dashSpeed * dir, rb.linearVelocity.y);
     }
 
-    // ???????????????????????????????????????????????????????????????????????????????
+    // ─────────────────────────────────────────────────────────────────────────────
     // Attacks
-    // ???????????????????????????????????????????????????????????????????????????????
+    // ─────────────────────────────────────────────────────────────────────────────
     bool TryStartAttackByInput()
     {
-        // Highest strength takes priority if multiple pressed
         Attack cand = null;
         if (inputSpecial) cand = FindAttack(Button.Special, airborne: !grounded) ?? cand;
-        if (inputHeavy) cand = FindAttack(Button.Heavy, airborne: !grounded) ?? cand;
-        if (inputMedium) cand = FindAttack(Button.Medium, airborne: !grounded) ?? cand;
-        if (inputLight) cand = FindAttack(Button.Light, airborne: !grounded) ?? cand;
+        if (inputHeavy)   cand = FindAttack(Button.Heavy, airborne: !grounded) ?? cand;
+        if (inputMedium)  cand = FindAttack(Button.Medium, airborne: !grounded) ?? cand;
+        if (inputLight)   cand = FindAttack(Button.Light, airborne: !grounded) ?? cand;
 
         if (cand != null && CanSpendMeter(cand.meterCost))
         {
@@ -638,10 +682,7 @@ public class SimpleFighter : MonoBehaviour
         if (currentAttack == null) return false;
         if (currentAttack.cancelRule == CancelRule.None) return false;
         if (attackTimer < currentAttack.cancelFromTime || attackTimer > currentAttack.cancelToTime) return false;
-        if (currentAttack.cancelRule == CancelRule.Always) return true;
-        if (currentAttack.cancelRule == CancelRule.OnHitOrBlock) return true; // simplified: we allow in window
-        if (currentAttack.cancelRule == CancelRule.OnHit) return true;        // simplified
-        return false;
+        return true; // simplified behavior
     }
 
     void StartAttack(Attack a)
@@ -653,10 +694,8 @@ public class SimpleFighter : MonoBehaviour
         SpendMeter(a.meterCost);
         foreach (var w in a.windows) w.hitVictims.Clear();
 
-        // Gravity override
         if (a.gravityScaleDuring >= 0f) rb.gravityScale = a.gravityScaleDuring;
 
-        // Animator drive
         if (animator)
         {
             if (a.anim != null) animator.Play(a.anim.name, 0, 0f);
@@ -687,7 +726,6 @@ public class SimpleFighter : MonoBehaviour
             hits += ProcessHits(cols, w);
         }
 
-        // Meter on whiff during active
         if (hits == 0 && w.meterGainOnWhiff != 0) GainMeter(w.meterGainOnWhiff);
     }
 
@@ -699,21 +737,18 @@ public class SimpleFighter : MonoBehaviour
             var f = cols[i].GetComponentInParent<SimpleFighter>();
             if (!f || f == this) continue;
             if (f.team == team) continue;
-            if (w.hitVictims.Contains(f)) continue; // already hit by this window
+            if (w.hitVictims.Contains(f)) continue;
 
-            // Range gate using pushboxes to reduce false positives
             if (!OverlapsPushboxes(this, f)) continue;
 
-            // Determine block possibility
-            bool front = (transform.position.x - f.transform.position.x) * FacingDir() < 0f; // attacked from front
+            bool front = (transform.position.x - f.transform.position.x) * FacingDir() < 0f;
             bool canBlock = (w.guard == Guard.Mid && f.holdingBack && front) ||
                             (w.guard == Guard.High && f.holdingBack && !f.crouching && front) ||
                             (w.guard == Guard.Low && f.holdingBack && f.crouching && front);
 
             bool parried = false;
-            if (f.techTimer > 0f && w.guard == Guard.Throw) canBlock = true; // throw tech window
+            if (f.techTimer > 0f && w.guard == Guard.Throw) canBlock = true;
 
-            // Parry check
             if (f.state != State.Hitstun && f.state != State.Blockstun && f.holdingParry && front && w.guard != Guard.Throw)
             {
                 parried = true;
@@ -723,14 +758,11 @@ public class SimpleFighter : MonoBehaviour
                 f.state = State.Blockstun;
             }
 
-            // Apply result
             if (w.guard == Guard.Throw)
             {
-                // Throw connects only if target is not airborne and not invuln
                 if (f.grounded && f.invulnTimer <= 0f && !f.IsThrowImmuneTo(this))
                 {
                     w.hitVictims.Add(f);
-                    // Throw knockdown
                     f.TakeDamage(throwDamage, Guard.Throw, this, w, true);
                     count++;
                 }
@@ -745,7 +777,6 @@ public class SimpleFighter : MonoBehaviour
                 continue;
             }
 
-            // Hit
             if (f.invulnTimer > 0f) continue;
             w.hitVictims.Add(f);
             f.OnHit(this, w);
@@ -754,9 +785,9 @@ public class SimpleFighter : MonoBehaviour
         return count;
     }
 
-    // ???????????????????????????????????????????????????????????????????????????????
+    // ─────────────────────────────────────────────────────────────────────────────
     // Damage / Block / Parry / Throw
-    // ???????????????????????????????????????????????????????????????????????????????
+    // ─────────────────────────────────────────────────────────────────────────────
     public void OnHit(SimpleFighter attacker, HitboxWindow w)
     {
         float hs = w.hitstopOverride > 0 ? w.hitstopOverride : hitstopOnHit;
@@ -765,7 +796,6 @@ public class SimpleFighter : MonoBehaviour
 
         TakeDamage(w.damage, w.guard, attacker, w, false);
 
-        // Knockback and juggle
         Vector2 kb = new Vector2(w.knockback.x * attacker.FacingDir(), w.knockback.y);
         externalVelocity += kb;
         lastHitTime = Time.time;
@@ -782,7 +812,6 @@ public class SimpleFighter : MonoBehaviour
             state = State.Hitstun;
         }
 
-        // Attacker meter gain
         attacker.GainMeter(w.meterGainOnHit);
     }
 
@@ -792,7 +821,6 @@ public class SimpleFighter : MonoBehaviour
         this.freezeTimer = Mathf.Max(this.freezeTimer, hs);
         attacker.freezeTimer = Mathf.Max(attacker.freezeTimer, hs);
 
-        // Chip and blockstun
         if (enableChip && w.guard != Guard.Unblockable && w.guard != Guard.Throw)
         {
             float chip = Mathf.Max(gutsMinDamage, w.damage * chipRate);
@@ -803,18 +831,15 @@ public class SimpleFighter : MonoBehaviour
         blockstunTimer = Mathf.Max(blockstunTimer, w.blockstun);
         state = grounded ? State.Blockstun : State.Fall;
 
-        // Pushback on block for both
         float s = Mathf.Sign(transform.position.x - attacker.transform.position.x);
         externalVelocity += new Vector2(3.5f * s, 0.5f);
         attacker.externalVelocity -= new Vector2(1.2f * s, 0.1f);
 
-        // Meter gain
         GainMeter(w.meterGainOnBlock);
     }
 
     public void TakeDamage(float dmg, Guard type, SimpleFighter attacker, HitboxWindow w, bool hardKD)
     {
-        // Simple scaling for juggle
         float scale = 1f - 0.12f * juggleUsed;
         scale = Mathf.Clamp(scale, 0.25f, 1f);
         float finalDamage = Mathf.Max(gutsMinDamage, dmg * scale);
@@ -841,11 +866,10 @@ public class SimpleFighter : MonoBehaviour
         if (!t) return;
         if (Vector2.Distance(transform.position, t.transform.position) > throwRange) return;
         if (!t.grounded) return;
-        // Startup freeze gives tech window
+
         freezeTimer = Mathf.Max(freezeTimer, throwStartup);
         t.freezeTimer = Mathf.Max(t.freezeTimer, throwStartup);
         t.techTimer = Mathf.Max(t.techTimer, techWindow);
-        // Resolve after small delay
         Invoke(nameof(ResolveThrow), throwStartup * 0.95f);
     }
 
@@ -853,11 +877,11 @@ public class SimpleFighter : MonoBehaviour
     {
         var t = AcquireTarget();
         if (!t) return;
-        if (t.techTimer > 0f) { /* teched */ t.techTimer = 0f; return; }
+        if (t.techTimer > 0f) { t.techTimer = 0f; return; }
         if (Vector2.Distance(transform.position, t.transform.position) > throwRange) return;
-        // Connect
+
         var w = new HitboxWindow { guard = Guard.Throw };
-        OnHit(t, w); // symmetrical call
+        OnHit(t, w);
         t.TakeDamage(throwDamage, Guard.Throw, this, w, true);
         t.throwImmune.Add(this);
         Invoke(nameof(ClearThrowImmune), 0.5f);
@@ -872,14 +896,13 @@ public class SimpleFighter : MonoBehaviour
 
     public void TryParry()
     {
-        // Parry sets a brief invuln and extended block window handled on block path
         invulnTimer = Mathf.Max(invulnTimer, parryWindow);
         freezeTimer = Mathf.Max(freezeTimer, 0.015f);
     }
 
-    // ???????????????????????????????????????????????????????????????????????????????
+    // ─────────────────────────────────────────────────────────────────────────────
     // AI
-    // ???????????????????????????????????????????????????????????????????????????????
+    // ─────────────────────────────────────────────────────────────────────────────
     void AITick()
     {
         aiThinkTimer -= Time.deltaTime;
@@ -892,13 +915,10 @@ public class SimpleFighter : MonoBehaviour
         float dist = Mathf.Abs(dx);
         faceRight = dx >= 0f;
 
-        // Simple footsies
         moveInput = dist > 2.8f ? FacingDir() : (dist < 1.4f ? -FacingDir() : 0f);
 
-        // Jump over fireballs (not implemented), random jump-in
         if (grounded && UnityEngine.Random.value < 0.04f) inputJump = true;
 
-        // Attack if in range
         if (dist < 1.8f)
         {
             float r = UnityEngine.Random.value;
@@ -915,31 +935,34 @@ public class SimpleFighter : MonoBehaviour
         }
     }
 
-    // ???????????????????????????????????????????????????????????????????????????????
+    // ─────────────────────────────────────────────────────────────────────────────
     // HUD
-    // ???????????????????????????????????????????????????????????????????????????????
+    // ─────────────────────────────────────────────────────────────────────────────
     void SetupHUD()
     {
-        if (!hud.autoCreateHUD) return;
+        if (hud == null || !hud.autoCreateHUD) return;
 
-        if (!hud.font) hud.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-
-        if (!hud.existingCanvas)
+        if (hud.existingCanvas == null && hud.createCanvasIfNone)
         {
-            hudCanvas = FindFirstObjectByType<Canvas>();
-            if (!hudCanvas && hud.createCanvasIfNone)
-            {
-                var go = new GameObject("FighterCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-                hudCanvas = go.GetComponent<Canvas>();
-                hudCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-                var scaler = go.GetComponent<CanvasScaler>();
-                scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                scaler.referenceResolution = new Vector2(1920, 1080);
-            }
+            var go = new GameObject("FighterCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+            hudCanvas = go.GetComponent<Canvas>();
+            hudCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            var scaler = go.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920, 1080);
         }
-        if (!hudCanvas) hudCanvas = hud.existingCanvas;
+        else
+        {
+            hudCanvas = hud.existingCanvas;
+        }
 
-        // Panel
+        if (!hudCanvas)
+        {
+            Debug.LogError("[SimpleFighter] HUD canvas missing and creation disabled.", this);
+            enabled = false;
+            return;
+        }
+
         var panelGO = new GameObject($"{fighterName}_HUD", typeof(RectTransform));
         panelGO.transform.SetParent(hudCanvas.transform, false);
         hudPanel = panelGO.GetComponent<RectTransform>();
@@ -947,11 +970,9 @@ public class SimpleFighter : MonoBehaviour
 
         bool anchorRight = hud.anchorByTeam ? (team % 2 == 1) : (playerIndex % 2 == 1);
         var aMin = new Vector2(anchorRight ? 1f : 0f, 1f);
-        var aMax = aMin;
-        hudPanel.anchorMin = aMin; hudPanel.anchorMax = aMax; hudPanel.pivot = new Vector2(anchorRight ? 1f : 0f, 1f);
+        hudPanel.anchorMin = aMin; hudPanel.anchorMax = aMin; hudPanel.pivot = new Vector2(anchorRight ? 1f : 0f, 1f);
         hudPanel.anchoredPosition = new Vector2(anchorRight ? -hud.padding.x : hud.padding.x, -hud.padding.y - (playerIndex * (hud.panelSize.y + 8f)));
 
-        // Name
         var nameGO = new GameObject("Name", typeof(Text));
         nameGO.transform.SetParent(hudPanel, false);
         nameText = nameGO.GetComponent<Text>();
@@ -959,43 +980,33 @@ public class SimpleFighter : MonoBehaviour
         nameText.font = hud.font;
         nameText.alignment = anchorRight ? TextAnchor.UpperRight : TextAnchor.UpperLeft;
         var nameRT = nameGO.GetComponent<RectTransform>();
-        nameRT.anchorMin = new Vector2(anchorRight ? 1f : 0f, 1f);
-        nameRT.anchorMax = nameRT.anchorMin;
-        nameRT.pivot = new Vector2(anchorRight ? 1f : 0f, 1f);
+        nameRT.anchorMin = aMin; nameRT.anchorMax = aMin; nameRT.pivot = new Vector2(anchorRight ? 1f : 0f, 1f);
         nameRT.sizeDelta = new Vector2(hud.panelSize.x, 14f);
         nameRT.anchoredPosition = Vector2.zero;
 
-        // HP bar back
         var backGO = new GameObject("HP_Back", typeof(Image));
         backGO.transform.SetParent(hudPanel, false);
         var backImg = backGO.GetComponent<Image>(); backImg.sprite = whiteSprite; backImg.color = new Color(0f, 0f, 0f, 0.6f);
         var backRT = backGO.GetComponent<RectTransform>();
-        backRT.anchorMin = new Vector2(anchorRight ? 1f : 0f, 1f);
-        backRT.anchorMax = backRT.anchorMin;
-        backRT.pivot = new Vector2(anchorRight ? 1f : 0f, 1f);
+        backRT.anchorMin = aMin; backRT.anchorMax = aMin; backRT.pivot = new Vector2(anchorRight ? 1f : 0f, 1f);
         backRT.sizeDelta = hud.barSize;
         backRT.anchoredPosition = new Vector2(0f, -16f);
 
-        // HP chip
         var chipGO = new GameObject("HP_Chip", typeof(Image));
         chipGO.transform.SetParent(backRT, false);
         hpChip = chipGO.GetComponent<Image>(); hpChip.sprite = whiteSprite; hpChip.color = hud.chipColor; hpChip.type = Image.Type.Filled; hpChip.fillMethod = Image.FillMethod.Horizontal; hpChip.fillOrigin = anchorRight ? 1 : 0; hpChip.fillAmount = 1f;
         var chipRT = chipGO.GetComponent<RectTransform>(); chipRT.anchorMin = Vector2.zero; chipRT.anchorMax = Vector2.one; chipRT.offsetMin = Vector2.zero; chipRT.offsetMax = Vector2.zero;
 
-        // HP fill
         var hpGO = new GameObject("HP_Fill", typeof(Image));
         hpGO.transform.SetParent(backRT, false);
         hpFill = hpGO.GetComponent<Image>(); hpFill.sprite = whiteSprite; hpFill.color = hud.healthColor; hpFill.type = Image.Type.Filled; hpFill.fillMethod = Image.FillMethod.Horizontal; hpFill.fillOrigin = anchorRight ? 1 : 0; hpFill.fillAmount = 1f;
         var hpRT = hpGO.GetComponent<RectTransform>(); hpRT.anchorMin = Vector2.zero; hpRT.anchorMax = Vector2.one; hpRT.offsetMin = Vector2.zero; hpRT.offsetMax = Vector2.zero;
 
-        // Meter
         var meterBackGO = new GameObject("Meter_Back", typeof(Image));
         meterBackGO.transform.SetParent(hudPanel, false);
         var meterBack = meterBackGO.GetComponent<Image>(); meterBack.sprite = whiteSprite; meterBack.color = new Color(0f, 0f, 0f, 0.6f);
         var meterBackRT = meterBackGO.GetComponent<RectTransform>();
-        meterBackRT.anchorMin = new Vector2(anchorRight ? 1f : 0f, 1f);
-        meterBackRT.anchorMax = meterBackRT.anchorMin;
-        meterBackRT.pivot = new Vector2(anchorRight ? 1f : 0f, 1f);
+        meterBackRT.anchorMin = aMin; meterBackRT.anchorMax = aMin; meterBackRT.pivot = new Vector2(anchorRight ? 1f : 0f, 1f);
         meterBackRT.sizeDelta = hud.meterSize;
         meterBackRT.anchoredPosition = new Vector2(0f, -36f);
 
@@ -1016,9 +1027,9 @@ public class SimpleFighter : MonoBehaviour
         if (nameText) nameText.text = fighterName;
     }
 
-    // ???????????????????????????????????????????????????????????????????????????????
-    // Animator driving
-    // ???????????????????????????????????????????????????????????????????????????????
+    // ─────────────────────────────────────────────────────────────────────────────
+    // Animator
+    // ─────────────────────────────────────────────────────────────────────────────
     void AnimatorUpdate(float dt)
     {
         if (!animator) return;
@@ -1031,11 +1042,12 @@ public class SimpleFighter : MonoBehaviour
         animator.SetFloat(p_speedY, rb ? rb.linearVelocity.y : 0f);
     }
 
-    // ???????????????????????????????????????????????????????????????????????????????
+    // ─────────────────────────────────────────────────────────────────────────────
     // Helpers
-    // ???????????????????????????????????????????????????????????????????????????????
-    public float FacingDir() => (faceRight ? 1f : -1f) * (flipVisualWithScale ? 1f : 1f);
-    public void ApplyVisualFlip()
+    // ─────────────────────────────────────────────────────────────────────────────
+    float FacingDir() => (faceRight ? 1f : -1f);
+
+    void ApplyVisualFlip()
     {
         if (!flipVisualWithScale || !visualRoot) return;
         var s = visualRoot.localScale;
@@ -1043,7 +1055,7 @@ public class SimpleFighter : MonoBehaviour
         visualRoot.localScale = s;
     }
 
-    public bool ProbeGround()
+    bool ProbeGround()
     {
         var origin = (Vector2)transform.position + groundProbeOffset;
         var hit = Physics2D.Raycast(origin, Vector2.down, groundProbeDistance, groundMask);
@@ -1058,7 +1070,7 @@ public class SimpleFighter : MonoBehaviour
         foreach (var f in registry)
         {
             if (!f || f == this) continue;
-            if (Mathf.Abs(f.transform.position.y - transform.position.y) > 3.5f) continue; // vertical pass
+            if (Mathf.Abs(f.transform.position.y - transform.position.y) > 3.5f) continue;
             var other = new Rect(f.transform.position.x - f.pushboxWidth * 0.5f, f.transform.position.y - 0.5f, f.pushboxWidth, f.pushboxHeight);
             if (myRect.Overlaps(other))
             {
@@ -1089,9 +1101,7 @@ public class SimpleFighter : MonoBehaviour
 
     SimpleFighter AcquireTarget()
     {
-        if (manualTarget) return manualTarget;
-        if (!autoFindOpponent) return null;
-        if (Time.time - lastRetarget < retargetInterval && manualTarget == null && cachedTarget != null) return cachedTarget;
+        if (Time.time - lastRetarget < retargetInterval && cachedTarget != null) return cachedTarget;
 
         SimpleFighter best = null;
         float bestScore = float.MaxValue;
@@ -1107,15 +1117,23 @@ public class SimpleFighter : MonoBehaviour
         lastRetarget = Time.time;
         return best;
     }
-    SimpleFighter cachedTarget;
 
     public void GainMeter(int v) => meter = Mathf.Clamp(meter + v, 0, maxMeter);
     public bool CanSpendMeter(int v) => meter >= v;
     public void SpendMeter(int v) => meter = Mathf.Clamp(meter - v, 0, maxMeter);
 
-    // ???????????????????????????????????????????????????????????????????????????????
-    // Gizmos
-    // ???????????????????????????????????????????????????????????????????????????????
+    // ─────────────────────────────────────────────────────────────────────────────
+    // Gizmos (kept private; not essential to expose)
+    // ─────────────────────────────────────────────────────────────────────────────
+    bool drawHurtbox = true;
+    bool drawPushbox = true;
+    bool drawHitboxes = true;
+    bool drawGroundProbe = true;
+    Color gizHurt = new Color(0.2f, 1f, 0.2f, 0.25f);
+    Color gizPush = new Color(1f, 1f, 0.2f, 0.25f);
+    Color gizHit = new Color(1f, 0.2f, 0.2f, 0.25f);
+    Color gizProbe = Color.cyan;
+
     void OnDrawGizmosSelected()
     {
         if (drawGroundProbe)
@@ -1143,16 +1161,9 @@ public class SimpleFighter : MonoBehaviour
             {
                 if (attackTimer >= w.start && attackTimer <= w.end)
                 {
-                    if (w.shape == Shape.Box)
-                    {
-                        Vector2 center = (Vector2)transform.position + RotateFacing(w.offset);
-                        Gizmos.DrawWireCube(center, w.size);
-                    }
-                    else
-                    {
-                        Vector2 center = (Vector2)transform.position + RotateFacing(w.offset);
-                        Gizmos.DrawWireSphere(center, w.radius);
-                    }
+                    Vector2 center = (Vector2)transform.position + RotateFacing(w.offset);
+                    if (w.shape == Shape.Box) Gizmos.DrawWireCube(center, w.size);
+                    else Gizmos.DrawWireSphere(center, w.radius);
                 }
             }
         }
