@@ -15,17 +15,19 @@ namespace MiniWoW
 
         private void Start()
         {
-            if (!targeting) targeting = FindObjectOfType<TargetingSystem>();
+            if (!targeting) targeting = FindFirstObjectByType<TargetingSystem>();
             if (!canvas)
             {
                 var go = new GameObject("TargetFrameCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
                 canvas = go.GetComponent<Canvas>();
                 canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                canvas.sortingOrder = 100; // Ensure it's on top
                 var scaler = go.GetComponent<CanvasScaler>();
                 scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
                 scaler.referenceResolution = new Vector2(1920, 1080);
             }
             Build();
+            Debug.Log("[TargetFrameUI] Initialized");
         }
 
         private void Build()
@@ -54,7 +56,7 @@ namespace MiniWoW
             bgrt.anchorMin = new Vector2(0f, 0f); bgrt.anchorMax = new Vector2(1f, 0f);
             bgrt.anchoredPosition = new Vector2(0f, 10f); bgrt.sizeDelta = new Vector2(0f, 16f);
             hpBG = barBG.GetComponent<Image>();
-            hpBG.color = new Color(0f, 0f, 0f, 0.6f);
+            hpBG.color = new Color(0.2f, 0.2f, 0.2f, 0.8f); // More visible background
 
             var barFill = new GameObject("HPFill", typeof(Image));
             barFill.transform.SetParent(barBG.transform, false);
@@ -62,7 +64,7 @@ namespace MiniWoW
             frt.anchorMin = new Vector2(0f, 0f); frt.anchorMax = new Vector2(0f, 1f);
             frt.offsetMin = Vector2.zero; frt.offsetMax = new Vector2(0f, 0f);
             hpFill = barFill.GetComponent<Image>();
-            hpFill.color = Color.red;
+            hpFill.color = Color.green; // Green for health
         }
 
         private void Update()

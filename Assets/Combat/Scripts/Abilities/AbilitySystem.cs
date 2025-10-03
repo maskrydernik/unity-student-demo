@@ -26,11 +26,11 @@ namespace MiniWoW
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1)) TryCastSlot(0);
-            if (Input.GetKeyDown(KeyCode.Alpha2)) TryCastSlot(1);
-            if (Input.GetKeyDown(KeyCode.Alpha3)) TryCastSlot(2);
-            if (Input.GetKeyDown(KeyCode.Alpha4)) TryCastSlot(3);
-            if (Input.GetKeyDown(KeyCode.Alpha5)) TryCastSlot(4);
+            if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1)) { Debug.Log("[AbilitySystem] Key 1 pressed"); TryCastSlot(0); }
+            if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2)) { Debug.Log("[AbilitySystem] Key 2 pressed"); TryCastSlot(1); }
+            if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3)) { Debug.Log("[AbilitySystem] Key 3 pressed"); TryCastSlot(2); }
+            if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4)) { Debug.Log("[AbilitySystem] Key 4 pressed"); TryCastSlot(3); }
+            if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5)) { Debug.Log("[AbilitySystem] Key 5 pressed"); TryCastSlot(4); }
         }
 
         public float GetCooldownRemaining(AbilityDefinition def)
@@ -56,19 +56,20 @@ namespace MiniWoW
 
         public void TryCast(AbilityDefinition def)
         {
-            if (!def) return;
-            if (OnGlobalCooldown() && def.triggersGCD) return;
-            if (GetCooldownRemaining(def) > 0f) return;
+            if (!def) { Debug.Log("[AbilitySystem] No ability definition"); return; }
+            if (OnGlobalCooldown() && def.triggersGCD) { Debug.Log($"[AbilitySystem] {def.displayName} on GCD"); return; }
+            if (GetCooldownRemaining(def) > 0f) { Debug.Log($"[AbilitySystem] {def.displayName} on cooldown: {GetCooldownRemaining(def):F1}s"); return; }
 
             Targetable target = ResolveTarget(def);
 
-            if (def.requiresTarget && target == null) return;
+            if (def.requiresTarget && target == null) { Debug.Log($"[AbilitySystem] {def.displayName} requires target"); return; }
 
-            if (target != null && !ValidateTargetRule(def, target)) return;
+            if (target != null && !ValidateTargetRule(def, target)) { Debug.Log($"[AbilitySystem] {def.displayName} invalid target faction"); return; }
 
-            if (target != null && !InRange(def, target)) return;
+            if (target != null && !InRange(def, target)) { Debug.Log($"[AbilitySystem] {def.displayName} out of range"); return; }
 
             // Cast time ignored for simplicity; can be added with coroutine.
+            Debug.Log($"[AbilitySystem] Casting {def.displayName} on {(target ? target.DisplayName : "self")}");
             Execute(def, target);
             lastCastTime[def] = Time.time;
             if (def.triggersGCD) lastGCDTime = Time.time;
@@ -125,14 +126,24 @@ namespace MiniWoW
             {
                 // damage only if hostile or Any
                 bool ok = def.targetRule == TargetRule.Any || FactionRules.IsHostile(self ? self.Faction : Faction.Player, target.Faction);
-                if (ok) target.Health?.Damage(def.damage, gameObject);
+                if (ok)
+                {
+                    target.Health?.Damage(def.damage, gameObject);
+                    // Show damage number
+                    FloatingText.Create(target.AimPoint.position, $"-{def.damage:F0}", Color.red);
+                }
             }
 
             if (target && def.healing > 0f)
             {
                 // heal only if friendly or Any
                 bool ok = def.targetRule == TargetRule.Any || FactionRules.IsFriendly(self ? self.Faction : Faction.Player, target.Faction);
-                if (ok) target.Health?.Heal(def.healing);
+                if (ok)
+                {
+                    target.Health?.Heal(def.healing);
+                    // Show healing number
+                    FloatingText.Create(target.AimPoint.position, $"+{def.healing:F0}", Color.green);
+                }
             }
 
             if (def.sfxImpact && audioSource) audioSource.PlayOneShot(def.sfxImpact);

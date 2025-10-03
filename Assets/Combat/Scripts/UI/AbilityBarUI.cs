@@ -21,17 +21,19 @@ namespace MiniWoW
 
         private void Start()
         {
-            if (!abilitySystem) abilitySystem = FindObjectOfType<AbilitySystem>();
+            if (!abilitySystem) abilitySystem = FindFirstObjectByType<AbilitySystem>();
             if (!canvas)
             {
                 var go = new GameObject("AbilityBarCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
                 canvas = go.GetComponent<Canvas>();
                 canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                canvas.sortingOrder = 100; // Ensure it's on top
                 var scaler = go.GetComponent<CanvasScaler>();
                 scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
                 scaler.referenceResolution = new Vector2(1920, 1080);
             }
             BuildBar();
+            Debug.Log("[AbilityBarUI] Initialized with " + (abilitySystem ? abilitySystem.loadout.Length : 0) + " ability slots");
         }
 
         private void BuildBar()
@@ -55,7 +57,7 @@ namespace MiniWoW
                 srt.sizeDelta = new Vector2(slotSize, slotSize);
                 srt.anchoredPosition = new Vector2((i - 2) * (slotSize + gap), 0f);
                 var bg = slotGO.GetComponent<Image>();
-                bg.color = new Color(0f, 0f, 0f, 0.5f);
+                bg.color = new Color(0.1f, 0.1f, 0.1f, 0.8f); // More visible background
 
                 var iconGO = new GameObject("Icon", typeof(Image));
                 iconGO.transform.SetParent(slotGO.transform, false);
@@ -74,7 +76,7 @@ namespace MiniWoW
                 cool.fillOrigin = (int)Image.Origin360.Top;
                 cool.fillClockwise = false;
                 cool.fillAmount = 0f;
-                cool.color = new Color(0f, 0f, 0f, 0.6f);
+                cool.color = new Color(0f, 0f, 0f, 0.7f); // Darker cooldown overlay
 
                 var labelGO = new GameObject("Key", typeof(Text));
                 labelGO.transform.SetParent(slotGO.transform, false);
@@ -102,9 +104,26 @@ namespace MiniWoW
             {
                 var def = (i < abilitySystem.loadout.Length) ? abilitySystem.loadout[i] : null;
                 var w = slots[i];
-                if (def && def.icon) w.icon.sprite = def.icon;
-                else w.icon.sprite = null;
-                w.icon.enabled = def != null;
+                if (def && def.icon)
+                {
+                    w.icon.sprite = def.icon;
+                    w.icon.color = Color.white;
+                }
+                else if (def)
+                {
+                    // Create placeholder colored background based on ability type
+                    w.icon.sprite = null;
+                    // Color code: Red = damage, Green = heal, Blue = utility
+                    if (def.damage > 0f) w.icon.color = new Color(1f, 0.3f, 0.3f, 0.8f); // Red for damage
+                    else if (def.healing > 0f) w.icon.color = new Color(0.3f, 1f, 0.3f, 0.8f); // Green for healing
+                    else w.icon.color = new Color(0.3f, 0.3f, 1f, 0.8f); // Blue for utility
+                }
+                else
+                {
+                    w.icon.sprite = null;
+                    w.icon.color = new Color(0.3f, 0.3f, 0.3f, 0.5f); // Gray for empty
+                }
+                w.icon.enabled = true; // Always show icon background
                 w.coolOverlay.fillAmount = 0f;
             }
         }

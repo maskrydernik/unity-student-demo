@@ -19,6 +19,14 @@ namespace MiniWoW.EditorTools
 
             // Projectile prefab
             GameObject proj = new GameObject("Projectile");
+            var projSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            projSphere.name = "Visual";
+            projSphere.transform.SetParent(proj.transform);
+            projSphere.transform.localScale = Vector3.one * 0.3f;
+            Object.DestroyImmediate(projSphere.GetComponent<Collider>()); // Remove primitive collider
+            var projRenderer = projSphere.GetComponent<Renderer>();
+            if (projRenderer) projRenderer.sharedMaterial.color = Color.cyan; // Bright visible color
+            
             proj.AddComponent<SphereCollider>().isTrigger = true;
             var rb = proj.AddComponent<Rigidbody>(); rb.useGravity = false; rb.isKinematic = true;
             proj.AddComponent<MiniWoW.Projectile>();

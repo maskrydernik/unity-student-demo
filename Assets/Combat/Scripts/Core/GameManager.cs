@@ -25,7 +25,7 @@ namespace MiniWoW
 
         private void EnsureEventSystem()
         {
-            if (FindObjectOfType<EventSystem>()) return;
+            if (FindFirstObjectByType<EventSystem>()) return;
             var go = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
         }
 
@@ -164,6 +164,9 @@ namespace MiniWoW
             var tf = new GameObject("TargetFrameUI").AddComponent<TargetFrameUI>();
             tf.targeting = tgt;
 
+            var pf = new GameObject("PlayerFrameUI").AddComponent<PlayerFrameUI>();
+            pf.playerHealth = h;
+
             // Basic loadout fallback if prefab had none
             EnsureFallbackAbilities(abs);
         }
@@ -195,6 +198,14 @@ namespace MiniWoW
 
             // Provide projectile prefab
             var projPrefab = new GameObject("Projectile");
+            var projSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            projSphere.name = "Visual";
+            projSphere.transform.SetParent(projPrefab.transform);
+            projSphere.transform.localScale = Vector3.one * 0.3f;
+            Destroy(projSphere.GetComponent<Collider>()); // Remove primitive collider
+            var projRenderer = projSphere.GetComponent<Renderer>();
+            if (projRenderer) projRenderer.material.color = Color.cyan; // Bright visible color
+            
             projPrefab.AddComponent<SphereCollider>().isTrigger = true;
             var rb = projPrefab.AddComponent<Rigidbody>(); rb.useGravity = false; rb.isKinematic = true;
             var proj = projPrefab.AddComponent<Projectile>();
