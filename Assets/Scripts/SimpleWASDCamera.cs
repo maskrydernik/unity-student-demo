@@ -1,5 +1,5 @@
 // Simple camera. WASD move, mouse wheel zoom with ground-anchor preservation.
-// Arrow keys: Left/Right = yaw, Up/Down = pitch. Ctrl + Arrow = pan.
+// Arrow keys: Left/Right = yaw, Up/Down = pitch.
 // Edge scroll disabled by default.
 
 using UnityEngine;
