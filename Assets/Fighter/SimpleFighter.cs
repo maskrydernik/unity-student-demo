@@ -56,28 +56,21 @@ public class BasicFighter2D : MonoBehaviour
     [Tooltip("REQUIRED: KO/death animation clip")]
     public AnimationClip animKO;
 
-    [Header("Animator Parameters - OPTIONAL (for transitions)")]
-    [Tooltip("Bool parameter name for Idle state (leave empty to skip)")]
-    public string paramIdle = "Idle";
-    [Tooltip("Bool parameter name for Walk state (leave empty to skip)")]
-    public string paramWalk = "Walk";
-    [Tooltip("Bool parameter name for Jump state (leave empty to skip)")]
-    public string paramJump = "Jump";
-    [Tooltip("Bool parameter name for Fall state (leave empty to skip)")]
-    public string paramFall = "Fall";
-    [Tooltip("Bool parameter name for Dash state (leave empty to skip)")]
-    public string paramDash = "Dash";
-    [Tooltip("Bool parameter name for Hitstun state (leave empty to skip)")]
-    public string paramHitstun = "Hitstun";
-    [Tooltip("Bool parameter name for KO state (leave empty to skip)")]
-    public string paramKO = "KO";
-
     // ─────────────────────────────────────────────────────────────────────────────
     // PRIVATE COMPONENTS (auto-fetched)
     // ─────────────────────────────────────────────────────────────────────────────
     Rigidbody2D rb;
     Animator animator;
     Collider2D body;
+
+    // Animator parameter names (fixed)
+    const string paramIdle = "Idle";
+    const string paramWalk = "Walk";
+    const string paramJump = "Jump";
+    const string paramFall = "Fall";
+    const string paramDash = "Dash";
+    const string paramHitstun = "Hitstun";
+    const string paramKO = "KO";
 
     // ─────────────────────────────────────────────────────────────────────────────
     // INTERNAL STATE

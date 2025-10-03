@@ -449,7 +449,7 @@ PrefabInstance:
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: animKO
       value: 
-      objectReference: {fileID: 7400000, guid: 8be903b3f60a3aa4bbd22747ecac5779, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: p_isKO
       value: 
@@ -457,23 +457,23 @@ PrefabInstance:
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: animDash
       value: 
-      objectReference: {fileID: 7400000, guid: 0388db8ec87ac9547a9f06fc34d58328, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: animFall
       value: 
-      objectReference: {fileID: 7400000, guid: 4a355123244ca5047bbf66d1419e5fa3, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: animIdle
       value: 
-      objectReference: {fileID: 7400000, guid: 880910f3ca04f464b82edeacf87d9f46, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: animJump
       value: 
-      objectReference: {fileID: 7400000, guid: 5b2402a381e26f245b868ada3c84b434, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: animWalk
       value: 
-      objectReference: {fileID: 7400000, guid: 4727d499a60b75e409d4804e98306e11, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: maxMeter
       value: 0
@@ -497,7 +497,7 @@ PrefabInstance:
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: animHitstun
       value: 
-      objectReference: {fileID: 7400000, guid: 0c41542ecd7152b46ad21dc59cc808ba, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: controls.up
       value: 0
@@ -625,7 +625,7 @@ PrefabInstance:
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: heavyAttack.anim
       value: 
-      objectReference: {fileID: 7400000, guid: c61e61cfa887e314ba32f0089c1b40d6, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: hud.anchorByTeam
       value: 0
@@ -649,7 +649,7 @@ PrefabInstance:
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: lightAttack.anim
       value: 
-      objectReference: {fileID: 7400000, guid: a5f1b663fe1bbd74abb6979ab3655559, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: controls.throwKey
       value: 0
@@ -681,7 +681,7 @@ PrefabInstance:
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: mediumAttack.anim
       value: 
-      objectReference: {fileID: 7400000, guid: 7f1e3271f86c11240b00cf25021c130f, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: attacks.Array.size
       value: 0

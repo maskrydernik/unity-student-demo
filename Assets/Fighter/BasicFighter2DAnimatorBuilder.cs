@@ -83,14 +83,14 @@ public static class BasicFighter2DAnimatorBuilder
         // Create controller
         var ctrl = AnimatorController.CreateAnimatorControllerAtPath(path);
 
-        // Add bool parameters for each state
-        ctrl.AddParameter(bf.paramIdle, AnimatorControllerParameterType.Bool);
-        ctrl.AddParameter(bf.paramWalk, AnimatorControllerParameterType.Bool);
-        ctrl.AddParameter(bf.paramJump, AnimatorControllerParameterType.Bool);
-        ctrl.AddParameter(bf.paramFall, AnimatorControllerParameterType.Bool);
-        ctrl.AddParameter(bf.paramDash, AnimatorControllerParameterType.Bool);
-        ctrl.AddParameter(bf.paramHitstun, AnimatorControllerParameterType.Bool);
-        ctrl.AddParameter(bf.paramKO, AnimatorControllerParameterType.Bool);
+        // Add bool parameters for each state (using fixed names)
+        ctrl.AddParameter("Idle", AnimatorControllerParameterType.Bool);
+        ctrl.AddParameter("Walk", AnimatorControllerParameterType.Bool);
+        ctrl.AddParameter("Jump", AnimatorControllerParameterType.Bool);
+        ctrl.AddParameter("Fall", AnimatorControllerParameterType.Bool);
+        ctrl.AddParameter("Dash", AnimatorControllerParameterType.Bool);
+        ctrl.AddParameter("Hitstun", AnimatorControllerParameterType.Bool);
+        ctrl.AddParameter("KO", AnimatorControllerParameterType.Bool);
 
         // Get layer + SM
         var layer = ctrl.layers[0];
@@ -153,13 +153,13 @@ public static class BasicFighter2DAnimatorBuilder
 
         // Create transition network - each state transitions to all others based on their bool
         var states = new[] { 
-            (idleState, bf.paramIdle),
-            (walkState, bf.paramWalk),
-            (jumpState, bf.paramJump),
-            (fallState, bf.paramFall),
-            (dashState, bf.paramDash),
-            (hitstunState, bf.paramHitstun),
-            (koState, bf.paramKO)
+            (idleState, "Idle"),
+            (walkState, "Walk"),
+            (jumpState, "Jump"),
+            (fallState, "Fall"),
+            (dashState, "Dash"),
+            (hitstunState, "Hitstun"),
+            (koState, "KO")
         };
 
         foreach (var (fromState, _) in states)
