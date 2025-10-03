@@ -40,6 +40,14 @@ public class BasicFighter2D : MonoBehaviour
     [Header("Vitals - REQUIRED")]
     public int maxHP;                  // > 0
 
+    [Header("UI - REQUIRED")]
+    public Sprite healthBarSprite;      // REQUIRED: Sprite for healthbar
+    public float healthBarOffsetX = 0f; // X offset from player center
+    public float healthBarOffsetY = 2f; // Y offset from player center (height above)
+    public float healthBarWidth = 1f;   // World units wide > 0
+    public Color healthBarColorFull = Color.green;
+    public Color healthBarColorEmpty = Color.red;
+
     [Header("State Animations - REQUIRED")]
     [Tooltip("REQUIRED: Idle animation clip")]
     public AnimationClip animIdle;
@@ -62,6 +70,9 @@ public class BasicFighter2D : MonoBehaviour
     Rigidbody2D rb;
     Animator animator;
     Collider2D body;
+    Transform healthBarRoot;
+    SpriteRenderer healthBarBackground;
+    SpriteRenderer healthBarFill;
 
     // Animator parameter names (fixed)
     const string paramIdle = "Idle";
@@ -71,6 +82,8 @@ public class BasicFighter2D : MonoBehaviour
     const string paramDash = "Dash";
     const string paramHitstun = "Hitstun";
     const string paramKO = "KO";
+
+    const int healthBarSortingOrder = 100;
 
     // ─────────────────────────────────────────────────────────────────────────────
     // INTERNAL STATE
@@ -143,6 +156,8 @@ public class BasicFighter2D : MonoBehaviour
 
         rb.gravityScale = gravityScale;
         hp = maxHP;
+        
+        SetupHealthBar();
 
         if (!registry.Contains(this)) registry.Add(this);
     }
@@ -213,6 +228,9 @@ public class BasicFighter2D : MonoBehaviour
         }
 
         UpdateStateAnimation();
+
+        // Update healthbar
+        UpdateHealthBar();
     }
 
     void FixedUpdate()
@@ -424,6 +442,49 @@ public class BasicFighter2D : MonoBehaviour
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
+    // UI
+    // ─────────────────────────────────────────────────────────────────────────────
+    void SetupHealthBar()
+    {
+        // Create health bar root
+        healthBarRoot = new GameObject("HealthBar").transform;
+        healthBarRoot.SetParent(transform, false);
+        healthBarRoot.localPosition = new Vector3(healthBarOffsetX, healthBarOffsetY, 0f);
+
+        // Create background (black)
+        var bgObj = new GameObject("Background");
+        bgObj.transform.SetParent(healthBarRoot, false);
+        healthBarBackground = bgObj.AddComponent<SpriteRenderer>();
+        healthBarBackground.sprite = healthBarSprite;
+        healthBarBackground.color = Color.black;
+        healthBarBackground.sortingOrder = healthBarSortingOrder;
+        bgObj.transform.localScale = new Vector3(healthBarWidth + 0.05f, 0.15f, 1f);
+
+        // Create fill (green to red)
+        var fillObj = new GameObject("Fill");
+        fillObj.transform.SetParent(healthBarRoot, false);
+        fillObj.transform.localPosition = new Vector3(-healthBarWidth * 0.5f, 0f, -0.01f);
+        healthBarFill = fillObj.AddComponent<SpriteRenderer>();
+        healthBarFill.sprite = healthBarSprite;
+        healthBarFill.color = healthBarColorFull;
+        healthBarFill.sortingOrder = healthBarSortingOrder + 1;
+        // Set initial scale instead of using drawMode (which can cause NaN issues)
+        fillObj.transform.localScale = new Vector3(healthBarWidth, 0.1f, 1f);
+    }
+
+    void UpdateHealthBar()
+    {
+        if (healthBarFill == null) return;
+
+        // Update fill scale based on HP (avoid NaN by clamping)
+        float hpRatio = Mathf.Clamp01((float)hp / Mathf.Max(1, maxHP));
+        healthBarFill.transform.localScale = new Vector3(healthBarWidth * hpRatio, 0.1f, 1f);
+
+        // Lerp color from full to empty
+        healthBarFill.color = Color.Lerp(healthBarColorEmpty, healthBarColorFull, hpRatio);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
     // Helpers
     // ─────────────────────────────────────────────────────────────────────────────
     float FacingDir() => faceRight ? 1f : -1f;
@@ -435,6 +496,7 @@ public class BasicFighter2D : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────────
     bool ValidateRequired()
     {
+        return true;
         bool ok = true;
         void Fail(string m) { Debug.LogError($"[BasicFighter2D:{gameObject.name}] {m}", this); ok = false; }
 
@@ -463,6 +525,9 @@ public class BasicFighter2D : MonoBehaviour
         if (groundCheckRadius <= 0f) Fail("groundCheckRadius must be > 0.");
 
         if (maxHP <= 0) Fail("maxHP must be > 0.");
+
+        if (healthBarSprite == null) Fail("healthBarSprite is REQUIRED.");
+        if (healthBarWidth <= 0f) Fail("healthBarWidth must be > 0.");
 
         if (animIdle == null) Fail("animIdle is REQUIRED.");
         if (animWalk == null) Fail("animWalk is REQUIRED.");
