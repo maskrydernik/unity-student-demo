@@ -170,10 +170,16 @@ namespace MiniWoW.EditorTools
             health.SetMax(2000f, true);
 
             var targetable = go.AddComponent<Targetable>();
-            var field = typeof(Targetable).GetField("displayName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (field != null) field.SetValue(targetable, faction == Faction.Enemy ? "Training Dummy" : "Friendly Dummy");
+            
+            // Use SerializedObject to properly set the private fields in Edit Mode
+            var so = new UnityEditor.SerializedObject(targetable);
+            so.FindProperty("displayName").stringValue = faction == Faction.Enemy ? "Training Dummy" : "Friendly Dummy";
+            so.FindProperty("health").objectReferenceValue = health;
+            so.ApplyModifiedProperties();
 
             go.AddComponent<TrainingDummy>();
+            
+            Debug.Log($"[SetupWizard] Created {name} with Health (Faction: {faction}) and Targetable components");
         }
 
         private static void CreatePersistentUICanvases()

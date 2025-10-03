@@ -19,6 +19,14 @@ namespace MiniWoW
         private void Start()
         {
             if (!cam) cam = Camera.main;
+            if (!cam)
+            {
+                Debug.LogError("[TargetingSystem] No camera found! Targeting will not work.");
+            }
+            else
+            {
+                Debug.Log($"[TargetingSystem] Initialized with camera: {cam.name}");
+            }
         }
 
         private void Update()
@@ -27,14 +35,24 @@ namespace MiniWoW
             {
                 downPos = Input.mousePosition;
                 downTime = Time.unscaledTime;
+                Debug.Log($"[TargetingSystem] Mouse down at {downPos}");
             }
             if (Input.GetMouseButtonUp(0))
             {
                 float dist = Vector2.Distance(downPos, Input.mousePosition);
                 float t = Time.unscaledTime - downTime;
-                if (dist <= clickMaxMovePixels && t <= clickMaxTime && !IsPointerOverUI())
+                bool overUI = IsPointerOverUI();
+                Debug.Log($"[TargetingSystem] Mouse up - Distance: {dist:F2}, Time: {t:F3}, Over UI: {overUI}");
+                
+                if (dist <= clickMaxMovePixels && t <= clickMaxTime && !overUI)
                 {
                     TrySelectUnderCursor();
+                }
+                else
+                {
+                    if (dist > clickMaxMovePixels) Debug.Log($"[TargetingSystem] Click rejected: moved too far ({dist:F2} > {clickMaxMovePixels})");
+                    if (t > clickMaxTime) Debug.Log($"[TargetingSystem] Click rejected: took too long ({t:F3} > {clickMaxTime})");
+                    if (overUI) Debug.Log("[TargetingSystem] Click rejected: pointer over UI");
                 }
             }
 
@@ -52,21 +70,53 @@ namespace MiniWoW
 
         private void TrySelectUnderCursor()
         {
-            if (!cam) return;
+            if (!cam)
+            {
+                Debug.LogWarning("[TargetingSystem] No camera assigned!");
+                return;
+            }
+            
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            Debug.Log($"[TargetingSystem] Raycasting from {Input.mousePosition} with ray: {ray.origin} -> {ray.direction}");
+            
             if (Physics.Raycast(ray, out var hit, 200f, targetMask, QueryTriggerInteraction.Ignore))
             {
+                Debug.Log($"[TargetingSystem] Hit: {hit.collider.gameObject.name} at {hit.point}");
                 var t = hit.collider.GetComponentInParent<Targetable>();
-                if (t != null) SetTarget(t);
+                if (t != null)
+                {
+                    Debug.Log($"[TargetingSystem] Found Targetable: {t.DisplayName}");
+                    SetTarget(t);
+                }
+                else
+                {
+                    Debug.LogWarning($"[TargetingSystem] Hit object '{hit.collider.gameObject.name}' has no Targetable component!");
+                }
+            }
+            else
+            {
+                Debug.Log($"[TargetingSystem] Raycast hit nothing (Layer mask: {targetMask.value})");
             }
         }
 
         public void SetTarget(Targetable t)
         {
             if (Current == t) return;
-            if (Current) Current.SetSelected(false);
+            if (Current)
+            {
+                Current.SetSelected(false);
+                Debug.Log($"[TargetingSystem] Deselected: {Current.DisplayName}");
+            }
             Current = t;
-            if (Current) Current.SetSelected(true);
+            if (Current)
+            {
+                Current.SetSelected(true);
+                Debug.Log($"[TargetingSystem] Selected: {Current.DisplayName} (Faction: {Current.Faction})");
+            }
+            else
+            {
+                Debug.Log("[TargetingSystem] Target cleared");
+            }
         }
     }
 }
