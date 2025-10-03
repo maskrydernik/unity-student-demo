@@ -975,6 +975,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 12
   sprintMultiplier: 2
+  edgeScroll: 0
+  edgeBorder: 12
+  yawSpeed: 90
+  pitchSpeed: 60
+  pitchLimits: {x: 20, y: 80}
+  zoomStep: 6
+  zoomSmoothTime: 0.08
+  minHeight: 6
+  maxHeight: 60
+  groundY: 0
+  clampXZ: 0
+  xzBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 100, y: 0, z: 100}
 --- !u!1 &387248994
 GameObject:
   m_ObjectHideFlags: 0
@@ -4033,7 +4047,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SerializedVersion: 0
   m_AgentTypeID: 0
-  m_CollectObjects: 0
+  m_CollectObjects: 2
   m_Size: {x: 10, y: 10, z: 10}
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
@@ -4049,7 +4063,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 628cfeb9b509df34eb07fa1a6f0a5fb3, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: b3a1c08f3d79649478f1c1576e8e6e1a, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &2100864607
 Transform:
