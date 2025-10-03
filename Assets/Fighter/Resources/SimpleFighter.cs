@@ -496,7 +496,6 @@ public class BasicFighter2D : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────────
     bool ValidateRequired()
     {
-        return true;
         bool ok = true;
         void Fail(string m) { Debug.LogError($"[BasicFighter2D:{gameObject.name}] {m}", this); ok = false; }
 
