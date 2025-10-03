@@ -25,7 +25,7 @@ MonoBehaviour:
   damage: 40
   healing: 0
   useProjectile: 1
-  projectilePrefab: {fileID: 7919713894475781798, guid: f5ba25affa1cd104a994b2dcfd78846a, type: 3}
+  projectilePrefab: {fileID: 8140799625562476557, guid: f5ba25affa1cd104a994b2dcfd78846a, type: 3}
   useTravelTime: 1
   projectileTravelTime: 0.6
   projectileSpeed: 20
