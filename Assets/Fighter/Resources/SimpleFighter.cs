@@ -40,13 +40,23 @@ public class BasicFighter2D : MonoBehaviour
     [Header("Vitals - REQUIRED")]
     public int maxHP;                  // > 0
 
-    [Header("UI - Optional")]
-    public Sprite healthBarSprite;      // Sprite for healthbar (white square recommended)
-    public float healthBarHeight = 2f;  // World units above player
-    public float healthBarWidth = 1f;   // World units wide
-    public Color healthBarColorFull = Color.green;
-    public Color healthBarColorEmpty = Color.red;
-    public int healthBarSortingOrder = 100;
+    [Header("Health Bar - REQUIRED")]
+    [Tooltip("REQUIRED: Sprite for healthbar (white square recommended)")]
+    public Sprite healthBarSprite;
+    [Tooltip("REQUIRED: X offset from player")]
+    public float healthBarOffsetX;
+    [Tooltip("REQUIRED: Y offset from player")]
+    public float healthBarOffsetY;
+    [Tooltip("REQUIRED: Width scale (> 0)")]
+    public float healthBarScaleX;
+    [Tooltip("REQUIRED: Height scale (> 0)")]
+    public float healthBarScaleY;
+    [Tooltip("REQUIRED: Color when at full HP")]
+    public Color healthBarColorFull;
+    [Tooltip("REQUIRED: Color when at zero HP")]
+    public Color healthBarColorEmpty;
+    
+    private int healthBarSortingOrder = 100;
 
     [Header("State Animations - REQUIRED")]
     [Tooltip("REQUIRED: Idle animation clip")]
@@ -447,7 +457,7 @@ public class BasicFighter2D : MonoBehaviour
         // Create health bar root
         healthBarRoot = new GameObject("HealthBar").transform;
         healthBarRoot.SetParent(transform, false);
-        healthBarRoot.localPosition = new Vector3(0f, healthBarHeight, 0f);
+        healthBarRoot.localPosition = new Vector3(healthBarOffsetX, healthBarOffsetY, 0f);
 
         // Create background (black)
         var bgObj = new GameObject("Background");
@@ -456,18 +466,18 @@ public class BasicFighter2D : MonoBehaviour
         healthBarBackground.sprite = CreateSimpleSprite();
         healthBarBackground.color = Color.black;
         healthBarBackground.sortingOrder = healthBarSortingOrder;
-        bgObj.transform.localScale = new Vector3(healthBarWidth + 0.05f, 0.15f, 1f);
+        bgObj.transform.localScale = new Vector3(healthBarScaleX + 0.05f, healthBarScaleY + 0.05f, 1f);
 
-        // Create fill (green to red)
+        // Create fill (green to red) - using simple Transform.localScale for visibility
         var fillObj = new GameObject("Fill");
         fillObj.transform.SetParent(healthBarRoot, false);
-        fillObj.transform.localPosition = new Vector3(-healthBarWidth * 0.5f, 0f, -0.01f);
+        fillObj.transform.localPosition = new Vector3(0f, 0f, -0.01f);
         healthBarFill = fillObj.AddComponent<SpriteRenderer>();
         healthBarFill.sprite = healthBarSprite ?? CreateSimpleSprite();
         healthBarFill.color = healthBarColorFull;
         healthBarFill.sortingOrder = healthBarSortingOrder + 1;
-        healthBarFill.drawMode = SpriteDrawMode.Sliced;
-        healthBarFill.size = new Vector2(healthBarWidth, 0.1f);
+        // Use simple scale instead of DrawMode.Sliced for better visibility
+        fillObj.transform.localScale = new Vector3(healthBarScaleX, healthBarScaleY, 1f);
     }
 
     Sprite CreateSimpleSprite()
@@ -476,16 +486,16 @@ public class BasicFighter2D : MonoBehaviour
         var tex = new Texture2D(1, 1);
         tex.SetPixel(0, 0, Color.white);
         tex.Apply();
-        return Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0f, 0.5f), 1f);
+        return Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
     }
 
     void UpdateHealthBar()
     {
         if (healthBarFill == null) return;
 
-        // Update fill size based on HP
-        float hpRatio = (float)hp / maxHP;
-        healthBarFill.size = new Vector2(healthBarWidth * hpRatio, 0.1f);
+        // Update fill size based on HP using Transform.localScale
+        float hpRatio = maxHP > 0 ? (float)hp / maxHP : 0f;
+        healthBarFill.transform.localScale = new Vector3(healthBarScaleX * hpRatio, healthBarScaleY, 1f);
 
         // Lerp color from full to empty
         healthBarFill.color = Color.Lerp(healthBarColorEmpty, healthBarColorFull, hpRatio);
@@ -503,7 +513,6 @@ public class BasicFighter2D : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────────
     bool ValidateRequired()
     {
-        return true;
         bool ok = true;
         void Fail(string m) { Debug.LogError($"[BasicFighter2D:{gameObject.name}] {m}", this); ok = false; }
 
@@ -532,6 +541,10 @@ public class BasicFighter2D : MonoBehaviour
         if (groundCheckRadius <= 0f) Fail("groundCheckRadius must be > 0.");
 
         if (maxHP <= 0) Fail("maxHP must be > 0.");
+
+        if (healthBarSprite == null) Fail("healthBarSprite is REQUIRED.");
+        if (healthBarScaleX <= 0f) Fail("healthBarScaleX must be > 0.");
+        if (healthBarScaleY <= 0f) Fail("healthBarScaleY must be > 0.");
 
         if (animIdle == null) Fail("animIdle is REQUIRED.");
         if (animWalk == null) Fail("animWalk is REQUIRED.");

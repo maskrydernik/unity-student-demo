@@ -56,6 +56,30 @@ All must be non-`KeyCode.None`. Polled every frame in `Update()`.
 
 * **groundCheckRadius : float (> 0)**
   Radius for `Physics2D.OverlapCircle`. Too small may cause jitter; too large sticks to walls.
+  
+## Health Bar (Public Variables)
+
+- **healthBarSprite : Sprite**  
+  REQUIRED. Sprite used for the health bar fill (recommend a white 1×1 square).
+
+- **healthBarOffsetX : float**  
+  REQUIRED. Local X offset from fighter.
+
+- **healthBarOffsetY : float**  
+  REQUIRED. Local Y offset from fighter.
+
+- **healthBarScaleX : float (> 0)**  
+  REQUIRED. Width scale of the health bar.
+
+- **healthBarScaleY : float (> 0)**  
+  REQUIRED. Height scale of the health bar.
+
+- **healthBarColorFull : Color**  
+  REQUIRED. Color when at full HP.
+
+- **healthBarColorEmpty : Color**  
+  REQUIRED. Color when at zero HP.
+
 
 ## Attacks
 

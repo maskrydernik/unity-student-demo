@@ -80,9 +80,9 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
-  m_Sprite: {fileID: 71398185, guid: 2da10da3f7a8117419fa099d9778376a, type: 3}
+  m_Sprite: {fileID: -686140874, guid: 483b8b3577a55b64c9b2577f092871ff, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.535, y: 0.60125}
@@ -165,7 +165,7 @@ Animator:
   m_GameObject: {fileID: 7370474427804421467}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: dab6e742619fba0498c96c04e01dbf03, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -243,6 +243,13 @@ MonoBehaviour:
     hitboxSize: {x: 0, y: 0}
     knockback: {x: 0, y: 0}
   maxHP: 0
+  healthBarSprite: {fileID: 0}
+  healthBarOffsetX: 0
+  healthBarOffsetY: 0
+  healthBarScaleX: 0
+  healthBarScaleY: 0
+  healthBarColorFull: {r: 0, g: 0, b: 0, a: 0}
+  healthBarColorEmpty: {r: 0, g: 0, b: 0, a: 0}
   animIdle: {fileID: 0}
   animWalk: {fileID: 0}
   animJump: {fileID: 0}
