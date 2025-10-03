@@ -16,7 +16,18 @@ namespace MiniWoW
 
         private void Start()
         {
-            if (!playerHealth) playerHealth = FindFirstObjectByType<Health>();
+            if (!playerHealth)
+            {
+                // Find player by looking for PlayerMotor component first
+                var motor = FindFirstObjectByType<PlayerMotor>();
+                if (motor) playerHealth = motor.GetComponent<Health>();
+                
+                if (playerHealth)
+                    Debug.Log($"[PlayerFrameUI] Found player health: {playerHealth.Current}/{playerHealth.Max}");
+                else
+                    Debug.LogWarning("[PlayerFrameUI] Could not find player Health component!");
+            }
+            
             if (!canvas)
             {
                 var go = new GameObject("PlayerFrameCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
@@ -89,7 +100,17 @@ namespace MiniWoW
 
         private void Update()
         {
-            if (!playerHealth) return;
+            if (!playerHealth)
+            {
+                // Try to find player again if it wasn't found initially
+                var motor = FindFirstObjectByType<PlayerMotor>();
+                if (motor)
+                {
+                    playerHealth = motor.GetComponent<Health>();
+                    if (playerHealth) Debug.Log($"[PlayerFrameUI] Found player health in Update: {playerHealth.Current}/{playerHealth.Max}");
+                }
+                return;
+            }
             
             float current = playerHealth.Current;
             float max = playerHealth.Max;

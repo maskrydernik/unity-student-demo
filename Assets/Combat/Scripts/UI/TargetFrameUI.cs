@@ -69,15 +69,31 @@ namespace MiniWoW
 
         private void Update()
         {
-            var t = targeting ? targeting.Current : null;
+            if (!targeting)
+            {
+                targeting = FindFirstObjectByType<TargetingSystem>();
+                return;
+            }
+            
+            var t = targeting.Current;
             if (!t)
             {
                 nameText.text = "";
                 SetFill(0f);
                 return;
             }
+            
             nameText.text = $"{t.DisplayName} [{t.Faction}]";
-            if (t.Health) SetFill(Mathf.Approximately(t.Health.Max,0f) ? 0f : t.Health.Current / t.Health.Max);
+            
+            if (t.Health)
+            {
+                float percent = Mathf.Approximately(t.Health.Max, 0f) ? 0f : t.Health.Current / t.Health.Max;
+                SetFill(percent);
+            }
+            else
+            {
+                SetFill(0f);
+            }
         }
 
         private void SetFill(float f)
