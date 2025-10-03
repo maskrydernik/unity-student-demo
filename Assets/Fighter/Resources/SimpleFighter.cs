@@ -33,36 +33,27 @@ public class BasicFighter2D : MonoBehaviour
     public float groundCheckRadius;    // > 0
 
     [Header("Attacks - REQUIRED (3 attacks)")]
-    public Attack lightAttack;
-    public Attack mediumAttack;
-    public Attack heavyAttack;
+    public Attack light;
+    public Attack medium;
+    public Attack heavy;
 
     [Header("Vitals - REQUIRED")]
     public int maxHP;                  // > 0
 
-    [Header("UI - REQUIRED")]
-    public Sprite healthBarSprite;      // REQUIRED: Sprite for healthbar
-    public float healthBarOffsetX = 0f; // X offset from player center
-    public float healthBarOffsetY = 2f; // Y offset from player center (height above)
-    public float healthBarWidth = 1f;   // World units wide > 0
-    public Color healthBarColorFull = Color.green;
-    public Color healthBarColorEmpty = Color.red;
+    [Header("Animator Params - OPTIONAL (empty = skip)")]
+    public string p_isGrounded;
+    public string p_isWalking;
+    public string p_isDashing;
+    public string p_isJumping;
+    public string p_isKO;
+    public string p_speedX;
+    public string p_speedY;
+    public string trig_Light;
+    public string trig_Medium;
+    public string trig_Heavy;
 
-    [Header("State Animations - REQUIRED")]
-    [Tooltip("REQUIRED: Idle animation clip")]
-    public AnimationClip animIdle;
-    [Tooltip("REQUIRED: Walk animation clip")]
-    public AnimationClip animWalk;
-    [Tooltip("REQUIRED: Jump animation clip")]
-    public AnimationClip animJump;
-    [Tooltip("REQUIRED: Fall animation clip")]
-    public AnimationClip animFall;
-    [Tooltip("REQUIRED: Dash animation clip")]
-    public AnimationClip animDash;
-    [Tooltip("REQUIRED: Hitstun animation clip")]
-    public AnimationClip animHitstun;
-    [Tooltip("REQUIRED: KO/death animation clip")]
-    public AnimationClip animKO;
+    [Header("Visual - OPTIONAL")]
+    public Transform visualRoot;       // flip target. null = no flip
 
     // ─────────────────────────────────────────────────────────────────────────────
     // PRIVATE COMPONENTS (auto-fetched)
@@ -70,27 +61,12 @@ public class BasicFighter2D : MonoBehaviour
     Rigidbody2D rb;
     Animator animator;
     Collider2D body;
-    Transform healthBarRoot;
-    SpriteRenderer healthBarBackground;
-    SpriteRenderer healthBarFill;
-
-    // Animator parameter names (fixed)
-    const string paramIdle = "Idle";
-    const string paramWalk = "Walk";
-    const string paramJump = "Jump";
-    const string paramFall = "Fall";
-    const string paramDash = "Dash";
-    const string paramHitstun = "Hitstun";
-    const string paramKO = "KO";
-
-    const int healthBarSortingOrder = 100;
 
     // ─────────────────────────────────────────────────────────────────────────────
     // INTERNAL STATE
     // ─────────────────────────────────────────────────────────────────────────────
     enum State { Idle, Walk, Jump, Fall, Dash, Attack, Hitstun, KO }
     State state;
-    State prevState; // Track state changes for animation updates
     bool grounded;
     float stateTimer;
     bool faceRight = true;
@@ -111,36 +87,16 @@ public class BasicFighter2D : MonoBehaviour
     [Serializable]
     public class Attack
     {
-        [Tooltip("REQUIRED: Attack name for debugging")]
-        public string name;
-        
-        [Header("Animation - REQUIRED")]
-        [Tooltip("REQUIRED: AnimationClip to play when attack starts")]
-        public AnimationClip anim;
-        
-        [Header("Timing (seconds)")]
-        [Tooltip("REQUIRED: Startup frames before hitbox becomes active (> 0)")]
-        public float startup;
-        [Tooltip("REQUIRED: Duration hitbox remains active (> 0)")]
-        public float active;
-        [Tooltip("Recovery time after active frames end (>= 0)")]
-        public float recovery;
-        
-        [Header("Damage & Stun")]
-        [Tooltip("REQUIRED: Damage dealt on hit (> 0)")]
-        public int damage;
-        [Tooltip("REQUIRED: Hitstun duration in seconds (> 0)")]
-        public float hitstun;
-        
-        [Header("Hitbox")]
-        [Tooltip("Hitbox center offset from fighter position (flipped with facing)")]
-        public Vector2 hitboxOffset;
-        [Tooltip("REQUIRED: Hitbox width and height (> 0)")]
-        public Vector2 hitboxSize;
-        
-        [Header("Knockback")]
-        [Tooltip("Knockback force applied on hit (X flipped with facing)")]
-        public Vector2 knockback;
+        public string name;            // REQUIRED
+        public float startup;          // > 0
+        public float active;           // > 0
+        public float recovery;         // >= 0
+        public int damage;             // > 0
+        public float hitstun;          // > 0
+        public Vector2 hitboxOffset;   // in local units, flipped on X
+        public Vector2 hitboxSize;     // > 0
+        public Vector2 knockback;      // applied with facing sign
+        public string animatorTrigger; // OPTIONAL
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
@@ -156,8 +112,6 @@ public class BasicFighter2D : MonoBehaviour
 
         rb.gravityScale = gravityScale;
         hp = maxHP;
-        
-        SetupHealthBar();
 
         if (!registry.Contains(this)) registry.Add(this);
     }
@@ -190,6 +144,7 @@ public class BasicFighter2D : MonoBehaviour
 
         // Face by last nonzero move input
         if (Mathf.Abs(move) > 0.001f) faceRight = move > 0f;
+        ApplyVisualFlip();
 
         // State machine (Update for transitions and non-physics actions)
         switch (state)
@@ -227,10 +182,7 @@ public class BasicFighter2D : MonoBehaviour
                 break;
         }
 
-        UpdateStateAnimation();
-
-        // Update healthbar
-        UpdateHealthBar();
+        DriveAnimator(move);
     }
 
     void FixedUpdate()
@@ -238,9 +190,9 @@ public class BasicFighter2D : MonoBehaviour
         if (!enabled) return;
 
         // Gravity scale swap for better jump arc
-        rb.gravityScale = (rb.linearVelocity.y < 0f) ? fallGravityScale : gravityScale;
+        rb.gravityScale = (rb.velocity.y < 0f) ? fallGravityScale : gravityScale;
 
-        Vector2 v = rb.linearVelocity;
+        Vector2 v = rb.velocity;
 
         switch (state)
         {
@@ -287,7 +239,7 @@ public class BasicFighter2D : MonoBehaviour
                 break;
         }
 
-        rb.linearVelocity = v;
+        rb.velocity = v;
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
@@ -298,9 +250,9 @@ public class BasicFighter2D : MonoBehaviour
         float g = Mathf.Abs(Physics2D.gravity.y) * gravityScale;
         if (g <= 0f) { Debug.LogError($"[{name}] gravity invalid; set gravityScale > 0"); enabled = false; return; }
         float v0 = Mathf.Sqrt(2f * g * Mathf.Max(jumpHeight, 0.0001f));
-        var v = rb.linearVelocity;
+        var v = rb.velocity;
         v.y = v0;
-        rb.linearVelocity = v;
+        rb.velocity = v;
         state = State.Jump;
     }
 
@@ -323,9 +275,9 @@ public class BasicFighter2D : MonoBehaviour
     bool TryAttack(bool pressL, bool pressM, bool pressH)
     {
         Attack a = null;
-        if (pressH) a = heavyAttack ?? a;
-        if (pressM) a = mediumAttack ?? a;
-        if (pressL) a = lightAttack ?? a;
+        if (pressH) a = heavy ?? a;
+        if (pressM) a = medium ?? a;
+        if (pressL) a = light ?? a;
         if (a == null) return false;
 
         // Validate attack at use-time too
@@ -336,8 +288,14 @@ public class BasicFighter2D : MonoBehaviour
         victimsThisSwing.Clear();
         state = State.Attack;
 
-        // Play animation clip directly (required)
-        animator.Play(a.anim.name, 0, 0f);
+        // Anim triggers
+        if (animator)
+        {
+            if (!string.IsNullOrEmpty(a.animatorTrigger)) animator.SetTrigger(a.animatorTrigger);
+            if (!string.IsNullOrEmpty(trig_Light) && a == light) animator.SetTrigger(trig_Light);
+            if (!string.IsNullOrEmpty(trig_Medium) && a == medium) animator.SetTrigger(trig_Medium);
+            if (!string.IsNullOrEmpty(trig_Heavy) && a == heavy) animator.SetTrigger(trig_Heavy);
+        }
         return true;
     }
 
@@ -389,7 +347,8 @@ public class BasicFighter2D : MonoBehaviour
         if (hp == 0)
         {
             state = State.KO;
-            rb.linearVelocity = Vector2.zero;
+            rb.velocity = Vector2.zero;
+            if (!string.IsNullOrEmpty(p_isKO) && animator) animator.SetBool(p_isKO, true);
             return;
         }
 
@@ -398,90 +357,21 @@ public class BasicFighter2D : MonoBehaviour
         state = State.Hitstun;
 
         Vector2 kb = new Vector2(a.knockback.x * (attacker.faceRight ? 1f : -1f), a.knockback.y);
-        rb.linearVelocity = new Vector2(kb.x, Mathf.Max(rb.linearVelocity.y, kb.y)); // simple overwrite with min Y keep
+        rb.velocity = new Vector2(kb.x, Mathf.Max(rb.velocity.y, kb.y)); // simple overwrite with min Y keep
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
-    // Animation
+    // Animator
     // ─────────────────────────────────────────────────────────────────────────────
-    void UpdateStateAnimation()
+    void DriveAnimator(float moveInput)
     {
-        // Only update animation if state changed
-        if (state == prevState) return;
-        prevState = state;
-
-        // Reset all state bools
-        SetAnimBool(paramIdle, false);
-        SetAnimBool(paramWalk, false);
-        SetAnimBool(paramJump, false);
-        SetAnimBool(paramFall, false);
-        SetAnimBool(paramDash, false);
-        SetAnimBool(paramHitstun, false);
-        SetAnimBool(paramKO, false);
-
-        // Set the current state bool to true
-        switch (state)
-        {
-            case State.Idle: SetAnimBool(paramIdle, true); break;
-            case State.Walk: SetAnimBool(paramWalk, true); break;
-            case State.Jump: SetAnimBool(paramJump, true); break;
-            case State.Fall: SetAnimBool(paramFall, true); break;
-            case State.Dash: SetAnimBool(paramDash, true); break;
-            case State.Hitstun: SetAnimBool(paramHitstun, true); break;
-            case State.KO: SetAnimBool(paramKO, true); break;
-            case State.Attack: 
-                // Attacks still play directly since they're temporary
-                break;
-        }
-    }
-
-    void SetAnimBool(string paramName, bool value)
-    {
-        if (string.IsNullOrEmpty(paramName) || animator == null) return;
-        animator.SetBool(paramName, value);
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────────
-    // UI
-    // ─────────────────────────────────────────────────────────────────────────────
-    void SetupHealthBar()
-    {
-        // Create health bar root
-        healthBarRoot = new GameObject("HealthBar").transform;
-        healthBarRoot.SetParent(transform, false);
-        healthBarRoot.localPosition = new Vector3(healthBarOffsetX, healthBarOffsetY, 0f);
-
-        // Create background (black)
-        var bgObj = new GameObject("Background");
-        bgObj.transform.SetParent(healthBarRoot, false);
-        healthBarBackground = bgObj.AddComponent<SpriteRenderer>();
-        healthBarBackground.sprite = healthBarSprite;
-        healthBarBackground.color = Color.black;
-        healthBarBackground.sortingOrder = healthBarSortingOrder;
-        bgObj.transform.localScale = new Vector3(healthBarWidth + 0.05f, 0.15f, 1f);
-
-        // Create fill (green to red)
-        var fillObj = new GameObject("Fill");
-        fillObj.transform.SetParent(healthBarRoot, false);
-        fillObj.transform.localPosition = new Vector3(-healthBarWidth * 0.5f, 0f, -0.01f);
-        healthBarFill = fillObj.AddComponent<SpriteRenderer>();
-        healthBarFill.sprite = healthBarSprite;
-        healthBarFill.color = healthBarColorFull;
-        healthBarFill.sortingOrder = healthBarSortingOrder + 1;
-        // Set initial scale instead of using drawMode (which can cause NaN issues)
-        fillObj.transform.localScale = new Vector3(healthBarWidth, 0.1f, 1f);
-    }
-
-    void UpdateHealthBar()
-    {
-        if (healthBarFill == null) return;
-
-        // Update fill scale based on HP (avoid NaN by clamping)
-        float hpRatio = Mathf.Clamp01((float)hp / Mathf.Max(1, maxHP));
-        healthBarFill.transform.localScale = new Vector3(healthBarWidth * hpRatio, 0.1f, 1f);
-
-        // Lerp color from full to empty
-        healthBarFill.color = Color.Lerp(healthBarColorEmpty, healthBarColorFull, hpRatio);
+        if (!animator) return;
+        if (!string.IsNullOrEmpty(p_isGrounded)) animator.SetBool(p_isGrounded, grounded);
+        if (!string.IsNullOrEmpty(p_isWalking)) animator.SetBool(p_isWalking, grounded && Mathf.Abs(moveInput) > 0.05f);
+        if (!string.IsNullOrEmpty(p_isDashing)) animator.SetBool(p_isDashing, state == State.Dash);
+        if (!string.IsNullOrEmpty(p_isJumping)) animator.SetBool(p_isJumping, state == State.Jump || state == State.Fall);
+        if (!string.IsNullOrEmpty(p_speedX)) animator.SetFloat(p_speedX, Mathf.Abs(rb.velocity.x));
+        if (!string.IsNullOrEmpty(p_speedY)) animator.SetFloat(p_speedY, rb.velocity.y);
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
@@ -490,6 +380,14 @@ public class BasicFighter2D : MonoBehaviour
     float FacingDir() => faceRight ? 1f : -1f;
 
     Vector2 RotateFacing(Vector2 v) => new Vector2(v.x * FacingDir(), v.y);
+
+    void ApplyVisualFlip()
+    {
+        if (!visualRoot) return;
+        var s = visualRoot.localScale;
+        s.x = Mathf.Abs(s.x) * (faceRight ? 1f : -1f);
+        visualRoot.localScale = s;
+    }
 
     // ─────────────────────────────────────────────────────────────────────────────
     // Validation
@@ -509,9 +407,9 @@ public class BasicFighter2D : MonoBehaviour
         if (keyMedium == KeyCode.None) Fail("keyMedium is REQUIRED.");
         if (keyHeavy == KeyCode.None) Fail("keyHeavy is REQUIRED.");
 
-        if (!rb) Fail("Rigidbody2D is REQUIRED on GameObject.");
-        if (!animator) Fail("Animator is REQUIRED on GameObject.");
-        if (!body) Fail("Collider2D is REQUIRED on GameObject.");
+        if (!rb) Fail("Rigidbody2D missing on GameObject.");
+        if (!animator) Fail("Animator missing on GameObject.");
+        if (!body) Fail("Collider2D missing on GameObject.");
 
         if (moveSpeed <= 0f) Fail("moveSpeed must be > 0.");
         if (jumpHeight <= 0f) Fail("jumpHeight must be > 0.");
@@ -525,23 +423,12 @@ public class BasicFighter2D : MonoBehaviour
 
         if (maxHP <= 0) Fail("maxHP must be > 0.");
 
-        if (healthBarSprite == null) Fail("healthBarSprite is REQUIRED.");
-        if (healthBarWidth <= 0f) Fail("healthBarWidth must be > 0.");
-
-        if (animIdle == null) Fail("animIdle is REQUIRED.");
-        if (animWalk == null) Fail("animWalk is REQUIRED.");
-        if (animJump == null) Fail("animJump is REQUIRED.");
-        if (animFall == null) Fail("animFall is REQUIRED.");
-        if (animDash == null) Fail("animDash is REQUIRED.");
-        if (animHitstun == null) Fail("animHitstun is REQUIRED.");
-        if (animKO == null) Fail("animKO is REQUIRED.");
-
-        if (lightAttack == null) Fail("lightAttack is REQUIRED.");
-        else if (!ValidateAttack(lightAttack, "lightAttack")) ok = false;
-        if (mediumAttack == null) Fail("mediumAttack is REQUIRED.");
-        else if (!ValidateAttack(mediumAttack, "mediumAttack")) ok = false;
-        if (heavyAttack == null) Fail("heavyAttack is REQUIRED.");
-        else if (!ValidateAttack(heavyAttack, "heavyAttack")) ok = false;
+        if (light == null) Fail("light attack is REQUIRED.");
+        else if (!ValidateAttack(light, "light")) ok = false;
+        if (medium == null) Fail("medium attack is REQUIRED.");
+        else if (!ValidateAttack(medium, "medium")) ok = false;
+        if (heavy == null) Fail("heavy attack is REQUIRED.");
+        else if (!ValidateAttack(heavy, "heavy")) ok = false;
 
         return ok;
     }
@@ -551,7 +438,6 @@ public class BasicFighter2D : MonoBehaviour
         bool ok = true;
         void Fail(string m) { Debug.LogError($"[BasicFighter2D:{gameObject.name}] Attack '{label}': {m}", this); ok = false; }
         if (string.IsNullOrWhiteSpace(a.name)) Fail("name is REQUIRED.");
-        if (a.anim == null) Fail("AnimationClip is REQUIRED.");
         if (a.startup <= 0f) Fail("startup must be > 0.");
         if (a.active <= 0f) Fail("active must be > 0.");
         if (a.recovery < 0f) Fail("recovery must be >= 0.");
