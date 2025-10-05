@@ -8,8 +8,12 @@ public class David_Shop : MonoBehaviour
     public Transform spawnPoint;
     public GameObject unitPrefab;
     public GameObject buildingPrefab;
+    public GameObject baricadePrefab;
+    public GameObject archertowerPrefab;
     public int unitCost = 20;
     public int buildingCost = 30;
+    public int baricadeCost = 15;
+    public int archerCost = 35;
 
     void Update()
     {
@@ -30,13 +34,13 @@ public class David_Shop : MonoBehaviour
         GameGlue.I.AddGold(-unitCost);
         Transform point = spawnPoint != null ? spawnPoint : transform;
 
-                    /*
-                    Transform point;
-            if (spawnPoint != null)
-                point = spawnPoint;
-            else
-                point = transform;
-            */
+        /*
+        Transform point;
+        if (spawnPoint != null)
+            point = spawnPoint;
+        else
+            point = transform;
+        */
         Instantiate(unitPrefab, point.position, point.rotation);
         GameGlue.I.Hint("Recruited a unit");
     }
@@ -55,7 +59,36 @@ public class David_Shop : MonoBehaviour
         GameGlue.I.Hint("Constructed a building");
     }
 
-    bool ValidateSpawn(GameObject prefab, int cost)
+    public void BuyBaricade()
+    {
+        if (!ValidateSpawn(baricadePrefab, baricadeCost))
+        {
+            return;
+        }
+
+        GameGlue.I.AddGold(-baricadeCost);
+        Transform point = spawnPoint != null ? spawnPoint : transform;
+        Instantiate(baricadePrefab, point.position, point.rotation);
+        GameGlue.I.AddHouse(1);
+        GameGlue.I.Hint("Constructed a baricade");
+    }
+
+    public void BuyArcherTower()
+    {
+        if (!ValidateSpawn(archertowerPrefab, archerCost))
+        {
+            return;
+        }
+
+        GameGlue.I.AddGold(-archerCost);
+        Transform point = spawnPoint != null ? spawnPoint : transform;
+        Instantiate(archertowerPrefab, point.position, point.rotation);
+        GameGlue.I.AddHouse(1);
+        GameGlue.I.Hint("Constructed a baricade");
+    }
+
+    // Checks prefab, gold, and spawn validity before purchase
+    public bool ValidateSpawn(GameObject prefab, int cost)
     {
         if (GameGlue.I == null)
         {
