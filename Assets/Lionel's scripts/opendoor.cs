@@ -22,8 +22,4 @@ public class OpenDoor : MonoBehaviour
         if (door != null)
             door.transform.localEulerAngles = openRotation;
     }
-
-
-
-
 }
