@@ -1,9 +1,24 @@
 fileFormatVersion: 2
-guid: ad2b0edf8fcafb74d972913dec4c4449
+guid: add1f92afdd72f04abcca7334b77e492
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: phong1
+    second: {fileID: 2100000, guid: ab0cc4465ef7faa49a76dd27c69d2eba, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: standardSurface1
+    second: {fileID: 2100000, guid: ab0cc4465ef7faa49a76dd27c69d2eba, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: typeStandardSurface
+    second: {fileID: 2100000, guid: ea819ba525d5c5e49818a614352662b3, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

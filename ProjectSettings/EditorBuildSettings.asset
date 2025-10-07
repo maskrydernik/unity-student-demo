@@ -8,6 +8,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AlanLemerande_Scene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/ChristopherVasquez_Scene.unity
+    guid: 1471902d6bc0b774b9c7373b3a9a74fc
+  - enabled: 1
+    path: Assets/Scenes/StevenHidalgo.scean.unity
+    guid: c545680dbdc92474a8acaafeb5447636
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
