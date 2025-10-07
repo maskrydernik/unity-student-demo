@@ -3932,6 +3932,8 @@ MonoBehaviour:
   greeting: Hello.
   option1: Help (+10 gold)
   option2: Decline
+  option1Result: You gained 10 gold.
+  option2Result: You walk away.
   talkRange: 2
 --- !u!4 &2049656498
 Transform:
@@ -4191,6 +4193,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61f4549ee4960fe4babd19afed937eb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameOverScreen: {fileID: 0}
+  gameOverMessage: {fileID: 0}
+  player: {fileID: 0}
 --- !u!114 &2141060211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4226,6 +4231,7 @@ MonoBehaviour:
   gearText: {fileID: 735172034}
   questText: {fileID: 1421118733}
   tipText: {fileID: 726793369}
+  dialogueText: {fileID: 0}
 --- !u!4 &2141060213
 Transform:
   m_ObjectHideFlags: 0
