@@ -1,56 +1,62 @@
-// Joshua_SimpleNPC.cs
+// CustomNPC.cs
 // Press T to talk when near. 1/2 to choose.
 using UnityEngine;
 
-public class Joshua_SimpleNPC : MonoBehaviour
+public class NiceLady : MonoBehaviour
 {
-    [TextArea] public string greeting = "Hello.";
-    [TextArea] public string option1 = "Help (+10 gold)";
-    [TextArea] public string option2 = "Decline";
-    [TextArea] public string option1Result = "You gained 10 gold.";
-    [TextArea] public string option2Result = "You walk away.";
-    [Tooltip("Radius within which a unit can start dialog.")]
+    [Header("Dialogue")]
+    [TextArea] public string greeting = "Hello there!";
+    [TextArea] public string option1 = "Ask for help";
+    [TextArea] public string option2 = "Say goodbye";
+    [TextArea] public string option1Result = "The NPC helps you.";
+    [TextArea] public string option2Result = "You part ways.";
+
+    [Header("Settings")]
+    [Tooltip("Radius within which the player can start dialogue.")]
     public float talkRange = 3f;
 
-    bool inside = false;
-    bool dialog = false;
-    Transform currentListener;
+    private bool inside = false;
+    private bool dialog = false;
+    private Transform currentListener;
 
     void Update()
     {
         UpdateProximity();
-        if (!inside)
-        {
-            return;
-        }
 
+        if (!inside)
+            return;
+
+        // Start dialogue
         if (!dialog && Input.GetKeyDown(KeyCode.T))
         {
             dialog = true;
-            if(GameGlue.I != null)
+            if (GameGlue.I != null)
             {
                 GameGlue.I.dialogueText.gameObject.SetActive(true);
                 GameGlue.I.ShowDialogue(greeting);
                 GameGlue.I.Hint("[1] " + option1 + "  [2] " + option2);
             }
         }
+
+        // Option 1
         else if (dialog && Input.GetKeyDown(KeyCode.Alpha1))
         {
             dialog = false;
-            GameGlue.I.AddGold(10);
             if (GameGlue.I != null)
             {
-                GameGlue.I.ShowDialogue(option1Result); // clear dialogue
+                GameGlue.I.ShowDialogue(option1Result);
                 GameGlue.I.dialogueText.gameObject.SetActive(true);
                 GameGlue.I.Hint("");
             }
         }
+
+        // Option 2
         else if (dialog && Input.GetKeyDown(KeyCode.Alpha2))
         {
             dialog = false;
             if (GameGlue.I != null)
             {
-                GameGlue.I.ShowDialogue(option2Result); // clear dialogue
+                GameGlue.I.ShowDialogue(option2Result);
                 GameGlue.I.dialogueText.gameObject.SetActive(true);
                 GameGlue.I.Hint("");
             }
@@ -71,22 +77,21 @@ public class Joshua_SimpleNPC : MonoBehaviour
         }
         else if (!inside && wasInside)
         {
-            // Always clear dialogue and hint
             dialog = false;
             if (GameGlue.I != null)
             {
-                GameGlue.I.ShowDialogue("");                // clear dialogue text
-                GameGlue.I.dialogueText.gameObject.SetActive(false); // hide dialogue field
-                GameGlue.I.Hint("");                        // clear tip/hint
+                GameGlue.I.ShowDialogue("");
+                GameGlue.I.dialogueText.gameObject.SetActive(false);
+                GameGlue.I.Hint("");
             }
         }
     }
-
 
     Transform FindClosestListener()
     {
         float bestSqr = talkRange * talkRange;
         Transform best = null;
+
         foreach (var hp in FindObjectsByType<Arthur_WorldHPBar>(FindObjectsSortMode.None))
         {
             if (!hp) continue;
@@ -97,6 +102,7 @@ public class Joshua_SimpleNPC : MonoBehaviour
                 best = hp.transform;
             }
         }
+
         return best;
     }
 }
