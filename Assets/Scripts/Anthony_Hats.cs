@@ -9,9 +9,9 @@ public class Anthony_Hats : MonoBehaviour
     public float yOffset = 2.1f;
     public int sortingOrder = 50;
 
-    Transform hatRoot;
-    SpriteRenderer hatRenderer;
-    int currentHatIndex = -1;
+    private Transform hatRoot;
+    private SpriteRenderer hatRenderer;
+    private int currentHatIndex = -1;
 
     void Start()
     {
@@ -26,11 +26,6 @@ public class Anthony_Hats : MonoBehaviour
         {
             hatRoot.forward = cam.transform.forward;
         }
-
-        if (Input.GetKeyDown(KeyCode.Tab) && IsSelected())
-        {
-            CycleHat();
-        }
     }
 
     void CreateHatRenderer()
@@ -43,34 +38,18 @@ public class Anthony_Hats : MonoBehaviour
         hatRenderer.sortingOrder = sortingOrder;
     }
 
-    void CycleHat()
+    public void SelectHat (int hatIndex)
     {
-        if (hats.Count == 0)
+        if (hatIndex >= 0 && hatIndex < hats.Count)
+        {
+            ApplyHat(hatIndex);
+            currentHatIndex = hatIndex;
+        }
+        else
         {
             ApplyHat(-1);
             currentHatIndex = -1;
-            return;
         }
-
-        int nextIndex = currentHatIndex + 1;
-        if (nextIndex >= hats.Count)
-        {
-            nextIndex = -1; // wrap around to no hat
-        }
-
-        ApplyHat(nextIndex);
-        currentHatIndex = nextIndex;
-    }
-
-    bool IsSelected()
-    {
-        var unit = GetComponent<Unit>();
-        if (unit != null)
-        {
-            return unit.IsSelected;
-        }
-
-        return true;
     }
 
     void ApplyHat(int hatIndex)
