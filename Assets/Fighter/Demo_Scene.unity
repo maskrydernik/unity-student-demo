@@ -427,6 +427,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Demo_Fighter
       objectReference: {fileID: 0}
+    - target: {fileID: 7370474427804421467, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -763,131 +767,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1002125964
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 652066773530269673, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_Size.x
-      value: 1.2285714
-      objectReference: {fileID: 0}
-    - target: {fileID: 652066773530269673, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_Size.y
-      value: 1.8285714
-      objectReference: {fileID: 0}
-    - target: {fileID: 652066773530269673, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 325054144, guid: 5489af800944533498fa9af97d2041ba, type: 3}
-    - target: {fileID: 652066773530269673, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 4.93
-      objectReference: {fileID: 0}
-    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -2.42
-      objectReference: {fileID: 0}
-    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 2.43
-      objectReference: {fileID: 0}
-    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: animKO
-      value: 
-      objectReference: {fileID: 7400000, guid: 81d7a148ca6d17b43ab7f286ace80f50, type: 2}
-    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: keyDash
-      value: 101
-      objectReference: {fileID: 0}
-    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: keyJump
-      value: 32
-      objectReference: {fileID: 0}
-    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: keyLeft
-      value: 97
-      objectReference: {fileID: 0}
-    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: animDash
-      value: 
-      objectReference: {fileID: 7400000, guid: 8e7a090dce81fa640ae8b082ec97e576, type: 2}
-    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: animFall
-      value: 
-      objectReference: {fileID: 7400000, guid: e0ce783e35f60cf46bffd0a9a747eae6, type: 2}
-    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: animIdle
-      value: 
-      objectReference: {fileID: 7400000, guid: 27e7f63f1cf4de145b60763be97fa80f, type: 2}
-    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: animJump
-      value: 
-      objectReference: {fileID: 7400000, guid: f56e555198e904941aa221bc87a99001, type: 2}
-    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: animWalk
-      value: 
-      objectReference: {fileID: 7400000, guid: 37f4eb57870c3bc47b60a2a0046a6c14, type: 2}
-    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: keyRight
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: moveSpeed
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: jumpHeight
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: animHitstun
-      value: 
-      objectReference: {fileID: 7400000, guid: b34d6b20c781deb4990b4d51b8539377, type: 2}
-    - target: {fileID: 7370474427804421467, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
-      propertyPath: m_Name
-      value: steven demo fighter
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
 --- !u!1 &1169340669
 GameObject:
   m_ObjectHideFlags: 0
@@ -1465,6 +1344,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &3134266327937156843
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.43
+      objectReference: {fileID: 0}
+    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7370474427804421467, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_Name
+      value: steven demo fighter
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1473,7 +1409,7 @@ SceneRoots:
   - {fileID: 688311732}
   - {fileID: 614209559}
   - {fileID: 397585456}
-  - {fileID: 1002125964}
+  - {fileID: 3134266327937156843}
   - {fileID: 1169340672}
   - {fileID: 103653496}
   - {fileID: 1458210453}

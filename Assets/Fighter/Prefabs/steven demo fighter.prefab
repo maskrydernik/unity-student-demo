@@ -189,71 +189,71 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521b01eee95fcd5468374cd9b2db015c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fighterName: 
-  keyLeft: 0
-  keyRight: 0
-  keyJump: 0
-  keyDash: 0
-  keyLight: 0
-  keyMedium: 0
-  keyHeavy: 0
-  moveSpeed: 0
-  jumpHeight: 0
-  gravityScale: 0
-  fallGravityScale: 0
-  dashSpeed: 0
-  dashDuration: 0
-  airControl: 0
+  fighterName: blah
+  keyLeft: 97
+  keyRight: 100
+  keyJump: 32
+  keyDash: 101
+  keyLight: 114
+  keyMedium: 102
+  keyHeavy: 99
+  moveSpeed: 7
+  jumpHeight: 7
+  gravityScale: 5
+  fallGravityScale: 5
+  dashSpeed: 10
+  dashDuration: 2
+  airControl: 2
   groundMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   groundCheckOffset: {x: 0, y: 0}
-  groundCheckRadius: 0
+  groundCheckRadius: 0.1
   lightAttack:
-    name: 
-    anim: {fileID: 0}
-    startup: 0
-    active: 0
-    recovery: 0
-    damage: 0
-    hitstun: 0
-    hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
-    knockback: {x: 0, y: 0}
+    name: light
+    anim: {fileID: 7400000, guid: a5f1b663fe1bbd74abb6979ab3655559, type: 2}
+    startup: 1
+    active: 1
+    recovery: 1
+    damage: 1
+    hitstun: 1
+    hitboxOffset: {x: 1, y: 1}
+    hitboxSize: {x: 1, y: 1}
+    knockback: {x: 1, y: 1}
   mediumAttack:
-    name: 
-    anim: {fileID: 0}
-    startup: 0
-    active: 0
-    recovery: 0
-    damage: 0
-    hitstun: 0
-    hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
-    knockback: {x: 0, y: 0}
+    name: medium
+    anim: {fileID: 7400000, guid: 7f1e3271f86c11240b00cf25021c130f, type: 2}
+    startup: 1
+    active: 1
+    recovery: 1
+    damage: 1
+    hitstun: 1
+    hitboxOffset: {x: 1, y: 1}
+    hitboxSize: {x: 1, y: 1}
+    knockback: {x: 1, y: 1}
   heavyAttack:
-    name: 
-    anim: {fileID: 0}
-    startup: 0
-    active: 0
-    recovery: 0
-    damage: 0
-    hitstun: 0
-    hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
-    knockback: {x: 0, y: 0}
-  maxHP: 0
-  healthBarSprite: {fileID: 0}
+    name: heavy
+    anim: {fileID: 7400000, guid: c61e61cfa887e314ba32f0089c1b40d6, type: 2}
+    startup: 2
+    active: 2
+    recovery: 2
+    damage: 2
+    hitstun: 2
+    hitboxOffset: {x: 2, y: 2}
+    hitboxSize: {x: 2, y: 2}
+    knockback: {x: 2, y: 2}
+  maxHP: 100
+  healthBarSprite: {fileID: 21300000, guid: e5ae61419f22360429498c6b7add730e, type: 3}
   healthBarOffsetX: 0
-  healthBarOffsetY: 0
-  healthBarScaleX: 0
-  healthBarScaleY: 0
+  healthBarOffsetY: -1.5
+  healthBarScaleX: 1
+  healthBarScaleY: 1
   healthBarColorFull: {r: 0, g: 0, b: 0, a: 0}
   healthBarColorEmpty: {r: 0, g: 0, b: 0, a: 0}
-  animIdle: {fileID: 0}
-  animWalk: {fileID: 0}
-  animJump: {fileID: 0}
-  animFall: {fileID: 0}
-  animDash: {fileID: 0}
-  animHitstun: {fileID: 0}
-  animKO: {fileID: 0}
+  animIdle: {fileID: 7400000, guid: 27e7f63f1cf4de145b60763be97fa80f, type: 2}
+  animWalk: {fileID: 7400000, guid: 37f4eb57870c3bc47b60a2a0046a6c14, type: 2}
+  animJump: {fileID: 7400000, guid: f56e555198e904941aa221bc87a99001, type: 2}
+  animFall: {fileID: 7400000, guid: e0ce783e35f60cf46bffd0a9a747eae6, type: 2}
+  animDash: {fileID: 7400000, guid: 8e7a090dce81fa640ae8b082ec97e576, type: 2}
+  animHitstun: {fileID: 7400000, guid: b34d6b20c781deb4990b4d51b8539377, type: 2}
+  animKO: {fileID: 7400000, guid: 81d7a148ca6d17b43ab7f286ace80f50, type: 2}
