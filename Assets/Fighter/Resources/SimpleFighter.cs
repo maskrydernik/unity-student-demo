@@ -78,20 +78,13 @@ public class BasicFighter2D : MonoBehaviour
     // PRIVATE COMPONENTS (auto-fetched)
     // ─────────────────────────────────────────────────────────────────────────────
     Rigidbody2D rb;
-    Animator animator;
+    Animation animationComponent; // Legacy Animation component for direct clip playback
     Collider2D body;
+    SpriteRenderer spriteRenderer;
     Transform healthBarRoot;
     SpriteRenderer healthBarBackground;
     SpriteRenderer healthBarFill;
-
-    // Animator parameter names (fixed)
-    const string paramIdle = "Idle";
-    const string paramWalk = "Walk";
-    const string paramJump = "Jump";
-    const string paramFall = "Fall";
-    const string paramDash = "Dash";
-    const string paramHitstun = "Hitstun";
-    const string paramKO = "KO";
+    Texture2D healthBarTexture; // Track texture for cleanup
 
     // ─────────────────────────────────────────────────────────────────────────────
     // INTERNAL STATE
@@ -157,8 +150,18 @@ public class BasicFighter2D : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
         body = GetComponent<Collider2D>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        // Get or add Animation component for direct playback
+        animationComponent = GetComponent<Animation>();
+        if (animationComponent == null)
+        {
+            animationComponent = gameObject.AddComponent<Animation>();
+        }
+        
+        // Setup animation clips
+        SetupAnimations();
 
         if (!ValidateRequired()) { enabled = false; return; }
 
@@ -173,6 +176,8 @@ public class BasicFighter2D : MonoBehaviour
     void OnDestroy()
     {
         registry.Remove(this);
+        // Cleanup texture to prevent memory leak
+        if (healthBarTexture != null) Destroy(healthBarTexture);
     }
 
     void Update()
@@ -198,6 +203,9 @@ public class BasicFighter2D : MonoBehaviour
 
         // Face by last nonzero move input
         if (Mathf.Abs(move) > 0.001f) faceRight = move > 0f;
+
+        // Update sprite facing
+        UpdateSpriteFacing();
 
         // State machine (Update for transitions and non-physics actions)
         switch (state)
@@ -246,9 +254,9 @@ public class BasicFighter2D : MonoBehaviour
         if (!enabled) return;
 
         // Gravity scale swap for better jump arc
-        rb.gravityScale = (rb.linearVelocity.y < 0f) ? fallGravityScale : gravityScale;
+        rb.gravityScale = (rb.velocity.y < 0f) ? fallGravityScale : gravityScale;
 
-        Vector2 v = rb.linearVelocity;
+        Vector2 v = rb.velocity;
 
         switch (state)
         {
@@ -295,7 +303,7 @@ public class BasicFighter2D : MonoBehaviour
                 break;
         }
 
-        rb.linearVelocity = v;
+        rb.velocity = v;
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
@@ -306,9 +314,9 @@ public class BasicFighter2D : MonoBehaviour
         float g = Mathf.Abs(Physics2D.gravity.y) * gravityScale;
         if (g <= 0f) { Debug.LogError($"[{name}] gravity invalid; set gravityScale > 0"); enabled = false; return; }
         float v0 = Mathf.Sqrt(2f * g * Mathf.Max(jumpHeight, 0.0001f));
-        var v = rb.linearVelocity;
+        var v = rb.velocity;
         v.y = v0;
-        rb.linearVelocity = v;
+        rb.velocity = v;
         state = State.Jump;
     }
 
@@ -344,8 +352,24 @@ public class BasicFighter2D : MonoBehaviour
         victimsThisSwing.Clear();
         state = State.Attack;
 
-        // Play animation clip directly (required)
-        animator.Play(a.anim.name, 0, 0f);
+        // Play animation clip directly using our registered name
+        if (animationComponent != null && a.anim != null)
+        {
+            string attackName = null;
+            if (a == lightAttack) attackName = "LightAttack";
+            else if (a == mediumAttack) attackName = "MediumAttack";
+            else if (a == heavyAttack) attackName = "HeavyAttack";
+
+            if (attackName != null)
+            {
+                AnimationState animState = animationComponent[attackName];
+                if (animState != null)
+                {
+                    animState.wrapMode = WrapMode.Once;
+                    animationComponent.CrossFade(attackName, 0.05f);
+                }
+            }
+        }
         return true;
     }
 
@@ -397,7 +421,7 @@ public class BasicFighter2D : MonoBehaviour
         if (hp == 0)
         {
             state = State.KO;
-            rb.linearVelocity = Vector2.zero;
+            rb.velocity = Vector2.zero;
             return;
         }
 
@@ -406,47 +430,142 @@ public class BasicFighter2D : MonoBehaviour
         state = State.Hitstun;
 
         Vector2 kb = new Vector2(a.knockback.x * (attacker.faceRight ? 1f : -1f), a.knockback.y);
-        rb.linearVelocity = new Vector2(kb.x, Mathf.Max(rb.linearVelocity.y, kb.y)); // simple overwrite with min Y keep
+        rb.velocity = new Vector2(kb.x, Mathf.Max(rb.velocity.y, kb.y)); // simple overwrite with min Y keep
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
     // Animation
     // ─────────────────────────────────────────────────────────────────────────────
+    void SetupAnimations()
+    {
+        // Helper to safely add clip with Legacy check
+        bool AddClipSafe(AnimationClip clip, string name)
+        {
+            if (clip == null) return false;
+            
+            if (!clip.legacy)
+            {
+                Debug.LogError($"[{gameObject.name}] AnimationClip '{clip.name}' must be marked as LEGACY!\n" +
+                              $"Fix: Select the clip → Inspector → Debug mode → Check 'Legacy' checkbox\n" +
+                              $"Or: Select clip → Import Settings → Animation Type: Legacy", this);
+                return false;
+            }
+            
+            try
+            {
+                animationComponent.AddClip(clip, name);
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[{gameObject.name}] Failed to add clip '{name}': {e.Message}", this);
+                return false;
+            }
+        }
+
+        // Register all animation clips with the Animation component
+        bool allOk = true;
+        
+        if (animIdle != null) 
+        {
+            if (AddClipSafe(animIdle, "Idle"))
+            {
+                animationComponent.clip = animIdle; // Set as default
+            }
+            else allOk = false;
+        }
+        
+        if (animWalk != null && !AddClipSafe(animWalk, "Walk")) allOk = false;
+        if (animJump != null && !AddClipSafe(animJump, "Jump")) allOk = false;
+        if (animFall != null && !AddClipSafe(animFall, "Fall")) allOk = false;
+        if (animDash != null && !AddClipSafe(animDash, "Dash")) allOk = false;
+        if (animHitstun != null && !AddClipSafe(animHitstun, "Hitstun")) allOk = false;
+        if (animKO != null && !AddClipSafe(animKO, "KO")) allOk = false;
+
+        // Add attack clips with simple names
+        if (lightAttack?.anim != null && !AddClipSafe(lightAttack.anim, "LightAttack")) allOk = false;
+        if (mediumAttack?.anim != null && !AddClipSafe(mediumAttack.anim, "MediumAttack")) allOk = false;
+        if (heavyAttack?.anim != null && !AddClipSafe(heavyAttack.anim, "HeavyAttack")) allOk = false;
+
+        if (!allOk)
+        {
+            Debug.LogError($"[{gameObject.name}] Animation setup FAILED! See errors above. Fighter disabled.", this);
+            enabled = false;
+            return;
+        }
+
+        // Play idle by default
+        if (animIdle != null)
+        {
+            animationComponent.wrapMode = WrapMode.Loop;
+            animationComponent.Play("Idle");
+        }
+    }
+
     void UpdateStateAnimation()
     {
         // Only update animation if state changed
         if (state == prevState) return;
         prevState = state;
 
-        // Reset all state bools
-        SetAnimBool(paramIdle, false);
-        SetAnimBool(paramWalk, false);
-        SetAnimBool(paramJump, false);
-        SetAnimBool(paramFall, false);
-        SetAnimBool(paramDash, false);
-        SetAnimBool(paramHitstun, false);
-        SetAnimBool(paramKO, false);
+        // Play the appropriate animation clip directly
+        string clipName = null;
+        WrapMode wrapMode = WrapMode.Loop;
 
-        // Set the current state bool to true
         switch (state)
         {
-            case State.Idle: SetAnimBool(paramIdle, true); break;
-            case State.Walk: SetAnimBool(paramWalk, true); break;
-            case State.Jump: SetAnimBool(paramJump, true); break;
-            case State.Fall: SetAnimBool(paramFall, true); break;
-            case State.Dash: SetAnimBool(paramDash, true); break;
-            case State.Hitstun: SetAnimBool(paramHitstun, true); break;
-            case State.KO: SetAnimBool(paramKO, true); break;
-            case State.Attack:
-                // Attacks still play directly since they're temporary
+            case State.Idle: 
+                clipName = "Idle";
+                wrapMode = WrapMode.Loop;
                 break;
+            case State.Walk: 
+                clipName = "Walk";
+                wrapMode = WrapMode.Loop;
+                break;
+            case State.Jump: 
+                clipName = "Jump";
+                wrapMode = WrapMode.Once;
+                break;
+            case State.Fall: 
+                clipName = "Fall";
+                wrapMode = WrapMode.Loop;
+                break;
+            case State.Dash: 
+                clipName = "Dash";
+                wrapMode = WrapMode.Once;
+                break;
+            case State.Hitstun: 
+                clipName = "Hitstun";
+                wrapMode = WrapMode.Once;
+                break;
+            case State.KO: 
+                clipName = "KO";
+                wrapMode = WrapMode.Once;
+                break;
+            case State.Attack:
+                // Attacks are handled when they start
+                return;
+        }
+
+        if (clipName != null && animationComponent != null)
+        {
+            // Set wrap mode for the specific clip
+            AnimationState animState = animationComponent[clipName];
+            if (animState != null)
+            {
+                animState.wrapMode = wrapMode;
+                animationComponent.CrossFade(clipName, 0.1f);
+            }
         }
     }
 
-    void SetAnimBool(string paramName, bool value)
+    void UpdateSpriteFacing()
     {
-        if (string.IsNullOrEmpty(paramName) || animator == null) return;
-        animator.SetBool(paramName, value);
+        if (spriteRenderer != null)
+        {
+            // Flip sprite based on facing direction
+            spriteRenderer.flipX = !faceRight;
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
@@ -527,8 +646,9 @@ public class BasicFighter2D : MonoBehaviour
         if (keyHeavy == KeyCode.None) Fail("keyHeavy is REQUIRED.");
 
         if (!rb) Fail("Rigidbody2D is REQUIRED on GameObject.");
-        if (!animator) Fail("Animator is REQUIRED on GameObject.");
+        if (!animationComponent) Fail("Animation component is REQUIRED (auto-added if missing).");
         if (!body) Fail("Collider2D is REQUIRED on GameObject.");
+        if (!spriteRenderer) Fail("SpriteRenderer is REQUIRED (on GameObject or child).");
 
         if (moveSpeed <= 0f) Fail("moveSpeed must be > 0.");
         if (jumpHeight <= 0f) Fail("jumpHeight must be > 0.");
