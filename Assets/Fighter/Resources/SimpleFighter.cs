@@ -97,6 +97,7 @@ public class BasicFighter2D : MonoBehaviour
     // Animation sampling
     AnimationClip currentClip;
     float animationTime;
+    int currentFrame;
 
     // ─────────────────────────────────────────────────────────────────────────────
     // INTERNAL STATE
@@ -161,11 +162,28 @@ public class BasicFighter2D : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────────
     void Awake()
     {
+        Debug.Log($"[{fighterName}] Awake() started");
+        
         // Cache components
         rb = GetComponent<Rigidbody2D>();
         body = GetComponent<Collider2D>();
         sprite = GetComponentInChildren<SpriteRenderer>();
         animator = GetComponent<Animator>();
+
+        // DESTROY the Animator - we'll manually control sprites
+        if (animator != null)
+        {
+            Debug.Log($"[{fighterName}] Destroying Animator component");
+            Destroy(animator);
+            animator = null;
+        }
+
+        Debug.Log($"[{fighterName}] Components cached - sprite: {sprite != null}, rb: {rb != null}");
+        
+        if (sprite != null)
+        {
+            Debug.Log($"[{fighterName}] SpriteRenderer found on: {sprite.gameObject.name}, enabled: {sprite.enabled}, sprite: {sprite.sprite?.name ?? "NULL"}");
+        }
 
         if (!ValidateRequired()) { enabled = false; return; }
 
@@ -176,6 +194,8 @@ public class BasicFighter2D : MonoBehaviour
         // Start in idle state
         state = State.Idle;
         prevState = State.KO; // Set to different state to force first animation update
+
+        Debug.Log($"[{fighterName}] Initial state: {state}, animIdle: {animIdle?.name ?? "NULL"}");
 
         // Register for hit detection
         if (!registry.Contains(this)) registry.Add(this);
@@ -191,6 +211,17 @@ public class BasicFighter2D : MonoBehaviour
     {
         if (!enabled) return;
 
+        // Debug summary on first frame
+        if (debugFrameCount == 0)
+        {
+            Debug.Log($"[{fighterName}] === FIRST FRAME DEBUG ===");
+            Debug.Log($"  State: {state}");
+            Debug.Log($"  currentClip: {currentClip?.name ?? "NULL"}");
+            Debug.Log($"  sprite: {sprite?.name ?? "NULL"}");
+            Debug.Log($"  animIdle: {animIdle?.name ?? "NULL"}");
+            Debug.Log($"  enabled: {enabled}");
+        }
+
         UpdateTimers();
         ProcessInput();
         UpdateStateAnimation();
@@ -200,6 +231,9 @@ public class BasicFighter2D : MonoBehaviour
         if (debugAttacks)
             DrawDebugBoxes();
     }
+    
+    // Debug frame counter for periodic logging
+    private int debugFrameCount = 0;
 
     void FixedUpdate()
     {
@@ -427,6 +461,8 @@ public class BasicFighter2D : MonoBehaviour
 
         if (!ValidateAttack(a, "Use")) { enabled = false; return false; }
 
+        Debug.Log($"[{fighterName}] Starting attack: {a.name}, anim: {a.anim?.name ?? "NULL"}");
+
         currentAttack = a;
         attackTimer = 0f;
         victimsThisSwing.Clear();
@@ -517,6 +553,8 @@ public class BasicFighter2D : MonoBehaviour
         // Only update animation if state changed
         if (state == prevState) return;
         
+        Debug.Log($"[{fighterName}] State changed: {prevState} -> {state}");
+        
         prevState = state;
 
         // Pick animation based on state
@@ -533,10 +571,17 @@ public class BasicFighter2D : MonoBehaviour
             _ => null
         };
 
+        Debug.Log($"[{fighterName}] Selected clip for {state}: {clip?.name ?? "NULL"}");
+
         if (clip != null)
         {
             currentClip = clip;
             animationTime = 0f;
+            Debug.Log($"[{fighterName}] Animation set - clip: {currentClip.name}, length: {currentClip.length}s");
+        }
+        else
+        {
+            Debug.LogWarning($"[{fighterName}] No clip assigned for state {state}!");
         }
     }
 
@@ -580,7 +625,44 @@ public class BasicFighter2D : MonoBehaviour
 
     void SampleCurrentAnimation()
     {
-        if (currentClip == null || sprite == null) return;
+        if (currentClip == null || sprite == null)
+        {
+            // Log every 60 frames to avoid spam
+            debugFrameCount++;
+            if (debugFrameCount % 60 == 0)
+            {
+                Debug.LogWarning($"[{fighterName}] Cannot sample - currentClip: {currentClip?.name ?? "NULL"}, sprite: {sprite != null}");
+            }
+            return;
+        }
+
+        // Log first few frames of animation
+        if (debugFrameCount < 10)
+        {
+            Debug.Log($"[{fighterName}] Sampling {currentClip.name} at time {animationTime:F3}s (length: {currentClip.length:F3}s)");
+            
+            #if UNITY_EDITOR
+            // Check if sprite is being animated (editor only)
+            var bindings = UnityEditor.AnimationUtility.GetCurveBindings(currentClip);
+            var objectBindings = UnityEditor.AnimationUtility.GetObjectReferenceCurveBindings(currentClip);
+            if (debugFrameCount == 0)
+            {
+                Debug.Log($"[{fighterName}] Animation has {bindings.Length} float curves, {objectBindings.Length} object bindings");
+                foreach (var binding in objectBindings)
+                {
+                    Debug.Log($"  - Path: '{binding.path}', Property: {binding.propertyName}, Type: {binding.type}");
+                    
+                    // If this is a sprite property, extract the sprites
+                    if (binding.propertyName == "m_Sprite" && binding.type == typeof(SpriteRenderer))
+                    {
+                        var keyframes = UnityEditor.AnimationUtility.GetObjectReferenceCurve(currentClip, binding);
+                        Debug.Log($"    Found {keyframes.Length} sprite keyframes");
+                    }
+                }
+            }
+            #endif
+        }
+        debugFrameCount++;
 
         // Advance animation time
         animationTime += Time.deltaTime;
@@ -588,6 +670,8 @@ public class BasicFighter2D : MonoBehaviour
         // Check if we're in attack state and animation has completed
         if (state == State.Attack && animationTime >= currentClip.length)
         {
+            Debug.Log($"[{fighterName}] Attack animation completed, transitioning out");
+            
             // Force transition out of attack state
             currentAttack = null;
             // Do a fresh ground check to determine next state
@@ -602,6 +686,7 @@ public class BasicFighter2D : MonoBehaviour
             {
                 currentClip = newClip;
                 animationTime = 0f;
+                Debug.Log($"[{fighterName}] Switched to {newClip.name}");
             }
             return;
         }
@@ -610,16 +695,42 @@ public class BasicFighter2D : MonoBehaviour
         if (animationTime >= currentClip.length)
         {
             animationTime = animationTime % currentClip.length;
+            if (debugFrameCount % 60 == 0)
+            {
+                Debug.Log($"[{fighterName}] Animation looped: {currentClip.name}");
+            }
         }
 
-        // Store position before sampling to prevent animation-driven movement
-        Vector3 posBeforeSample = transform.position;
-
-        // Sample the animation clip
-        currentClip.SampleAnimation(gameObject, animationTime);
-
-        // Restore position to prevent animation clips from moving the character
-        transform.position = posBeforeSample;
+        // MANUAL SPRITE EXTRACTION from AnimationClip
+        #if UNITY_EDITOR
+        var spriteBindings = UnityEditor.AnimationUtility.GetObjectReferenceCurveBindings(currentClip);
+        foreach (var binding in spriteBindings)
+        {
+            if (binding.propertyName == "m_Sprite" && binding.type == typeof(SpriteRenderer))
+            {
+                var keyframes = UnityEditor.AnimationUtility.GetObjectReferenceCurve(currentClip, binding);
+                if (keyframes.Length > 0)
+                {
+                    // Find the appropriate keyframe for current time
+                    Sprite targetSprite = null;
+                    for (int i = keyframes.Length - 1; i >= 0; i--)
+                    {
+                        if (animationTime >= keyframes[i].time)
+                        {
+                            targetSprite = keyframes[i].value as Sprite;
+                            break;
+                        }
+                    }
+                    
+                    if (targetSprite != null && sprite.sprite != targetSprite)
+                    {
+                        sprite.sprite = targetSprite;
+                    }
+                }
+                break; // Only need to process the first sprite binding
+            }
+        }
+        #endif
     }
 
     void UpdateSpriteFacing()
