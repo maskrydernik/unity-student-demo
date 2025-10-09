@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7993102713961623431}
   - component: {fileID: 6395141877757686771}
   m_Layer: 0
-  m_Name: Demo_Fighter
+  m_Name: Nicholas_Fighter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 11.15, y: 12.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -56,6 +56,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -77,10 +79,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
-  m_Sprite: {fileID: -686140874, guid: 483b8b3577a55b64c9b2577f092871ff, type: 3}
+  m_Sprite: {fileID: -899709082, guid: f9fadbced41d04b40bde8bd0640fe0ab, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -189,71 +192,71 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521b01eee95fcd5468374cd9b2db015c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fighterName: 
-  keyLeft: 0
-  keyRight: 0
-  keyJump: 0
-  keyDash: 0
-  keyLight: 0
-  keyMedium: 0
-  keyHeavy: 0
-  moveSpeed: 0
-  jumpHeight: 0
-  gravityScale: 0
-  fallGravityScale: 0
-  dashSpeed: 0
-  dashDuration: 0
-  airControl: 0
+  fighterName: Bonestrike
+  keyLeft: 276
+  keyRight: 275
+  keyJump: 32
+  keyDash: 303
+  keyLight: 97
+  keyMedium: 115
+  keyHeavy: 100
+  moveSpeed: 8
+  jumpHeight: 15
+  gravityScale: 3
+  fallGravityScale: 4.5
+  dashSpeed: 20
+  dashDuration: 0.25
+  airControl: 0.5
   groundMask:
     serializedVersion: 2
-    m_Bits: 0
-  groundCheckOffset: {x: 0, y: 0}
-  groundCheckRadius: 0
+    m_Bits: 128
+  groundCheckOffset: {x: 0, y: -0.5}
+  groundCheckRadius: 0.2
   lightAttack:
-    name: 
-    anim: {fileID: 7400000, guid: 706e49cbc7ad5054eb785346d05c069e, type: 2}
-    startup: 0
-    active: 0
-    recovery: 0
-    damage: 0
-    hitstun: 0
-    hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
-    knockback: {x: 0, y: 0}
+    name: Light Swing
+    anim: {fileID: 7400000, guid: c15d8df0b99e4e948b4a29bac708d5f3, type: 2}
+    startup: 0.1
+    active: 0.1
+    recovery: 0.2
+    damage: 10
+    hitstun: 0.25
+    hitboxOffset: {x: 0.6, y: 0}
+    hitboxSize: {x: 0.8, y: 0.6}
+    knockback: {x: 2.5, y: 1}
   mediumAttack:
-    name: 
-    anim: {fileID: 0}
-    startup: 0
-    active: 0
-    recovery: 0
-    damage: 0
-    hitstun: 0
-    hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
-    knockback: {x: 0, y: 0}
+    name: Medium Swing
+    anim: {fileID: 7400000, guid: 65182cf137b98cc438b153aefbf8e0e0, type: 2}
+    startup: 0.15
+    active: 0.15
+    recovery: 0.3
+    damage: 20
+    hitstun: 0.35
+    hitboxOffset: {x: 0.8, y: 0}
+    hitboxSize: {x: 1, y: 0.6}
+    knockback: {x: 3.5, y: 1.2}
   heavyAttack:
-    name: 
-    anim: {fileID: 0}
-    startup: 0
-    active: 0
-    recovery: 0
-    damage: 0
-    hitstun: 0
-    hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
-    knockback: {x: 0, y: 0}
-  maxHP: 0
-  healthBarSprite: {fileID: 0}
+    name: Heavy Swing
+    anim: {fileID: 7400000, guid: 1427ce8d2ed693747bc80d73a8fce871, type: 2}
+    startup: 0.25
+    active: 0.2
+    recovery: 0.4
+    damage: 35
+    hitstun: 0.45
+    hitboxOffset: {x: 1, y: 0}
+    hitboxSize: {x: 1.2, y: 0.8}
+    knockback: {x: 5, y: 2}
+  maxHP: 1000
+  healthBarSprite: {fileID: 21300000, guid: e5ae61419f22360429498c6b7add730e, type: 3}
   healthBarOffsetX: 0
-  healthBarOffsetY: 0
-  healthBarScaleX: 0
-  healthBarScaleY: 0
-  healthBarColorFull: {r: 0, g: 0, b: 0, a: 0}
+  healthBarOffsetY: 1.5
+  healthBarScaleX: 1.5
+  healthBarScaleY: 0.2
+  healthBarColorFull: {r: 0.9622642, g: 0.013616921, b: 0.013616921, a: 0}
   healthBarColorEmpty: {r: 0, g: 0, b: 0, a: 0}
-  animIdle: {fileID: 0}
-  animWalk: {fileID: 0}
-  animJump: {fileID: 0}
-  animFall: {fileID: 7400000, guid: 706e49cbc7ad5054eb785346d05c069e, type: 2}
-  animDash: {fileID: 0}
-  animHitstun: {fileID: 0}
-  animKO: {fileID: 0}
+  animIdle: {fileID: 7400000, guid: 3d5ce5913693d5c4c8935647a48ba3bf, type: 2}
+  animWalk: {fileID: 7400000, guid: 36ee129dd215a2d4492d858b743c3d29, type: 2}
+  animJump: {fileID: 7400000, guid: 5d954193d1efaf64a82912f367c2f58d, type: 2}
+  animFall: {fileID: 7400000, guid: 25d33c389d5eea1419bc1caea0975b90, type: 2}
+  animDash: {fileID: 7400000, guid: 814185eee13685345bd2da6364f05a89, type: 2}
+  animHitstun: {fileID: 7400000, guid: c379211f170b8a8408d3b9e966ea074d, type: 2}
+  animKO: {fileID: 7400000, guid: 67da9f41cee4fef499234a591dedf946, type: 2}
