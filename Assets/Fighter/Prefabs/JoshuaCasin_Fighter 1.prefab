@@ -194,9 +194,9 @@ MonoBehaviour:
   keyRight: 275
   keyJump: 32
   keyDash: 9
-  keyLight: 0
-  keyMedium: 0
-  keyHeavy: 0
+  keyLight: 122
+  keyMedium: 120
+  keyHeavy: 99
   moveSpeed: 3
   jumpHeight: 4
   gravityScale: 1
@@ -207,53 +207,53 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 128
-  groundCheckOffset: {x: 0, y: 0}
-  groundCheckRadius: 0
+  groundCheckOffset: {x: 0, y: 1}
+  groundCheckRadius: 1
   lightAttack:
-    name: 
-    anim: {fileID: 0}
-    startup: 0
-    active: 0
-    recovery: 0
-    damage: 0
-    hitstun: 0
+    name: Swipe
+    anim: {fileID: 7400000, guid: a5f1b663fe1bbd74abb6979ab3655559, type: 2}
+    startup: 1
+    active: 0.5
+    recovery: 1
+    damage: 10
+    hitstun: 1
     hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
+    hitboxSize: {x: 1, y: 1}
     knockback: {x: 0, y: 0}
   mediumAttack:
-    name: 
-    anim: {fileID: 0}
-    startup: 0
-    active: 0
-    recovery: 0
-    damage: 0
-    hitstun: 0
+    name: Hit
+    anim: {fileID: 7400000, guid: 7f1e3271f86c11240b00cf25021c130f, type: 2}
+    startup: 1
+    active: 1
+    recovery: 1
+    damage: 20
+    hitstun: 1
     hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
+    hitboxSize: {x: 1, y: 1}
     knockback: {x: 0, y: 0}
   heavyAttack:
-    name: 
-    anim: {fileID: 0}
-    startup: 0
-    active: 0
-    recovery: 0
-    damage: 0
-    hitstun: 0
+    name: Clobber
+    anim: {fileID: 7400000, guid: c61e61cfa887e314ba32f0089c1b40d6, type: 2}
+    startup: 2
+    active: 4
+    recovery: 2
+    damage: 35
+    hitstun: 3
     hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
-    knockback: {x: 0, y: 0}
-  maxHP: 0
+    hitboxSize: {x: 1, y: 1}
+    knockback: {x: 1, y: 1}
+  maxHP: 200
   healthBarSprite: {fileID: 21300000, guid: e5ae61419f22360429498c6b7add730e, type: 3}
   healthBarOffsetX: 0
   healthBarOffsetY: 0
-  healthBarScaleX: 0
-  healthBarScaleY: 0
-  healthBarColorFull: {r: 0, g: 0, b: 0, a: 0}
-  healthBarColorEmpty: {r: 0, g: 0, b: 0, a: 0}
-  animIdle: {fileID: 0}
-  animWalk: {fileID: 0}
-  animJump: {fileID: 0}
-  animFall: {fileID: 0}
-  animDash: {fileID: 0}
-  animHitstun: {fileID: 0}
-  animKO: {fileID: 0}
+  healthBarScaleX: 1
+  healthBarScaleY: 1
+  healthBarColorFull: {r: 0.9716981, g: 0.087086126, b: 0.087086126, a: 0}
+  healthBarColorEmpty: {r: 1, g: 1, b: 1, a: 0}
+  animIdle: {fileID: 7400000, guid: 880910f3ca04f464b82edeacf87d9f46, type: 2}
+  animWalk: {fileID: 7400000, guid: 4727d499a60b75e409d4804e98306e11, type: 2}
+  animJump: {fileID: 7400000, guid: 5b2402a381e26f245b868ada3c84b434, type: 2}
+  animFall: {fileID: 7400000, guid: 4a355123244ca5047bbf66d1419e5fa3, type: 2}
+  animDash: {fileID: 7400000, guid: 0388db8ec87ac9547a9f06fc34d58328, type: 2}
+  animHitstun: {fileID: 7400000, guid: 0c41542ecd7152b46ad21dc59cc808ba, type: 2}
+  animKO: {fileID: 7400000, guid: 8be903b3f60a3aa4bbd22747ecac5779, type: 2}
