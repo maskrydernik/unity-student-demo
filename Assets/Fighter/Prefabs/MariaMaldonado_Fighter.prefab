@@ -30,8 +30,8 @@ Transform:
   m_GameObject: {fileID: 7370474427804421467}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.098, y: 0.01, z: 0}
+  m_LocalScale: {x: -1.4678417, y: 1.6206954, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -80,7 +80,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
-  m_Sprite: {fileID: -686140874, guid: 483b8b3577a55b64c9b2577f092871ff, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7bfb9293d91da9243aba883771245adb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -189,20 +189,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521b01eee95fcd5468374cd9b2db015c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fighterName: 
-  keyLeft: 0
-  keyRight: 0
-  keyJump: 0
-  keyDash: 0
-  keyLight: 0
-  keyMedium: 0
-  keyHeavy: 0
-  moveSpeed: 0
-  jumpHeight: 0
+  fighterName: Radiance
+  keyLeft: 276
+  keyRight: 275
+  keyJump: 273
+  keyDash: 256
+  keyLight: 257
+  keyMedium: 258
+  keyHeavy: 259
+  moveSpeed: 4
+  jumpHeight: 2
   gravityScale: 0
   fallGravityScale: 0
-  dashSpeed: 0
-  dashDuration: 0
+  dashSpeed: 6
+  dashDuration: 3
   airControl: 0
   groundMask:
     serializedVersion: 2
@@ -210,50 +210,50 @@ MonoBehaviour:
   groundCheckOffset: {x: 0, y: 0}
   groundCheckRadius: 0
   lightAttack:
-    name: 
-    anim: {fileID: 0}
-    startup: 0
-    active: 0
-    recovery: 0
-    damage: 0
-    hitstun: 0
+    name: Slash
+    anim: {fileID: 7400000, guid: e268ab3a89a86d14786d1974c4c70993, type: 2}
+    startup: 1
+    active: 3
+    recovery: 2
+    damage: 5
+    hitstun: 2
     hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
-    knockback: {x: 0, y: 0}
+    hitboxSize: {x: 5, y: 5}
+    knockback: {x: 2, y: 0}
   mediumAttack:
-    name: 
-    anim: {fileID: 0}
-    startup: 0
-    active: 0
-    recovery: 0
-    damage: 0
-    hitstun: 0
+    name: Great Slash
+    anim: {fileID: 7400000, guid: cabdc944e2a6c254a9cf168b49e0053d, type: 2}
+    startup: 2
+    active: 5
+    recovery: 3
+    damage: 10
+    hitstun: 3
     hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
-    knockback: {x: 0, y: 0}
+    hitboxSize: {x: 7, y: 7}
+    knockback: {x: 5, y: 0}
   heavyAttack:
-    name: 
-    anim: {fileID: 0}
-    startup: 0
-    active: 0
-    recovery: 0
-    damage: 0
-    hitstun: 0
+    name: Major Slash
+    anim: {fileID: 7400000, guid: d27fd816778d08443bd2d34d3ed3dae1, type: 2}
+    startup: 4
+    active: 6
+    recovery: 5
+    damage: 15
+    hitstun: 5
     hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
-    knockback: {x: 0, y: 0}
-  maxHP: 0
-  healthBarSprite: {fileID: 0}
-  healthBarOffsetX: 0
-  healthBarOffsetY: 0
-  healthBarScaleX: 0
-  healthBarScaleY: 0
+    hitboxSize: {x: 10, y: 10}
+    knockback: {x: 6, y: 0}
+  maxHP: 100
+  healthBarSprite: {fileID: 21300000, guid: 6972f50ff8615eb458f3991a436c450f, type: 3}
+  healthBarOffsetX: 3
+  healthBarOffsetY: 3
+  healthBarScaleX: 6
+  healthBarScaleY: 6
   healthBarColorFull: {r: 0, g: 0, b: 0, a: 0}
   healthBarColorEmpty: {r: 0, g: 0, b: 0, a: 0}
-  animIdle: {fileID: 0}
-  animWalk: {fileID: 0}
-  animJump: {fileID: 0}
-  animFall: {fileID: 0}
-  animDash: {fileID: 0}
-  animHitstun: {fileID: 0}
-  animKO: {fileID: 0}
+  animIdle: {fileID: 7400000, guid: f1d59241c08046242879719efb1f7e8c, type: 2}
+  animWalk: {fileID: 7400000, guid: c5d18b7fd0ba65240841210d357c5991, type: 2}
+  animJump: {fileID: 7400000, guid: b37a85b598322974f8aa8551dbbc779e, type: 2}
+  animFall: {fileID: 7400000, guid: daca7758f1a94ff48915f5eda9e3471d, type: 2}
+  animDash: {fileID: 7400000, guid: c9f3e030e71da1c4b9df6fd7d750660e, type: 2}
+  animHitstun: {fileID: 7400000, guid: 467ee5ff3eba32047a3e8569f2b27fc1, type: 2}
+  animKO: {fileID: 7400000, guid: 066de074bc0e8324480d54590e4d94fc, type: 2}
