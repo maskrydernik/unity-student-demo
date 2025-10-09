@@ -1,5 +1,3 @@
-Create a simple brief readme for all this, covering only the public variables, and what they change:
-
 using System;
 using System.Collections.Generic;
 using UnityEngine;
