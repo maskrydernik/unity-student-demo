@@ -294,7 +294,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: mediumAttack.recovery
-      value: 0.003
+      value: 0.005
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: heavyAttack.hitboxSize.x
