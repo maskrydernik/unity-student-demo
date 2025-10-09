@@ -64,7 +64,7 @@ Each of these is an **Attack** object used by the state machine.
 
 ## State Animations
 
-Clips sampled directly each frame. Provide non-moving clips or the script will counter-move.
+Clips sampled directly each frame.
 
 * **animIdle (AnimationClip)**: Idle state.
 * **animWalk (AnimationClip)**: Walking state.
