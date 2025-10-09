@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c39487a27b26564cbb4498ebe02354d, type: 3}
+  m_Name: Heal
+  m_EditorClassIdentifier: 
+  id: heal
+  displayName: Heal
+  icon: {fileID: 0}
+  targetRule: 1
+  requiresTarget: 1
+  range: 25
+  castTime: 0
+  cooldown: 2
+  triggersGCD: 0
+  gcdSeconds: 1
+  damage: 0
+  healing: 35
+  useProjectile: 0
+  projectilePrefab: {fileID: 0}
+  useTravelTime: 1
+  projectileTravelTime: 0.6
+  projectileSpeed: 20
+  homing: 1
+  spawnVFX: {fileID: 0}
+  hitVFX: {fileID: 0}
+  sfxCast: {fileID: 0}
+  sfxImpact: {fileID: 0}
+  canCastWhileMoving: 1

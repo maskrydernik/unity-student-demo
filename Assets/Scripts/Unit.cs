@@ -2,6 +2,7 @@
 // Minimal selection highlight and NavMeshAgent wrapper used by multiple scripts.
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 
 public class Unit : MonoBehaviour
 {
