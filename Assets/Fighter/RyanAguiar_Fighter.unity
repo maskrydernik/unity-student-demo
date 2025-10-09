@@ -489,6 +489,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ryan_Fighter
       objectReference: {fileID: 0}
+    - target: {fileID: 3055691538161617343, guid: 737593e6bad159845a0548d1e3f9cdd6, type: 3}
+      propertyPath: keyJump
+      value: 119
+      objectReference: {fileID: 0}
+    - target: {fileID: 3055691538161617343, guid: 737593e6bad159845a0548d1e3f9cdd6, type: 3}
+      propertyPath: keyLeft
+      value: 97
+      objectReference: {fileID: 0}
+    - target: {fileID: 3055691538161617343, guid: 737593e6bad159845a0548d1e3f9cdd6, type: 3}
+      propertyPath: lightAttack.active
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3055691538161617343, guid: 737593e6bad159845a0548d1e3f9cdd6, type: 3}
+      propertyPath: lightAttack.startup
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3055691538161617343, guid: 737593e6bad159845a0548d1e3f9cdd6, type: 3}
+      propertyPath: heavyAttack.recovery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3055691538161617343, guid: 737593e6bad159845a0548d1e3f9cdd6, type: 3}
+      propertyPath: lightAttack.recovery
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3055691538161617343, guid: 737593e6bad159845a0548d1e3f9cdd6, type: 3}
+      propertyPath: mediumAttack.recovery
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7488284921486897166, guid: 737593e6bad159845a0548d1e3f9cdd6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.89756
