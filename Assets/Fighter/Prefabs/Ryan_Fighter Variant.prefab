@@ -234,7 +234,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: lightAttack.startup
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: mediumAttack.active
@@ -262,7 +262,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: heavyAttack.recovery
-      value: 8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: lightAttack.recovery
@@ -274,7 +274,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: mediumAttack.startup
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: healthBarColorEmpty.a
@@ -294,7 +294,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: mediumAttack.recovery
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: heavyAttack.hitboxSize.x
