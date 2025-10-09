@@ -29,8 +29,12 @@ public class BasicFighter2D : MonoBehaviour
     public float dashDuration;         // seconds > 0
     public float airControl;           // 0..1, but require > 0 to be usable
     public LayerMask groundMask;       // must be set
-    public Vector2 groundCheckOffset;  // set in inspector
-    public float groundCheckRadius;    // > 0
+    
+    [Header("Ground Check - REQUIRED")]
+    [Tooltip("Ground check position offset from player position")]
+    public Vector2 groundCheckOffset;
+    [Tooltip("Ground check radius for overlap detection")]
+    public float groundCheckRadius;
 
     [Header("Attacks - REQUIRED (3 attacks)")]
     public Attack lightAttack;
@@ -74,17 +78,25 @@ public class BasicFighter2D : MonoBehaviour
     [Tooltip("REQUIRED: KO/death animation clip")]
     public AnimationClip animKO;
 
+    [Header("Debug")]
+    [Tooltip("Show attack hitboxes and player hurtboxes in game")]
+    private bool debugAttacks = true;
+
     // ─────────────────────────────────────────────────────────────────────────────
     // PRIVATE COMPONENTS (auto-fetched)
     // ─────────────────────────────────────────────────────────────────────────────
     Rigidbody2D rb;
-    Animation animationComponent; // Legacy Animation component for direct clip playback
+    Animator animator;
     Collider2D body;
-    SpriteRenderer spriteRenderer;
+    SpriteRenderer sprite;
     Transform healthBarRoot;
-    SpriteRenderer healthBarBackground;
+    SpriteRenderer healthBarBg;
     SpriteRenderer healthBarFill;
-    Texture2D healthBarTexture; // Track texture for cleanup
+    Texture2D healthBarTexture;
+
+    // Animation sampling
+    AnimationClip currentClip;
+    float animationTime;
 
     // ─────────────────────────────────────────────────────────────────────────────
     // INTERNAL STATE
@@ -96,7 +108,7 @@ public class BasicFighter2D : MonoBehaviour
     float stateTimer;
     bool faceRight = true;
 
-    int hp;
+    private int hp; // Public for debugging
 
     Attack currentAttack;
     float attackTimer;
@@ -149,34 +161,29 @@ public class BasicFighter2D : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────────
     void Awake()
     {
+        // Cache components
         rb = GetComponent<Rigidbody2D>();
         body = GetComponent<Collider2D>();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-
-        // Get or add Animation component for direct playback
-        animationComponent = GetComponent<Animation>();
-        if (animationComponent == null)
-        {
-            animationComponent = gameObject.AddComponent<Animation>();
-        }
-        
-        // Setup animation clips
-        SetupAnimations();
+        sprite = GetComponentInChildren<SpriteRenderer>();
+        animator = GetComponent<Animator>();
 
         if (!ValidateRequired()) { enabled = false; return; }
 
         rb.gravityScale = gravityScale;
         hp = maxHP;
-
         SetupHealthBar();
 
+        // Start in idle state
+        state = State.Idle;
+        prevState = State.KO; // Set to different state to force first animation update
+
+        // Register for hit detection
         if (!registry.Contains(this)) registry.Add(this);
     }
 
     void OnDestroy()
     {
         registry.Remove(this);
-        // Cleanup texture to prevent memory leak
         if (healthBarTexture != null) Destroy(healthBarTexture);
     }
 
@@ -184,79 +191,148 @@ public class BasicFighter2D : MonoBehaviour
     {
         if (!enabled) return;
 
-        // Timers
-        if (hitstunTimer > 0f) hitstunTimer -= Time.deltaTime;
-
-        // State exit conditions
-        if (state == State.Hitstun && hitstunTimer <= 0f) state = grounded ? State.Idle : State.Fall;
-
-        // Inputs
-        float move = (Input.GetKey(keyLeft) ? -1f : 0f) + (Input.GetKey(keyRight) ? 1f : 0f);
-        bool pressJump = Input.GetKeyDown(keyJump);
-        bool pressDash = Input.GetKeyDown(keyDash);
-        bool pressL = Input.GetKeyDown(keyLight);
-        bool pressM = Input.GetKeyDown(keyMedium);
-        bool pressH = Input.GetKeyDown(keyHeavy);
-
-        // Ground probe
-        grounded = ProbeGround();
-
-        // Face by last nonzero move input
-        if (Mathf.Abs(move) > 0.001f) faceRight = move > 0f;
-
-        // Update sprite facing
-        UpdateSpriteFacing();
-
-        // State machine (Update for transitions and non-physics actions)
-        switch (state)
-        {
-            case State.Idle:
-            case State.Walk:
-                if (pressDash) StartDash();
-                else if (pressJump && grounded) DoJump();
-                else if (TryAttack(pressL, pressM, pressH)) { /* handled */ }
-                else state = (Mathf.Abs(move) > 0.05f) ? State.Walk : State.Idle;
-                break;
-
-            case State.Jump:
-            case State.Fall:
-                if (TryAttack(pressL, pressM, pressH)) { /* air attacks allowed */ }
-                if (grounded) state = (Mathf.Abs(move) > 0.05f) ? State.Walk : State.Idle;
-                break;
-
-            case State.Dash:
-                stateTimer -= Time.deltaTime;
-                if (stateTimer <= 0f) state = grounded ? State.Idle : State.Fall;
-                if (TryAttack(pressL, pressM, pressH)) { /* allow dash-cancel into attacks */ }
-                break;
-
-            case State.Attack:
-                TickAttack();
-                break;
-
-            case State.Hitstun:
-                // wait out timer
-                break;
-
-            case State.KO:
-                // dead stop
-                break;
-        }
-
+        UpdateTimers();
+        ProcessInput();
         UpdateStateAnimation();
-
-        // Update healthbar
         UpdateHealthBar();
+        SampleCurrentAnimation();
+        
+        if (debugAttacks)
+            DrawDebugBoxes();
     }
 
     void FixedUpdate()
     {
         if (!enabled) return;
+        
+        UpdateGravity();
+        UpdateVelocity();
+    }
 
-        // Gravity scale swap for better jump arc
-        rb.gravityScale = (rb.velocity.y < 0f) ? fallGravityScale : gravityScale;
+    void DrawDebugBoxes()
+    {
+        // Draw player hurtbox (green)
+        if (body != null && body is BoxCollider2D box)
+        {
+            Vector2 center = (Vector2)transform.position + box.offset;
+            Vector2 size = box.size * transform.localScale;
+            DrawBox(center, size, Color.green);
+        }
 
-        Vector2 v = rb.velocity;
+        // Draw active attack hitbox (red)
+        if (state == State.Attack && currentAttack != null)
+        {
+            if (attackTimer >= currentAttack.startup && 
+                attackTimer < currentAttack.startup + currentAttack.active)
+            {
+                Vector2 center = (Vector2)transform.position + FlipVector(currentAttack.hitboxOffset);
+                DrawBox(center, currentAttack.hitboxSize, Color.red);
+            }
+        }
+    }
+
+    void DrawBox(Vector2 center, Vector2 size, Color color)
+    {
+        Vector2 halfSize = size * 0.5f;
+        Vector2 topLeft = new Vector2(center.x - halfSize.x, center.y + halfSize.y);
+        Vector2 topRight = new Vector2(center.x + halfSize.x, center.y + halfSize.y);
+        Vector2 botLeft = new Vector2(center.x - halfSize.x, center.y - halfSize.y);
+        Vector2 botRight = new Vector2(center.x + halfSize.x, center.y - halfSize.y);
+
+        Debug.DrawLine(topLeft, topRight, color);
+        Debug.DrawLine(topRight, botRight, color);
+        Debug.DrawLine(botRight, botLeft, color);
+        Debug.DrawLine(botLeft, topLeft, color);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    // UPDATE HELPERS
+    // ─────────────────────────────────────────────────────────────────────────────
+    void UpdateTimers()
+    {
+        if (hitstunTimer > 0f) hitstunTimer -= Time.deltaTime;
+        if (state == State.Hitstun && hitstunTimer <= 0f)
+            state = grounded ? State.Idle : State.Fall;
+    }
+
+    void ProcessInput()
+    {
+        // Input
+        float move = (Input.GetKey(keyLeft) ? -1f : 0f) + (Input.GetKey(keyRight) ? 1f : 0f);
+        bool jump = Input.GetKeyDown(keyJump);
+        bool dash = Input.GetKeyDown(keyDash);
+        bool light = Input.GetKeyDown(keyLight);
+        bool medium = Input.GetKeyDown(keyMedium);
+        bool heavy = Input.GetKeyDown(keyHeavy);
+
+        // Ground check and facing
+        grounded = IsGrounded();
+        if (Mathf.Abs(move) > 0.001f) faceRight = move > 0f;
+        UpdateSpriteFacing();
+
+        // State machine - allow more freedom of movement
+        switch (state)
+        {
+            case State.Idle:
+            case State.Walk:
+                if (dash) StartDash();
+                else if (jump && grounded) StartJump();
+                else if (TryAttack(light, medium, heavy)) { }
+                else state = (Mathf.Abs(move) > 0.05f) ? State.Walk : State.Idle;
+                break;
+
+            case State.Jump:
+            case State.Fall:
+                // Allow dashing and attacking in air
+                if (dash) StartDash();
+                else if (TryAttack(light, medium, heavy)) { }
+                else if (grounded) state = (Mathf.Abs(move) > 0.05f) ? State.Walk : State.Idle;
+                break;
+
+            case State.Dash:
+                // Allow jumping and attacking out of dash
+                stateTimer -= Time.deltaTime;
+                if (jump && grounded) StartJump();
+                else if (TryAttack(light, medium, heavy)) { }
+                else if (stateTimer <= 0f)
+                {
+                    // Dash ended - transition based on movement input
+                    if (grounded)
+                        state = (Mathf.Abs(move) > 0.05f) ? State.Walk : State.Idle;
+                    else
+                        state = State.Fall;
+                }
+                break;
+
+            case State.Attack:
+                // Allow jumping during attack (for cancel options)
+                if (jump && grounded)
+                {
+                    StartJump();
+                    // Don't interrupt attack state, just add jump velocity
+                    state = State.Attack; // Stay in attack
+                }
+                TickAttack();
+                break;
+
+            case State.Hitstun:
+                // Hitstun timer handled in UpdateTimers
+                break;
+
+            case State.KO:
+                // Dead, no input allowed
+                break;
+        }
+    }
+
+    void UpdateGravity()
+    {
+        rb.gravityScale = (rb.linearVelocity.y < 0f) ? fallGravityScale : gravityScale;
+    }
+
+    void UpdateVelocity()
+    {
+        Vector2 v = rb.linearVelocity;
 
         switch (state)
         {
@@ -265,37 +341,23 @@ public class BasicFighter2D : MonoBehaviour
                 break;
 
             case State.Walk:
-                {
-                    float input = (Input.GetKey(keyLeft) ? -1f : 0f) + (Input.GetKey(keyRight) ? 1f : 0f);
-                    float target = input * moveSpeed;
-                    float a = grounded ? moveSpeed * 4f : moveSpeed * (2f * Mathf.Max(airControl, 0f));
-                    v.x = Mathf.MoveTowards(v.x, target, a * Time.fixedDeltaTime);
-                }
+                v.x = MoveTowardsTarget(v.x, GetMoveInput() * moveSpeed, grounded ? moveSpeed * 4f : moveSpeed * 2f * Mathf.Max(airControl, 0f));
                 break;
 
             case State.Jump:
             case State.Fall:
-                {
-                    float input = (Input.GetKey(keyLeft) ? -1f : 0f) + (Input.GetKey(keyRight) ? 1f : 0f);
-                    float target = input * moveSpeed * Mathf.Clamp01(airControl);
-                    float a = moveSpeed * 2f * Mathf.Max(airControl, 0f);
-                    v.x = Mathf.MoveTowards(v.x, target, a * Time.fixedDeltaTime);
-                }
+                v.x = MoveTowardsTarget(v.x, GetMoveInput() * moveSpeed * Mathf.Clamp01(airControl), moveSpeed * 2f * Mathf.Max(airControl, 0f));
                 break;
 
             case State.Dash:
-                v.x = dashSpeed * (faceRight ? 1f : -1f);
+                // Allow movement control during dash with some influence
+                float dashControl = 0.6f; // 60% control during dash
+                v.x = MoveTowardsTarget(v.x, GetMoveInput() * moveSpeed * dashControl, moveSpeed * 3f);
                 break;
 
             case State.Attack:
-                // allow light drift during attack
                 float drift = 0.35f * moveSpeed;
-                float inputX = (Input.GetKey(keyLeft) ? -1f : 0f) + (Input.GetKey(keyRight) ? 1f : 0f);
-                v.x = Mathf.MoveTowards(v.x, inputX * drift, drift * 6f * Time.fixedDeltaTime);
-                break;
-
-            case State.Hitstun:
-                // keep physics
+                v.x = Mathf.MoveTowards(v.x, GetMoveInput() * drift, drift * 6f * Time.fixedDeltaTime);
                 break;
 
             case State.KO:
@@ -303,20 +365,35 @@ public class BasicFighter2D : MonoBehaviour
                 break;
         }
 
-        rb.velocity = v;
+        rb.linearVelocity = v;
+    }
+
+    float GetMoveInput()
+    {
+        return (Input.GetKey(keyLeft) ? -1f : 0f) + (Input.GetKey(keyRight) ? 1f : 0f);
+    }
+
+    float MoveTowardsTarget(float current, float target, float acceleration)
+    {
+        return Mathf.MoveTowards(current, target, acceleration * Time.fixedDeltaTime);
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
-    // Movement
+    // MOVEMENT
     // ─────────────────────────────────────────────────────────────────────────────
-    void DoJump()
+    void StartJump()
     {
         float g = Mathf.Abs(Physics2D.gravity.y) * gravityScale;
-        if (g <= 0f) { Debug.LogError($"[{name}] gravity invalid; set gravityScale > 0"); enabled = false; return; }
-        float v0 = Mathf.Sqrt(2f * g * Mathf.Max(jumpHeight, 0.0001f));
-        var v = rb.velocity;
-        v.y = v0;
-        rb.velocity = v;
+        if (g <= 0f) 
+        { 
+            Debug.LogError($"[{name}] Invalid gravity; set gravityScale > 0"); 
+            enabled = false; 
+            return; 
+        }
+        
+        Vector2 v = rb.linearVelocity;
+        v.y = Mathf.Sqrt(2f * g * Mathf.Max(jumpHeight, 0.0001f));
+        rb.linearVelocity = v;
         state = State.Jump;
     }
 
@@ -324,397 +401,401 @@ public class BasicFighter2D : MonoBehaviour
     {
         state = State.Dash;
         stateTimer = dashDuration;
+        
+        // Apply dash impulse immediately
+        Vector2 v = rb.linearVelocity;
+        v.x = dashSpeed * (faceRight ? 1f : -1f);
+        rb.linearVelocity = v;
     }
 
-    bool ProbeGround()
+    bool IsGrounded()
     {
         Vector2 origin = (Vector2)transform.position + groundCheckOffset;
-        var hit = Physics2D.OverlapCircle(origin, groundCheckRadius, groundMask);
-        return hit != null;
+        return Physics2D.OverlapCircle(origin, groundCheckRadius, groundMask) != null;
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
-    // Attacks
+    // COMBAT
     // ─────────────────────────────────────────────────────────────────────────────
-    bool TryAttack(bool pressL, bool pressM, bool pressH)
+    bool TryAttack(bool light, bool medium, bool heavy)
     {
         Attack a = null;
-        if (pressH) a = heavyAttack ?? a;
-        if (pressM) a = mediumAttack ?? a;
-        if (pressL) a = lightAttack ?? a;
+        if (heavy) a = heavyAttack;
+        else if (medium) a = mediumAttack;
+        else if (light) a = lightAttack;
         if (a == null) return false;
 
-        // Validate attack at use-time too
         if (!ValidateAttack(a, "Use")) { enabled = false; return false; }
 
         currentAttack = a;
         attackTimer = 0f;
         victimsThisSwing.Clear();
         state = State.Attack;
-
-        // Play animation clip directly using our registered name
-        if (animationComponent != null && a.anim != null)
-        {
-            string attackName = null;
-            if (a == lightAttack) attackName = "LightAttack";
-            else if (a == mediumAttack) attackName = "MediumAttack";
-            else if (a == heavyAttack) attackName = "HeavyAttack";
-
-            if (attackName != null)
-            {
-                AnimationState animState = animationComponent[attackName];
-                if (animState != null)
-                {
-                    animState.wrapMode = WrapMode.Once;
-                    animationComponent.CrossFade(attackName, 0.05f);
-                }
-            }
-        }
+        // Animation will be set by UpdateStateAnimation()
+        
         return true;
     }
 
     void TickAttack()
     {
-        if (currentAttack == null) { state = grounded ? State.Idle : State.Fall; return; }
+        if (currentAttack == null) 
+        { 
+            state = grounded ? State.Idle : State.Fall;
+            return; 
+        }
 
         attackTimer += Time.deltaTime;
 
-        // Active window
-        float start = currentAttack.startup;
-        float end = start + currentAttack.active;
-        if (attackTimer >= start && attackTimer <= end)
+        // Hit detection during active frames
+        float activeStart = currentAttack.startup;
+        float activeEnd = activeStart + currentAttack.active;
+        if (attackTimer >= activeStart && attackTimer <= activeEnd)
         {
-            DoHitDetect(currentAttack);
+            DetectHits(currentAttack);
         }
 
-        // End on recovery complete
-        float total = currentAttack.startup + currentAttack.active + currentAttack.recovery;
-        if (attackTimer >= total)
+        // End attack after full duration (startup + active + recovery)
+        float totalTime = currentAttack.startup + currentAttack.active + currentAttack.recovery;
+        
+        if (attackTimer >= totalTime)
         {
             currentAttack = null;
             state = grounded ? State.Idle : State.Fall;
+            // Don't update prevState here - let UpdateStateAnimation handle it
         }
     }
 
-    void DoHitDetect(Attack a)
+    void DetectHits(Attack attack)
     {
-        Vector2 center = (Vector2)transform.position + RotateFacing(a.hitboxOffset);
-        Vector2 size = a.hitboxSize;
-        var cols = Physics2D.OverlapBoxAll(center, size, 0f);
-        for (int i = 0; i < cols.Length; i++)
+        Vector2 center = (Vector2)transform.position + FlipVector(attack.hitboxOffset);
+        Collider2D[] hits = Physics2D.OverlapBoxAll(center, attack.hitboxSize, 0f);
+        
+        foreach (var col in hits)
         {
-            var f = cols[i].GetComponentInParent<BasicFighter2D>();
-            if (!f || f == this) continue;
-            if (victimsThisSwing.Contains(f)) continue;
+            var target = col.GetComponentInParent<BasicFighter2D>();
+            if (target == null || target == this || victimsThisSwing.Contains(target)) 
+                continue;
 
-            victimsThisSwing.Add(f);
-            f.OnHit(this, a);
+            victimsThisSwing.Add(target);
+            target.TakeHit(this, attack);
         }
     }
 
-    void OnHit(BasicFighter2D attacker, Attack a)
+    void TakeHit(BasicFighter2D attacker, Attack attack)
     {
         if (state == State.KO) return;
 
-        // Damage
-        hp = Mathf.Max(0, hp - Mathf.Max(0, a.damage));
+        // Apply damage
+        hp = Mathf.Max(0, hp - attack.damage);
+        
         if (hp == 0)
         {
             state = State.KO;
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
+            // Animation will be set by UpdateStateAnimation()
             return;
         }
 
-        // Hitstun and knockback
-        hitstunTimer = Mathf.Max(hitstunTimer, a.hitstun);
+        // Apply hitstun and knockback
+        hitstunTimer = Mathf.Max(hitstunTimer, attack.hitstun);
         state = State.Hitstun;
+        // Animation will be set by UpdateStateAnimation()
 
-        Vector2 kb = new Vector2(a.knockback.x * (attacker.faceRight ? 1f : -1f), a.knockback.y);
-        rb.velocity = new Vector2(kb.x, Mathf.Max(rb.velocity.y, kb.y)); // simple overwrite with min Y keep
+        Vector2 knockback = new Vector2(
+            attack.knockback.x * (attacker.faceRight ? 1f : -1f),
+            attack.knockback.y
+        );
+        
+        rb.linearVelocity = new Vector2(knockback.x, Mathf.Max(rb.linearVelocity.y, knockback.y));
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
-    // Animation
+    // ANIMATION
     // ─────────────────────────────────────────────────────────────────────────────
-    void SetupAnimations()
-    {
-        // Helper to safely add clip with Legacy check
-        bool AddClipSafe(AnimationClip clip, string name)
-        {
-            if (clip == null) return false;
-            
-            if (!clip.legacy)
-            {
-                Debug.LogError($"[{gameObject.name}] AnimationClip '{clip.name}' must be marked as LEGACY!\n" +
-                              $"Fix: Select the clip → Inspector → Debug mode → Check 'Legacy' checkbox\n" +
-                              $"Or: Select clip → Import Settings → Animation Type: Legacy", this);
-                return false;
-            }
-            
-            try
-            {
-                animationComponent.AddClip(clip, name);
-                return true;
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"[{gameObject.name}] Failed to add clip '{name}': {e.Message}", this);
-                return false;
-            }
-        }
-
-        // Register all animation clips with the Animation component
-        bool allOk = true;
-        
-        if (animIdle != null) 
-        {
-            if (AddClipSafe(animIdle, "Idle"))
-            {
-                animationComponent.clip = animIdle; // Set as default
-            }
-            else allOk = false;
-        }
-        
-        if (animWalk != null && !AddClipSafe(animWalk, "Walk")) allOk = false;
-        if (animJump != null && !AddClipSafe(animJump, "Jump")) allOk = false;
-        if (animFall != null && !AddClipSafe(animFall, "Fall")) allOk = false;
-        if (animDash != null && !AddClipSafe(animDash, "Dash")) allOk = false;
-        if (animHitstun != null && !AddClipSafe(animHitstun, "Hitstun")) allOk = false;
-        if (animKO != null && !AddClipSafe(animKO, "KO")) allOk = false;
-
-        // Add attack clips with simple names
-        if (lightAttack?.anim != null && !AddClipSafe(lightAttack.anim, "LightAttack")) allOk = false;
-        if (mediumAttack?.anim != null && !AddClipSafe(mediumAttack.anim, "MediumAttack")) allOk = false;
-        if (heavyAttack?.anim != null && !AddClipSafe(heavyAttack.anim, "HeavyAttack")) allOk = false;
-
-        if (!allOk)
-        {
-            Debug.LogError($"[{gameObject.name}] Animation setup FAILED! See errors above. Fighter disabled.", this);
-            enabled = false;
-            return;
-        }
-
-        // Play idle by default
-        if (animIdle != null)
-        {
-            animationComponent.wrapMode = WrapMode.Loop;
-            animationComponent.Play("Idle");
-        }
-    }
-
     void UpdateStateAnimation()
     {
         // Only update animation if state changed
         if (state == prevState) return;
+        
         prevState = state;
 
-        // Play the appropriate animation clip directly
-        string clipName = null;
-        WrapMode wrapMode = WrapMode.Loop;
-
-        switch (state)
+        // Pick animation based on state
+        AnimationClip clip = state switch
         {
-            case State.Idle: 
-                clipName = "Idle";
-                wrapMode = WrapMode.Loop;
-                break;
-            case State.Walk: 
-                clipName = "Walk";
-                wrapMode = WrapMode.Loop;
-                break;
-            case State.Jump: 
-                clipName = "Jump";
-                wrapMode = WrapMode.Once;
-                break;
-            case State.Fall: 
-                clipName = "Fall";
-                wrapMode = WrapMode.Loop;
-                break;
-            case State.Dash: 
-                clipName = "Dash";
-                wrapMode = WrapMode.Once;
-                break;
-            case State.Hitstun: 
-                clipName = "Hitstun";
-                wrapMode = WrapMode.Once;
-                break;
-            case State.KO: 
-                clipName = "KO";
-                wrapMode = WrapMode.Once;
-                break;
-            case State.Attack:
-                // Attacks are handled when they start
-                return;
+            State.Idle => animIdle,
+            State.Walk => animWalk,
+            State.Jump => animJump,
+            State.Fall => animFall,
+            State.Dash => animDash,
+            State.Attack => currentAttack?.anim,
+            State.Hitstun => animHitstun,
+            State.KO => animKO,
+            _ => null
+        };
+
+        if (clip != null)
+        {
+            currentClip = clip;
+            animationTime = 0f;
         }
+    }
 
-        if (clipName != null && animationComponent != null)
+    void PlayStateClip(AnimationClip clip, bool immediate = false)
+    {
+        if (clip == null) return;
+        
+        if (immediate || currentClip != clip)
         {
-            // Set wrap mode for the specific clip
-            AnimationState animState = animationComponent[clipName];
-            if (animState != null)
+            currentClip = clip;
+            animationTime = 0f;
+        }
+    }
+
+    void PlayClipByName(string clipName, float transition = 0.1f, bool restart = false)
+    {
+        // Find clip by name from state animations
+        AnimationClip clip = clipName switch
+        {
+            var name when animIdle != null && name == animIdle.name => animIdle,
+            var name when animWalk != null && name == animWalk.name => animWalk,
+            var name when animJump != null && name == animJump.name => animJump,
+            var name when animFall != null && name == animFall.name => animFall,
+            var name when animDash != null && name == animDash.name => animDash,
+            var name when animHitstun != null && name == animHitstun.name => animHitstun,
+            var name when animKO != null && name == animKO.name => animKO,
+            var name when lightAttack?.anim != null && name == lightAttack.anim.name => lightAttack.anim,
+            var name when mediumAttack?.anim != null && name == mediumAttack.anim.name => mediumAttack.anim,
+            var name when heavyAttack?.anim != null && name == heavyAttack.anim.name => heavyAttack.anim,
+            _ => null
+        };
+
+        if (clip == null) return;
+
+        if (restart || currentClip != clip)
+        {
+            currentClip = clip;
+            animationTime = 0f;
+        }
+    }
+
+    void SampleCurrentAnimation()
+    {
+        if (currentClip == null || sprite == null) return;
+
+        // Advance animation time
+        animationTime += Time.deltaTime;
+
+        // Check if we're in attack state and animation has completed
+        if (state == State.Attack && animationTime >= currentClip.length)
+        {
+            // Force transition out of attack state
+            currentAttack = null;
+            // Do a fresh ground check to determine next state
+            bool isGrounded = IsGrounded();
+            State newState = isGrounded ? State.Idle : State.Fall;
+            state = newState;
+            prevState = State.Attack; // Force animation system to detect the change
+            
+            // Immediately switch to the new animation
+            AnimationClip newClip = newState == State.Idle ? animIdle : animFall;
+            if (newClip != null)
             {
-                animState.wrapMode = wrapMode;
-                animationComponent.CrossFade(clipName, 0.1f);
+                currentClip = newClip;
+                animationTime = 0f;
             }
+            return;
         }
+
+        // Always loop animations (for non-attack states)
+        if (animationTime >= currentClip.length)
+        {
+            animationTime = animationTime % currentClip.length;
+        }
+
+        // Store position before sampling to prevent animation-driven movement
+        Vector3 posBeforeSample = transform.position;
+
+        // Sample the animation clip
+        currentClip.SampleAnimation(gameObject, animationTime);
+
+        // Restore position to prevent animation clips from moving the character
+        transform.position = posBeforeSample;
     }
 
     void UpdateSpriteFacing()
     {
-        if (spriteRenderer != null)
-        {
-            // Flip sprite based on facing direction
-            spriteRenderer.flipX = !faceRight;
-        }
+        if (sprite != null) sprite.flipX = !faceRight;
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
-    // UI
+    // HEALTH BAR
     // ─────────────────────────────────────────────────────────────────────────────
     void SetupHealthBar()
     {
-        // Create health bar root
-        healthBarRoot = new GameObject("HealthBar").transform;
+        // Create root
+        healthBarRoot = new GameObject($"{fighterName}_HealthBar").transform;
         healthBarRoot.SetParent(transform, false);
-        healthBarRoot.localPosition = new Vector3(healthBarOffsetX, healthBarOffsetY, 0f);
+        healthBarRoot.localPosition = new Vector3(healthBarOffsetX, healthBarOffsetY, -1f); // Ensure it's in front
 
-        // Create background (black)
+        // Background - use the provided sprite
         var bgObj = new GameObject("Background");
         bgObj.transform.SetParent(healthBarRoot, false);
-        healthBarBackground = bgObj.AddComponent<SpriteRenderer>();
-        healthBarBackground.sprite = CreateSimpleSprite();
-        healthBarBackground.color = Color.black;
-        healthBarBackground.sortingOrder = healthBarSortingOrder;
+        healthBarBg = bgObj.AddComponent<SpriteRenderer>();
+        healthBarBg.sprite = healthBarSprite;
+        healthBarBg.color = Color.black; // Dark background
+        healthBarBg.sortingOrder = healthBarSortingOrder;
         bgObj.transform.localScale = new Vector3(healthBarScaleX + 0.05f, healthBarScaleY + 0.05f, 1f);
+        bgObj.transform.localPosition = Vector3.zero;
 
-        // Create fill (green to red) - using simple Transform.localScale for visibility
+        // Fill - use the provided sprite with full alpha
         var fillObj = new GameObject("Fill");
         fillObj.transform.SetParent(healthBarRoot, false);
-        fillObj.transform.localPosition = new Vector3(0f, 0f, -0.01f);
+        fillObj.transform.localPosition = Vector3.zero;
         healthBarFill = fillObj.AddComponent<SpriteRenderer>();
-        healthBarFill.sprite = healthBarSprite ?? CreateSimpleSprite();
-        healthBarFill.color = healthBarColorFull;
+        healthBarFill.sprite = healthBarSprite;
+        
+        // Ensure colors have full alpha
+        Color fullColor = healthBarColorFull;
+        fullColor.a = 1f;
+        healthBarFill.color = fullColor;
+        
         healthBarFill.sortingOrder = healthBarSortingOrder + 1;
-        // Use simple scale instead of DrawMode.Sliced for better visibility
         fillObj.transform.localScale = new Vector3(healthBarScaleX, healthBarScaleY, 1f);
     }
 
-    Sprite CreateSimpleSprite()
+    Sprite CreateWhiteSprite()
     {
-        // Create a simple white 1x1 texture
-        var tex = new Texture2D(1, 1);
-        tex.SetPixel(0, 0, Color.white);
-        tex.Apply();
-        return Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+        if (healthBarTexture == null)
+        {
+            healthBarTexture = new Texture2D(1, 1);
+            healthBarTexture.SetPixel(0, 0, Color.white);
+            healthBarTexture.Apply();
+        }
+        return Sprite.Create(healthBarTexture, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
     }
 
     void UpdateHealthBar()
     {
-        if (healthBarFill == null) return;
+        if (healthBarFill == null)
+        {
+            Debug.LogWarning($"[{fighterName}] Health bar fill is null!", this);
+            return;
+        }
 
-        // Update fill size based on HP using Transform.localScale
         float hpRatio = maxHP > 0 ? (float)hp / maxHP : 0f;
-        healthBarFill.transform.localScale = new Vector3(healthBarScaleX * hpRatio, healthBarScaleY, 1f);
-
-        // Lerp color from full to empty
-        healthBarFill.color = Color.Lerp(healthBarColorEmpty, healthBarColorFull, hpRatio);
+        Vector3 newScale = new Vector3(healthBarScaleX * hpRatio, healthBarScaleY, 1f);
+        healthBarFill.transform.localScale = newScale;
+        
+        // Lerp color and ensure alpha is always 1
+        Color newColor = Color.Lerp(healthBarColorEmpty, healthBarColorFull, hpRatio);
+        newColor.a = 1f;
+        healthBarFill.color = newColor;
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
-    // Helpers
+    // HELPERS
     // ─────────────────────────────────────────────────────────────────────────────
-    float FacingDir() => faceRight ? 1f : -1f;
-
-    Vector2 RotateFacing(Vector2 v) => new Vector2(v.x * FacingDir(), v.y);
+    Vector2 FlipVector(Vector2 v) => new Vector2(v.x * (faceRight ? 1f : -1f), v.y);
 
     // ─────────────────────────────────────────────────────────────────────────────
-    // Validation
+    // VALIDATION
     // ─────────────────────────────────────────────────────────────────────────────
     bool ValidateRequired()
     {
         bool ok = true;
-        void Fail(string m) { Debug.LogError($"[BasicFighter2D:{gameObject.name}] {m}", this); ok = false; }
+        void Fail(string msg) => Debug.LogError($"[{gameObject.name}] {msg}", this);
 
-        if (string.IsNullOrWhiteSpace(fighterName)) Fail("fighterName is REQUIRED.");
+        // Identity
+        if (string.IsNullOrWhiteSpace(fighterName)) { Fail("fighterName is REQUIRED"); ok = false; }
 
-        if (keyLeft == KeyCode.None) Fail("keyLeft is REQUIRED.");
-        if (keyRight == KeyCode.None) Fail("keyRight is REQUIRED.");
-        if (keyJump == KeyCode.None) Fail("keyJump is REQUIRED.");
-        if (keyDash == KeyCode.None) Fail("keyDash is REQUIRED.");
-        if (keyLight == KeyCode.None) Fail("keyLight is REQUIRED.");
-        if (keyMedium == KeyCode.None) Fail("keyMedium is REQUIRED.");
-        if (keyHeavy == KeyCode.None) Fail("keyHeavy is REQUIRED.");
+        // Controls
+        if (keyLeft == KeyCode.None) { Fail("keyLeft is REQUIRED"); ok = false; }
+        if (keyRight == KeyCode.None) { Fail("keyRight is REQUIRED"); ok = false; }
+        if (keyJump == KeyCode.None) { Fail("keyJump is REQUIRED"); ok = false; }
+        if (keyDash == KeyCode.None) { Fail("keyDash is REQUIRED"); ok = false; }
+        if (keyLight == KeyCode.None) { Fail("keyLight is REQUIRED"); ok = false; }
+        if (keyMedium == KeyCode.None) { Fail("keyMedium is REQUIRED"); ok = false; }
+        if (keyHeavy == KeyCode.None) { Fail("keyHeavy is REQUIRED"); ok = false; }
 
-        if (!rb) Fail("Rigidbody2D is REQUIRED on GameObject.");
-        if (!animationComponent) Fail("Animation component is REQUIRED (auto-added if missing).");
-        if (!body) Fail("Collider2D is REQUIRED on GameObject.");
-        if (!spriteRenderer) Fail("SpriteRenderer is REQUIRED (on GameObject or child).");
+        // Components
+        if (!rb) { Fail("Rigidbody2D is REQUIRED"); ok = false; }
+        if (!body) { Fail("Collider2D is REQUIRED"); ok = false; }
+        if (!sprite) { Fail("SpriteRenderer is REQUIRED (on GameObject or child)"); ok = false; }
 
-        if (moveSpeed <= 0f) Fail("moveSpeed must be > 0.");
-        if (jumpHeight <= 0f) Fail("jumpHeight must be > 0.");
-        if (gravityScale <= 0f) Fail("gravityScale must be > 0.");
-        if (fallGravityScale <= 0f) Fail("fallGravityScale must be > 0.");
-        if (dashSpeed <= 0f) Fail("dashSpeed must be > 0.");
-        if (dashDuration <= 0f) Fail("dashDuration must be > 0.");
-        if (airControl <= 0f) Fail("airControl must be > 0.");
-        if (groundMask == 0) Fail("groundMask must be set.");
-        if (groundCheckRadius <= 0f) Fail("groundCheckRadius must be > 0.");
+        // Movement
+        if (moveSpeed <= 0f) { Fail("moveSpeed must be > 0"); ok = false; }
+        if (jumpHeight <= 0f) { Fail("jumpHeight must be > 0"); ok = false; }
+        if (gravityScale <= 0f) { Fail("gravityScale must be > 0"); ok = false; }
+        if (fallGravityScale <= 0f) { Fail("fallGravityScale must be > 0"); ok = false; }
+        if (dashSpeed <= 0f) { Fail("dashSpeed must be > 0"); ok = false; }
+        if (dashDuration <= 0f) { Fail("dashDuration must be > 0"); ok = false; }
+        if (airControl <= 0f) { Fail("airControl must be > 0"); ok = false; }
+        if (groundMask == 0) { Fail("groundMask must be set"); ok = false; }
+        if (groundCheckRadius <= 0f) { Fail("groundCheckRadius must be > 0"); ok = false; }
 
-        if (maxHP <= 0) Fail("maxHP must be > 0.");
+        // Vitals
+        if (maxHP <= 0) { Fail("maxHP must be > 0"); ok = false; }
 
-        if (healthBarSprite == null) Fail("healthBarSprite is REQUIRED.");
-        if (healthBarScaleX <= 0f) Fail("healthBarScaleX must be > 0.");
-        if (healthBarScaleY <= 0f) Fail("healthBarScaleY must be > 0.");
+        // Health Bar
+        if (healthBarSprite == null) { Fail("healthBarSprite is REQUIRED"); ok = false; }
+        if (healthBarScaleX <= 0f) { Fail("healthBarScaleX must be > 0"); ok = false; }
+        if (healthBarScaleY <= 0f) { Fail("healthBarScaleY must be > 0"); ok = false; }
 
-        if (animIdle == null) Fail("animIdle is REQUIRED.");
-        if (animWalk == null) Fail("animWalk is REQUIRED.");
-        if (animJump == null) Fail("animJump is REQUIRED.");
-        if (animFall == null) Fail("animFall is REQUIRED.");
-        if (animDash == null) Fail("animDash is REQUIRED.");
-        if (animHitstun == null) Fail("animHitstun is REQUIRED.");
-        if (animKO == null) Fail("animKO is REQUIRED.");
+        // Animations - just check that clips exist
+        if (animIdle == null) { Fail("animIdle is REQUIRED"); ok = false; }
+        if (animWalk == null) { Fail("animWalk is REQUIRED"); ok = false; }
+        if (animJump == null) { Fail("animJump is REQUIRED"); ok = false; }
+        if (animFall == null) { Fail("animFall is REQUIRED"); ok = false; }
+        if (animDash == null) { Fail("animDash is REQUIRED"); ok = false; }
+        if (animHitstun == null) { Fail("animHitstun is REQUIRED"); ok = false; }
+        if (animKO == null) { Fail("animKO is REQUIRED"); ok = false; }
 
-        if (lightAttack == null) Fail("lightAttack is REQUIRED.");
-        else if (!ValidateAttack(lightAttack, "lightAttack")) ok = false;
-        if (mediumAttack == null) Fail("mediumAttack is REQUIRED.");
-        else if (!ValidateAttack(mediumAttack, "mediumAttack")) ok = false;
-        if (heavyAttack == null) Fail("heavyAttack is REQUIRED.");
-        else if (!ValidateAttack(heavyAttack, "heavyAttack")) ok = false;
+        // Attacks
+        if (lightAttack == null) { Fail("lightAttack is REQUIRED"); ok = false; }
+        else ok &= ValidateAttack(lightAttack, "lightAttack");
+        
+        if (mediumAttack == null) { Fail("mediumAttack is REQUIRED"); ok = false; }
+        else ok &= ValidateAttack(mediumAttack, "mediumAttack");
+        
+        if (heavyAttack == null) { Fail("heavyAttack is REQUIRED"); ok = false; }
+        else ok &= ValidateAttack(heavyAttack, "heavyAttack");
 
         return ok;
     }
 
-    bool ValidateAttack(Attack a, string label)
+    bool ValidateAttack(Attack attack, string label)
     {
         bool ok = true;
-        void Fail(string m) { Debug.LogError($"[BasicFighter2D:{gameObject.name}] Attack '{label}': {m}", this); ok = false; }
-        if (string.IsNullOrWhiteSpace(a.name)) Fail("name is REQUIRED.");
-        if (a.anim == null) Fail("AnimationClip is REQUIRED.");
-        if (a.startup <= 0f) Fail("startup must be > 0.");
-        if (a.active <= 0f) Fail("active must be > 0.");
-        if (a.recovery < 0f) Fail("recovery must be >= 0.");
-        if (a.damage <= 0) Fail("damage must be > 0.");
-        if (a.hitstun <= 0f) Fail("hitstun must be > 0.");
-        if (a.hitboxSize.x <= 0f || a.hitboxSize.y <= 0f) Fail("hitboxSize must be > 0.");
+        void Fail(string msg) => Debug.LogError($"[{gameObject.name}] Attack '{label}': {msg}", this);
+
+        if (string.IsNullOrWhiteSpace(attack.name)) { Fail("name is REQUIRED"); ok = false; }
+        if (attack.anim == null) { Fail("AnimationClip is REQUIRED"); ok = false; }
+        if (attack.startup <= 0f) { Fail("startup must be > 0"); ok = false; }
+        if (attack.active <= 0f) { Fail("active must be > 0"); ok = false; }
+        if (attack.recovery < 0f) { Fail("recovery must be >= 0"); ok = false; }
+        if (attack.damage <= 0) { Fail("damage must be > 0"); ok = false; }
+        if (attack.hitstun <= 0f) { Fail("hitstun must be > 0"); ok = false; }
+        if (attack.hitboxSize.x <= 0f || attack.hitboxSize.y <= 0f) { Fail("hitboxSize must be > 0"); ok = false; }
+
         return ok;
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
-    // Gizmos
+    // GIZMOS
     // ─────────────────────────────────────────────────────────────────────────────
     void OnDrawGizmosSelected()
     {
-        // Ground check
+        // Ground check visualization
         Gizmos.color = Color.cyan;
-        Vector2 origin = (Vector2)transform.position + groundCheckOffset;
-        Gizmos.DrawWireSphere(origin, groundCheckRadius);
+        Vector2 groundOrigin = (Vector2)transform.position + groundCheckOffset;
+        Gizmos.DrawWireSphere(groundOrigin, groundCheckRadius);
 
-        // Active hitbox preview if attacking
+        // Active attack hitbox visualization
         if (state == State.Attack && currentAttack != null)
         {
-            Gizmos.color = new Color(1f, 0.2f, 0.2f, 0.35f);
-            Vector2 center = (Vector2)transform.position + RotateFacing(currentAttack.hitboxOffset);
-            Gizmos.DrawWireCube(center, currentAttack.hitboxSize);
+            Gizmos.color = new Color(1f, 0.2f, 0.2f, 0.5f);
+            Vector2 hitboxCenter = (Vector2)transform.position + FlipVector(currentAttack.hitboxOffset);
+            Gizmos.DrawWireCube(hitboxCenter, currentAttack.hitboxSize);
         }
     }
 }
