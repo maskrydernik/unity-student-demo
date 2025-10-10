@@ -15,11 +15,7 @@ GameObject:
   - component: {fileID: 7993102713961623431}
   - component: {fileID: 6395141877757686771}
   m_Layer: 0
-<<<<<<<< HEAD:Assets/Fighter/Prefabs/Nicholas_Fighter.prefab
   m_Name: Nicholas_Fighter
-========
-  m_Name: Class_Fighter
->>>>>>>> upstream/main:Assets/Fighter/Prefabs/Class_Fighter.prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

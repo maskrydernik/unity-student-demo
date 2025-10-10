@@ -735,7 +735,7 @@ public class BasicFighter2D : MonoBehaviour
 
     void UpdateSpriteFacing()
     {
-        if (sprite != null) sprite.flipX = !faceRight;
+        if (sprite != null) sprite.flipX = faceRight;
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
