@@ -108,8 +108,11 @@ public class BasicFighter2D : MonoBehaviour
     bool grounded;
     float stateTimer;
     bool faceRight = true;
+    bool initialFlipX = false; // Store initial sprite flip state
 
     private int hp; // Public for debugging
+    private bool isDead = false;
+    private float deathAnimTimer = 0f;
 
     Attack currentAttack;
     float attackTimer;
@@ -162,8 +165,6 @@ public class BasicFighter2D : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────────
     void Awake()
     {
-        Debug.Log($"[{fighterName}] Awake() started");
-        
         // Cache components
         rb = GetComponent<Rigidbody2D>();
         body = GetComponent<Collider2D>();
@@ -173,29 +174,32 @@ public class BasicFighter2D : MonoBehaviour
         // DESTROY the Animator - we'll manually control sprites
         if (animator != null)
         {
-            Debug.Log($"[{fighterName}] Destroying Animator component");
             Destroy(animator);
             animator = null;
         }
 
-        Debug.Log($"[{fighterName}] Components cached - sprite: {sprite != null}, rb: {rb != null}");
-        
+        // Initialize facing direction based on sprite flip (assume sprite points right)
         if (sprite != null)
         {
-            Debug.Log($"[{fighterName}] SpriteRenderer found on: {sprite.gameObject.name}, enabled: {sprite.enabled}, sprite: {sprite.sprite?.name ?? "NULL"}");
+            initialFlipX = sprite.flipX; // Store the initial flip state
+            faceRight = !sprite.flipX;    // If not flipped, facing right; if flipped, facing left
         }
-
-        if (!ValidateRequired()) { enabled = false; return; }
 
         rb.gravityScale = gravityScale;
         hp = maxHP;
+        
+        // Validate and kill if invalid
+        if (!ValidateRequired())
+        {
+            hp = 0;
+            maxHP = 1; // Ensure maxHP is valid for death logic
+        }
+        
         SetupHealthBar();
 
         // Start in idle state
         state = State.Idle;
         prevState = State.KO; // Set to different state to force first animation update
-
-        Debug.Log($"[{fighterName}] Initial state: {state}, animIdle: {animIdle?.name ?? "NULL"}");
 
         // Register for hit detection
         if (!registry.Contains(this)) registry.Add(this);
@@ -211,15 +215,18 @@ public class BasicFighter2D : MonoBehaviour
     {
         if (!enabled) return;
 
-        // Debug summary on first frame
-        if (debugFrameCount == 0)
+        // Handle death state
+        if (isDead)
         {
-            Debug.Log($"[{fighterName}] === FIRST FRAME DEBUG ===");
-            Debug.Log($"  State: {state}");
-            Debug.Log($"  currentClip: {currentClip?.name ?? "NULL"}");
-            Debug.Log($"  sprite: {sprite?.name ?? "NULL"}");
-            Debug.Log($"  animIdle: {animIdle?.name ?? "NULL"}");
-            Debug.Log($"  enabled: {enabled}");
+            HandleDeath();
+            return;
+        }
+        
+        // Check if we just died this frame
+        if (hp <= 0 && !isDead)
+        {
+            EnterDeathState();
+            return;
         }
 
         UpdateTimers();
@@ -420,8 +427,8 @@ public class BasicFighter2D : MonoBehaviour
         float g = Mathf.Abs(Physics2D.gravity.y) * gravityScale;
         if (g <= 0f) 
         { 
-            Debug.LogError($"[{name}] Invalid gravity; set gravityScale > 0"); 
-            enabled = false; 
+            Debug.LogError($"[{name}] Invalid gravity; set gravityScale > 0");
+            hp = 0; // Kill fighter
             return; 
         }
         
@@ -459,9 +466,12 @@ public class BasicFighter2D : MonoBehaviour
         else if (light) a = lightAttack;
         if (a == null) return false;
 
-        if (!ValidateAttack(a, "Use")) { enabled = false; return false; }
-
-        Debug.Log($"[{fighterName}] Starting attack: {a.name}, anim: {a.anim?.name ?? "NULL"}");
+        if (!ValidateAttack(a, "Use"))
+        {
+            // Kill fighter if attack is invalid
+            hp = 0;
+            return false;
+        }
 
         currentAttack = a;
         attackTimer = 0f;
@@ -519,16 +529,14 @@ public class BasicFighter2D : MonoBehaviour
 
     void TakeHit(BasicFighter2D attacker, Attack attack)
     {
-        if (state == State.KO) return;
+        if (state == State.KO || isDead) return;
 
         // Apply damage
         hp = Mathf.Max(0, hp - attack.damage);
         
-        if (hp == 0)
+        if (hp <= 0)
         {
-            state = State.KO;
-            rb.linearVelocity = Vector2.zero;
-            // Animation will be set by UpdateStateAnimation()
+            EnterDeathState();
             return;
         }
 
@@ -545,6 +553,71 @@ public class BasicFighter2D : MonoBehaviour
         rb.linearVelocity = new Vector2(knockback.x, Mathf.Max(rb.linearVelocity.y, knockback.y));
     }
 
+    void EnterDeathState()
+    {
+        state = State.KO;
+        isDead = true;
+        deathAnimTimer = 0f;
+        
+        // Stop and disable physics
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.gravityScale = 0f;
+        rb.bodyType = RigidbodyType2D.Kinematic; // Disable physics simulation
+        
+        // Disable collision
+        if (body != null) body.enabled = false;
+        
+        // Hide health bar
+        if (healthBarRoot != null) healthBarRoot.gameObject.SetActive(false);
+        
+        // Force animation update if KO animation exists
+        if (animKO != null)
+        {
+            prevState = State.Idle; // Different from KO to force update
+            UpdateStateAnimation();
+        }
+    }
+
+    void HandleDeath()
+    {
+        // If no death animation, just disable immediately
+        if (animKO == null)
+        {
+            if (enabled) enabled = false;
+            return;
+        }
+        
+        // Play death animation once, then freeze on last frame
+        deathAnimTimer += Time.deltaTime;
+        
+        // Ensure we're playing the death animation
+        if (currentClip != animKO)
+        {
+            currentClip = animKO;
+            animationTime = 0f;
+        }
+        
+        // Keep sampling the animation
+        if (animationTime < animKO.length)
+        {
+            // Continue playing
+            SampleCurrentAnimation();
+        }
+        else
+        {
+            // Freeze on last frame
+            animationTime = animKO.length - 0.001f; // Stay on last frame
+            SampleCurrentAnimation();
+            
+            // Disable the script after animation completes
+            if (enabled)
+            {
+                enabled = false;
+            }
+        }
+    }
+
     // ─────────────────────────────────────────────────────────────────────────────
     // ANIMATION
     // ─────────────────────────────────────────────────────────────────────────────
@@ -552,8 +625,6 @@ public class BasicFighter2D : MonoBehaviour
     {
         // Only update animation if state changed
         if (state == prevState) return;
-        
-        Debug.Log($"[{fighterName}] State changed: {prevState} -> {state}");
         
         prevState = state;
 
@@ -571,17 +642,10 @@ public class BasicFighter2D : MonoBehaviour
             _ => null
         };
 
-        Debug.Log($"[{fighterName}] Selected clip for {state}: {clip?.name ?? "NULL"}");
-
         if (clip != null)
         {
             currentClip = clip;
             animationTime = 0f;
-            Debug.Log($"[{fighterName}] Animation set - clip: {currentClip.name}, length: {currentClip.length}s");
-        }
-        else
-        {
-            Debug.LogWarning($"[{fighterName}] No clip assigned for state {state}!");
         }
     }
 
@@ -627,42 +691,8 @@ public class BasicFighter2D : MonoBehaviour
     {
         if (currentClip == null || sprite == null)
         {
-            // Log every 60 frames to avoid spam
-            debugFrameCount++;
-            if (debugFrameCount % 60 == 0)
-            {
-                Debug.LogWarning($"[{fighterName}] Cannot sample - currentClip: {currentClip?.name ?? "NULL"}, sprite: {sprite != null}");
-            }
             return;
         }
-
-        // Log first few frames of animation
-        if (debugFrameCount < 10)
-        {
-            Debug.Log($"[{fighterName}] Sampling {currentClip.name} at time {animationTime:F3}s (length: {currentClip.length:F3}s)");
-            
-            #if UNITY_EDITOR
-            // Check if sprite is being animated (editor only)
-            var bindings = UnityEditor.AnimationUtility.GetCurveBindings(currentClip);
-            var objectBindings = UnityEditor.AnimationUtility.GetObjectReferenceCurveBindings(currentClip);
-            if (debugFrameCount == 0)
-            {
-                Debug.Log($"[{fighterName}] Animation has {bindings.Length} float curves, {objectBindings.Length} object bindings");
-                foreach (var binding in objectBindings)
-                {
-                    Debug.Log($"  - Path: '{binding.path}', Property: {binding.propertyName}, Type: {binding.type}");
-                    
-                    // If this is a sprite property, extract the sprites
-                    if (binding.propertyName == "m_Sprite" && binding.type == typeof(SpriteRenderer))
-                    {
-                        var keyframes = UnityEditor.AnimationUtility.GetObjectReferenceCurve(currentClip, binding);
-                        Debug.Log($"    Found {keyframes.Length} sprite keyframes");
-                    }
-                }
-            }
-            #endif
-        }
-        debugFrameCount++;
 
         // Advance animation time
         animationTime += Time.deltaTime;
@@ -670,8 +700,6 @@ public class BasicFighter2D : MonoBehaviour
         // Check if we're in attack state and animation has completed
         if (state == State.Attack && animationTime >= currentClip.length)
         {
-            Debug.Log($"[{fighterName}] Attack animation completed, transitioning out");
-            
             // Force transition out of attack state
             currentAttack = null;
             // Do a fresh ground check to determine next state
@@ -686,7 +714,6 @@ public class BasicFighter2D : MonoBehaviour
             {
                 currentClip = newClip;
                 animationTime = 0f;
-                Debug.Log($"[{fighterName}] Switched to {newClip.name}");
             }
             return;
         }
@@ -695,10 +722,6 @@ public class BasicFighter2D : MonoBehaviour
         if (animationTime >= currentClip.length)
         {
             animationTime = animationTime % currentClip.length;
-            if (debugFrameCount % 60 == 0)
-            {
-                Debug.Log($"[{fighterName}] Animation looped: {currentClip.name}");
-            }
         }
 
         // MANUAL SPRITE EXTRACTION from AnimationClip
@@ -735,7 +758,11 @@ public class BasicFighter2D : MonoBehaviour
 
     void UpdateSpriteFacing()
     {
-        if (sprite != null) sprite.flipX = faceRight;
+        if (sprite != null) 
+        {
+            // If initial sprite was flipped, invert the facing logic
+            sprite.flipX = initialFlipX ? !faceRight : faceRight;
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
@@ -787,13 +814,17 @@ public class BasicFighter2D : MonoBehaviour
 
     void UpdateHealthBar()
     {
-        if (healthBarFill == null)
-        {
-            Debug.LogWarning($"[{fighterName}] Health bar fill is null!", this);
-            return;
-        }
+        if (healthBarFill == null) return;
 
         float hpRatio = maxHP > 0 ? (float)hp / maxHP : 0f;
+        
+        // Hide health bar completely when dead
+        if (hp <= 0)
+        {
+            if (healthBarRoot != null) healthBarRoot.gameObject.SetActive(false);
+            return;
+        }
+        
         Vector3 newScale = new Vector3(healthBarScaleX * hpRatio, healthBarScaleY, 1f);
         healthBarFill.transform.localScale = newScale;
         
