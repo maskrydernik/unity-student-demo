@@ -86,9 +86,9 @@ public class AutoFightController : MonoBehaviour
             if (!f.Alive()) continue;
 
             if (Time.time < f.dashUntil) continue; // let native dash own velocity
-            var v = f.rb.velocity;
+            var v = f.rb.linearVelocity;
             v.x = Mathf.MoveTowards(v.x, f.desiredMoveX * f.moveSpeed, f.moveSpeed * 6f * Time.fixedDeltaTime);
-            f.rb.velocity = v;
+            f.rb.linearVelocity = v;
         }
     }
 
@@ -442,7 +442,7 @@ public class AutoFightController : MonoBehaviour
     void Discover()
     {
         // Accept classes named "BasicFighter2D" or "SimpleFighter"
-        var all = FindObjectsOfType<MonoBehaviour>(true);
+        var all = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
         var seen = new HashSet<MonoBehaviour>();
         foreach (var mb in all)
         {

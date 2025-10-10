@@ -238,9 +238,6 @@ public class BasicFighter2D : MonoBehaviour
         if (debugAttacks)
             DrawDebugBoxes();
     }
-    
-    // Debug frame counter for periodic logging
-    private int debugFrameCount = 0;
 
     void FixedUpdate()
     {
