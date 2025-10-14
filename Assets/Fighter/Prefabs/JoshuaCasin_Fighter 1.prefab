@@ -56,6 +56,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -77,6 +79,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
@@ -223,8 +226,8 @@ MonoBehaviour:
   mediumAttack:
     name: Hit
     anim: {fileID: 7400000, guid: 7f1e3271f86c11240b00cf25021c130f, type: 2}
-    startup: 1
-    active: 1
+    startup: 2
+    active: 2
     recovery: 1
     damage: 20
     hitstun: 1
