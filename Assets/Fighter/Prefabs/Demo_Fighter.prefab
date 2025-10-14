@@ -211,7 +211,7 @@ MonoBehaviour:
   groundCheckRadius: 0
   lightAttack:
     name: 
-    anim: {fileID: 7400000, guid: 706e49cbc7ad5054eb785346d05c069e, type: 2}
+    anim: {fileID: 0}
     startup: 0
     active: 0
     recovery: 0
@@ -253,7 +253,7 @@ MonoBehaviour:
   animIdle: {fileID: 0}
   animWalk: {fileID: 0}
   animJump: {fileID: 0}
-  animFall: {fileID: 7400000, guid: 706e49cbc7ad5054eb785346d05c069e, type: 2}
+  animFall: {fileID: 0}
   animDash: {fileID: 0}
   animHitstun: {fileID: 0}
   animKO: {fileID: 0}
