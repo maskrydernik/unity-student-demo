@@ -1,2 +1,15 @@
 fileFormatVersion: 2
 guid: 6e4d046186c867b4caad44c03c763dc3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - quest: {instanceID: 0}
+  - spawnPointVictory: {fileID: 8340071980461872558, guid: 702fc16d499b94e4cbfb358ed478f191, type: 3}
+  - raiderPrefab: {instanceID: 0}
+  - spawnPoint: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

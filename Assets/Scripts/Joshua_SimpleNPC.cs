@@ -7,6 +7,8 @@ public class Joshua_SimpleNPC : MonoBehaviour
     [TextArea] public string greeting = "Hello.";
     [TextArea] public string option1 = "Help (+10 gold)";
     [TextArea] public string option2 = "Decline";
+    [TextArea] public string option1Result = "You gained 10 gold.";
+    [TextArea] public string option2Result = "You walk away.";
     [Tooltip("Radius within which a unit can start dialog.")]
     public float talkRange = 3f;
 
@@ -25,21 +27,33 @@ public class Joshua_SimpleNPC : MonoBehaviour
         if (!dialog && Input.GetKeyDown(KeyCode.T))
         {
             dialog = true;
-            if (GameGlue.I != null)
+            if(GameGlue.I != null)
             {
-                GameGlue.I.Hint(greeting + " [1] " + option1 + "  [2] " + option2);
+                GameGlue.I.dialogueText.gameObject.SetActive(true);
+                GameGlue.I.ShowDialogue(greeting);
+                GameGlue.I.Hint("[1] " + option1 + "  [2] " + option2);
             }
         }
         else if (dialog && Input.GetKeyDown(KeyCode.Alpha1))
         {
             dialog = false;
             GameGlue.I.AddGold(10);
-            GameGlue.I.Hint("You gained 10 gold.");
+            if (GameGlue.I != null)
+            {
+                GameGlue.I.ShowDialogue(option1Result); // clear dialogue
+                GameGlue.I.dialogueText.gameObject.SetActive(true);
+                GameGlue.I.Hint("");
+            }
         }
         else if (dialog && Input.GetKeyDown(KeyCode.Alpha2))
         {
             dialog = false;
-            GameGlue.I.Hint("You walk away.");
+            if (GameGlue.I != null)
+            {
+                GameGlue.I.ShowDialogue(option2Result); // clear dialogue
+                GameGlue.I.dialogueText.gameObject.SetActive(true);
+                GameGlue.I.Hint("");
+            }
         }
     }
 
@@ -53,22 +67,21 @@ public class Joshua_SimpleNPC : MonoBehaviour
         if (inside && !wasInside)
         {
             if (GameGlue.I != null)
-            {
                 GameGlue.I.Hint("Press T to talk.");
-            }
         }
         else if (!inside && wasInside)
         {
-            if (dialog)
-            {
-                dialog = false;
-            }
+            // Always clear dialogue and hint
+            dialog = false;
             if (GameGlue.I != null)
             {
-                GameGlue.I.Hint(string.Empty);
+                GameGlue.I.ShowDialogue("");                // clear dialogue text
+                GameGlue.I.dialogueText.gameObject.SetActive(false); // hide dialogue field
+                GameGlue.I.Hint("");                        // clear tip/hint
             }
         }
     }
+
 
     Transform FindClosestListener()
     {

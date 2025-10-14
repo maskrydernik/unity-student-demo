@@ -2,6 +2,12 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
+# Ignore Unity ProjectVersion file so it's not accidentally committed by different editors
+ProjectSettings/ProjectVersion.txt
+Packages/packages-lock.json
+ProjectSettings/ShaderGraphSettings.asset
+ProjectSettings/URPProjectSettings.asset
+
 .utmp/
 /[Ll]ibrary/
 /[Tt]emp/
@@ -73,3 +79,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+*.bat
+*.sh
+*.ps1

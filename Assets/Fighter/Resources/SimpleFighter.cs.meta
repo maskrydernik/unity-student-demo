@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 521b01eee95fcd5468374cd9b2db015c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - healthBarSprite: {fileID: 21300000, guid: e5ae61419f22360429498c6b7add730e, type: 3}
+  - animIdle: {instanceID: 0}
+  - animWalk: {instanceID: 0}
+  - animJump: {instanceID: 0}
+  - animFall: {instanceID: 0}
+  - animDash: {instanceID: 0}
+  - animHitstun: {instanceID: 0}
+  - animKO: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

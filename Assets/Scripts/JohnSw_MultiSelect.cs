@@ -1,24 +1,31 @@
 // JohnSw_MultiSelect.cs
-// Minimal working selection: Click to select, Shift+drag for multi-select, Right-click to move.
-// DISABLE Manager.cs if you use this script!
+// Minimal working RTS-style selection system:
+// - Left-click: select a single unit
+// - Shift + drag: additive multi-select
+// - Drag without shift: box-select, clears old selection
+// - Right-click: move selected units
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class JohnSw_MultiSelect : MonoBehaviour
 {
+    // UI image used to draw the drag selection rectangle
     public Image dragRectImage;
+
+    // Currently selected units
     public List<Unit> selection = new List<Unit>();
 
     Camera mainCamera;
-    Canvas dragCanvas;
-    RectTransform dragRectTransform;
-    RectTransform dragRectParent;
-    Vector2 dragStart;
-    Vector2 dragStartLocal;
-    bool dragging;
-    bool dragAdditive;
-    readonly List<Unit> dragResults = new List<Unit>();
+    Canvas dragCanvas;                   // canvas containing the dragRectImage
+    RectTransform dragRectTransform;     // rect transform of drag rect
+    RectTransform dragRectParent;        // parent RectTransform for coordinate conversion
+    Vector2 dragStart;                   // drag start position (screen space)
+    Vector2 dragStartLocal;              // drag start position (local space for UI)
+    bool dragging;                       // whether we are currently dragging
+    bool dragAdditive;                   // whether drag adds to selection instead of replacing
+    readonly List<Unit> dragResults = new List<Unit>(); // units found inside drag box
 
     void Start()
     {
@@ -26,7 +33,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
 
         if (dragRectImage != null)
         {
-            // Setup drag rect properly
+            // Initialize drag rect settings (hidden by default)
             dragRectImage.gameObject.SetActive(false);
             dragRectTransform = dragRectImage.rectTransform;
             dragRectParent = dragRectTransform.parent as RectTransform;
@@ -35,18 +42,27 @@ public class JohnSw_MultiSelect : MonoBehaviour
             {
                 dragCanvas = dragRectImage.GetComponentInParent<Canvas>();
             }
+
+            // Force pivot/anchors to center for easier resizing
             dragRectTransform.pivot = new Vector2(0.5f, 0.5f);
             dragRectTransform.anchorMin = new Vector2(0.5f, 0.5f);
             dragRectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+
+            // Reset rect size/position
             dragRectTransform.anchoredPosition = Vector2.zero;
             dragRectTransform.sizeDelta = Vector2.zero;
+
+            // Ensure it draws on top of UI
             dragRectTransform.SetAsLastSibling();
+
+            // Disable blocking UI raycasts
             dragRectImage.raycastTarget = false;
         }
     }
 
     void Update()
     {
+        // Cache main camera if lost (e.g. new scene reload)
         if (mainCamera == null)
         {
             mainCamera = Camera.main;
@@ -56,14 +72,17 @@ public class JohnSw_MultiSelect : MonoBehaviour
         HandleMovement();
     }
 
+    // Handle selection input logic (dragging vs clicks)
     void HandleSelection()
     {
         bool shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
+        // If we are already dragging, update the drag box
         if (dragging)
         {
             UpdateDragVisual(Input.mousePosition);
 
+            // Release left mouse ends drag
             if (Input.GetMouseButtonUp(0))
             {
                 CompleteDrag(Input.mousePosition);
@@ -71,14 +90,14 @@ public class JohnSw_MultiSelect : MonoBehaviour
             return;
         }
 
-        // Start drag when Shift is held
+        // Shift + left click drag = additive multi-select
         if (shift && Input.GetMouseButtonDown(0))
         {
             BeginDrag(true);
             return;
         }
 
-        // Allow drag without shift as a fresh selection
+        // Left click drag without shift = new selection
         if (!shift && Input.GetMouseButtonDown(0))
         {
             BeginDrag(false);
@@ -86,20 +105,25 @@ public class JohnSw_MultiSelect : MonoBehaviour
         }
     }
 
+    // Begin a drag operation
     void BeginDrag(bool additive)
     {
         dragging = true;
         dragAdditive = additive;
         dragStart = Input.mousePosition;
+
+        // Clear selection if not additive
         if (!additive)
         {
             ClearSelection();
         }
         else
         {
+            // Prune destroyed/null units
             selection.RemoveAll(u => u == null);
         }
 
+        // Activate drag rectangle UI
         if (dragRectImage != null)
         {
             dragRectImage.gameObject.SetActive(true);
@@ -108,6 +132,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
         }
     }
 
+    // Update the drag box UI while dragging
     void UpdateDragVisual(Vector2 currentScreenPosition)
     {
         if (dragRectTransform == null || dragRectParent == null)
@@ -126,6 +151,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
         dragRectTransform.sizeDelta = new Vector2(Mathf.Abs(size.x), Mathf.Abs(size.y));
     }
 
+    // Convert screen coordinates to local UI coordinates for drag rectangle
     Vector2 ScreenToLocal(Vector2 screenPos)
     {
         if (dragRectParent == null)
@@ -146,6 +172,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
         return local;
     }
 
+    // Finish drag, select all units inside box
     void CompleteDrag(Vector2 endScreenPosition)
     {
         dragging = false;
@@ -158,7 +185,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
         Vector2 max = Vector2.Max(dragStart, endScreenPosition);
         Vector2 delta = max - min;
 
-        // Treat tiny drags as clicks
+        // If user barely dragged, treat as a click
         if (delta.sqrMagnitude < 4f)
         {
             SelectByRaycast(dragAdditive);
@@ -166,11 +193,17 @@ public class JohnSw_MultiSelect : MonoBehaviour
         }
 
         dragResults.Clear();
+
+        // Find all Units in scene and test if they fall inside selection box
         foreach (Unit u in FindObjectsByType<Unit>(FindObjectsSortMode.None))
         {
             if (!u) continue;
             Vector3 screenPos = mainCamera.WorldToScreenPoint(u.transform.position);
+
+            // Skip behind camera
             if (screenPos.z <= 0) continue;
+
+            // Skip if outside selection bounds
             if (screenPos.x < min.x || screenPos.x > max.x) continue;
             if (screenPos.y < min.y || screenPos.y > max.y) continue;
 
@@ -186,6 +219,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
             selection.RemoveAll(u => u == null);
         }
 
+        // Mark selected
         foreach (Unit u in dragResults)
         {
             if (selection.Contains(u)) continue;
@@ -196,6 +230,7 @@ public class JohnSw_MultiSelect : MonoBehaviour
         if (GameGlue.I) GameGlue.I.Hint("Selected " + selection.Count + " units");
     }
 
+    // Single-click raycast select
     void SelectByRaycast(bool additive)
     {
         if (!additive)
@@ -222,12 +257,16 @@ public class JohnSw_MultiSelect : MonoBehaviour
                     selection.Add(u);
                     u.SetSelected(true);
                 }
-                if (GameGlue.I) GameGlue.I.Hint("Selected " + selection.Count + " unit" + (selection.Count == 1 ? "" : "s"));
+                if (GameGlue.I)
+                    GameGlue.I.Hint("Selected " + selection.Count + " unit" + (selection.Count == 1 ? "" : "s"));
+
+                // Stop after first hit (closest)
                 break;
             }
         }
     }
 
+    // Clear all current selections
     void ClearSelection()
     {
         foreach (Unit u in selection)
@@ -237,13 +276,14 @@ public class JohnSw_MultiSelect : MonoBehaviour
         selection.Clear();
     }
 
+    // Handle right-click movement command
     void HandleMovement()
     {
         if (Input.GetMouseButtonDown(1) && selection.Count > 0)
         {
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            
+
             if (Physics.Raycast(ray, out hit, 1000f))
             {
                 selection.RemoveAll(u => u == null);
