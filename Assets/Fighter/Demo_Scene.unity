@@ -392,6 +392,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
+      propertyPath: jumpHeight
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: healthBarScaleX
       value: 0
       objectReference: {fileID: 0}
@@ -408,12 +412,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
+      propertyPath: lightAttack.active
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
+      propertyPath: lightAttack.startup
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: healthBarColorFull.a
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: healthBarColorFull.g
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
+      propertyPath: lightAttack.recovery
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: healthBarColorEmpty.a
@@ -425,7 +441,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7370474427804421467, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: m_Name
-      value: Demo_Fighter
+      value: StevenHidalgo_Demo Fighter
       objectReference: {fileID: 0}
     - target: {fileID: 7370474427804421467, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: m_IsActive
@@ -473,8 +489,6 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -496,7 +510,6 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 20
@@ -720,8 +733,6 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -743,7 +754,6 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
@@ -833,8 +843,6 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -856,7 +864,6 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
@@ -1345,6 +1352,7 @@ MonoBehaviour:
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
+  m_Version: 2
   m_TaaSettings:
     m_Quality: 3
     m_FrameInfluence: 0.1
@@ -1470,13 +1478,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 652066773530269673, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_Color.b
+      value: 0.0038714937
+      objectReference: {fileID: 0}
+    - target: {fileID: 652066773530269673, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_Color.g
+      value: 0.0038714937
+      objectReference: {fileID: 0}
+    - target: {fileID: 652066773530269673, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: m_Color.r
+      value: 0.8207547
+      objectReference: {fileID: 0}
     - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.08
       objectReference: {fileID: 0}
     - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.42
+      value: -2.52
       objectReference: {fileID: 0}
     - target: {fileID: 1534706654343400002, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1511,12 +1531,36 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: customHealthBar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: healthBarOffsetX
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: healthBarOffsetY
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: groundCheckRadius
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: heavyAttack.active
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: heavyAttack.damage
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: groundCheckOffset.x
+      value: 0.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: groundCheckOffset.y
+      value: -1.61
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: heavyAttack.hitstun
@@ -1527,8 +1571,24 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: lightAttack.startup
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: mediumAttack.damage
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: healthBarColorFull.b
+      value: 0.17150229
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: healthBarColorFull.g
+      value: 0.17150229
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: healthBarColorFull.r
+      value: 0.8867924
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: heavyAttack.recovery
@@ -1537,6 +1597,10 @@ PrefabInstance:
     - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: mediumAttack.hitstun
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: mediumAttack.startup
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: heavyAttack.knockback.x
@@ -1548,19 +1612,59 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: heavyAttack.hitboxSize.x
-      value: 3
+      value: 0.79
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: heavyAttack.hitboxSize.y
-      value: 3
+      value: 2.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: lightAttack.hitboxSize.x
+      value: 1.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: lightAttack.hitboxSize.y
+      value: 2.71
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: mediumAttack.knockback.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: mediumAttack.knockback.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: mediumAttack.hitboxSize.x
+      value: 1.74
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: mediumAttack.hitboxSize.y
+      value: 2.81
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: heavyAttack.hitboxOffset.x
-      value: 3
+      value: -2.31
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: heavyAttack.hitboxOffset.y
-      value: 3
+      value: -0.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: lightAttack.hitboxOffset.x
+      value: -2.41
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: lightAttack.hitboxOffset.y
+      value: -0.61
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: mediumAttack.hitboxOffset.x
+      value: -2.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
+      propertyPath: mediumAttack.hitboxOffset.y
+      value: -0.62
       objectReference: {fileID: 0}
     - target: {fileID: 7370474427804421467, guid: 8293f07d4c0ca1048956744e30affe4a, type: 3}
       propertyPath: m_Name
@@ -1587,3 +1691,4 @@ SceneRoots:
   - {fileID: 1519847649}
   - {fileID: 728776432}
   - {fileID: 2090105298}
+  - {fileID: 644830889}
