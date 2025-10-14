@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3ffbf62ce68ea6f478c4b0977b05ccec
+guid: e1f85006c5e119342aa8292110ef4f27
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -7,7 +7,7 @@ TextureImporter:
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
-    sRGBTexture: 1
+    sRGBTexture: 0
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
@@ -48,9 +48,9 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 25
+  spritePixelsToUnits: 200
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 1
+  spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -71,8 +71,8 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
+    textureFormat: 19
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -97,133 +97,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: running_0
+      name: Ryan_Fighter Health Bar_0
       rect:
         serializedVersion: 2
-        x: 160
-        y: 33
-        width: 52
-        height: 55
+        x: 145
+        y: 69
+        width: 503
+        height: 73
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fc3cf1e190e613e40ac3a1529d714157
-      internalID: 1301771875
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: running_1
-      rect:
-        serializedVersion: 2
-        x: 541
-        y: 31
-        width: 56
-        height: 56
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ccd02213416b8f64685005acd59dc9b7
-      internalID: -1488201973
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: running_2
-      rect:
-        serializedVersion: 2
-        x: 926
-        y: 31
-        width: 54
-        height: 56
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fda51c2cb6a9f8249a7e6c43c39cce2b
-      internalID: -90028159
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: running_3
-      rect:
-        serializedVersion: 2
-        x: 1312
-        y: 33
-        width: 50
-        height: 56
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: adad91814bb51aa4280604b840ff7c68
-      internalID: -924659976
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: running_4
-      rect:
-        serializedVersion: 2
-        x: 1693
-        y: 31
-        width: 54
-        height: 57
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2667930c753bc4c409febbac540b2b2a
-      internalID: 1843614144
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: running_5
-      rect:
-        serializedVersion: 2
-        x: 2075
-        y: 31
-        width: 56
-        height: 56
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3fde5a04288a1ad46b08ec13ba60ef94
-      internalID: -1201483504
+      spriteID: 4ef538d0151fcc64594fa8f0dc8c612b
+      internalID: 505079241
       vertices: []
       indices: 
       edges: []
@@ -232,7 +122,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 243b589b5e19e0a4694a4a7ddda0560d
+    spriteID: 8d3f5a1cc7f12cd418a83e0a9462e466
     internalID: 0
     vertices: []
     indices: 
@@ -244,12 +134,7 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      running_0: 1301771875
-      running_1: -1488201973
-      running_2: -90028159
-      running_3: -924659976
-      running_4: 1843614144
-      running_5: -1201483504
+      Ryan_Fighter Health Bar_0: 505079241
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
