@@ -980,6 +980,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 12
   sprintMultiplier: 2
+  edgeScroll: 0
+  edgeBorder: 12
+  yawSpeed: 90
+  pitchSpeed: 60
+  pitchLimits: {x: 20, y: 80}
+  zoomStep: 6
+  zoomSmoothTime: 0.08
+  minHeight: 6
+  maxHeight: 60
+  groundY: 0
+  clampXZ: 0
+  xzBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 100, y: 0, z: 100}
 --- !u!1 &387248994
 GameObject:
   m_ObjectHideFlags: 0
@@ -1486,6 +1500,8 @@ MonoBehaviour:
   greeting: Hello.
   option1: Help (+10 gold)
   option2: Decline
+  option1Result: You gained 10 gold.
+  option2Result: You walk away.
   talkRange: 2
 --- !u!1 &672849941
 GameObject:
@@ -1872,8 +1888,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4294967085
+  m_fontColor: {r: 0.1764706, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -4220,8 +4236,12 @@ MonoBehaviour:
   spawnPoint: {fileID: 387248995}
   unitPrefab: {fileID: 8459521501654886793, guid: 9b6041b2a22404340ac0627edf9fceca, type: 3}
   buildingPrefab: {fileID: 4249693659259636645, guid: b4102b1acbac4814cb5a2763830f169d, type: 3}
+  baricadePrefab: {fileID: 0}
+  archertowerPrefab: {fileID: 0}
   unitCost: 20
   buildingCost: 30
+  baricadeCost: 15
+  archerCost: 35
 --- !u!114 &2141060208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4271,6 +4291,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61f4549ee4960fe4babd19afed937eb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameOverScreen: {fileID: 0}
+  gameOverMessage: {fileID: 0}
+  player: {fileID: 0}
 --- !u!114 &2141060211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4306,6 +4329,7 @@ MonoBehaviour:
   gearText: {fileID: 735172034}
   questText: {fileID: 1421118733}
   tipText: {fileID: 726793369}
+  dialogueText: {fileID: 0}
 --- !u!4 &2141060213
 Transform:
   m_ObjectHideFlags: 0
