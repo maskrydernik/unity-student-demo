@@ -192,7 +192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521b01eee95fcd5468374cd9b2db015c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fighterName: Lionel New
+  fighterName: 'Lionel New '
   keyLeft: 276
   keyRight: 275
   keyJump: 273
