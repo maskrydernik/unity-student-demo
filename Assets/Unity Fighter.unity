@@ -1062,11 +1062,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5297548153846213897, guid: bce1cd6d92f0f3a4fa5268f098c6d4da, type: 3}
       propertyPath: heavyAttack.hitboxOffset.x
-      value: -2
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5297548153846213897, guid: bce1cd6d92f0f3a4fa5268f098c6d4da, type: 3}
       propertyPath: lightAttack.hitboxOffset.x
-      value: -2
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5297548153846213897, guid: bce1cd6d92f0f3a4fa5268f098c6d4da, type: 3}
       propertyPath: lightAttack.hitboxOffset.y
@@ -1074,7 +1074,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5297548153846213897, guid: bce1cd6d92f0f3a4fa5268f098c6d4da, type: 3}
       propertyPath: mediumAttack.hitboxOffset.x
-      value: -2
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5297548153846213897, guid: bce1cd6d92f0f3a4fa5268f098c6d4da, type: 3}
       propertyPath: mediumAttack.hitboxOffset.y
