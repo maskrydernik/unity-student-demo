@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7370474427804421467
+--- !u!1 &1833585033899819451
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,41 +8,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1534706654343400002}
-  - component: {fileID: 652066773530269673}
-  - component: {fileID: 7015546605788065540}
-  - component: {fileID: 2452925845457745080}
-  - component: {fileID: 7993102713961623431}
-  - component: {fileID: 6395141877757686771}
+  - component: {fileID: 2743483938412917705}
+  - component: {fileID: 2981477289683822532}
+  - component: {fileID: 5246192099244764422}
+  - component: {fileID: 326253905794015719}
+  - component: {fileID: 4986793058245908646}
+  - component: {fileID: 2645933110880215754}
   m_Layer: 0
-  m_Name: JoshuaCasin_Fighter 1
+  m_Name: Lionel_Fighter (1) Variant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1534706654343400002
+--- !u!4 &2743483938412917705
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370474427804421467}
+  m_GameObject: {fileID: 1833585033899819451}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2.72, y: 2.62, z: 1.66}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &652066773530269673
+--- !u!212 &2981477289683822532
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370474427804421467}
+  m_GameObject: {fileID: 1833585033899819451}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
-  m_Sprite: {fileID: -686140874, guid: 483b8b3577a55b64c9b2577f092871ff, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ec6bbec68cf567b4b97f99f7202141f3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -94,14 +94,14 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &7015546605788065540
+--- !u!50 &5246192099244764422
 Rigidbody2D:
   serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370474427804421467}
+  m_GameObject: {fileID: 1833585033899819451}
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
@@ -109,7 +109,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 3.5
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -121,13 +121,13 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!70 &2452925845457745080
+--- !u!70 &326253905794015719
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370474427804421467}
+  m_GameObject: {fileID: 1833585033899819451}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -158,14 +158,14 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.5, y: 1}
   m_Direction: 0
---- !u!95 &7993102713961623431
+--- !u!95 &4986793058245908646
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370474427804421467}
+  m_GameObject: {fileID: 1833585033899819451}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: dab6e742619fba0498c96c04e01dbf03, type: 2}
@@ -180,83 +180,83 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6395141877757686771
+--- !u!114 &2645933110880215754
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370474427804421467}
+  m_GameObject: {fileID: 1833585033899819451}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 521b01eee95fcd5468374cd9b2db015c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fighterName: Jesus
+  fighterName: Lionel
   keyLeft: 276
   keyRight: 275
-  keyJump: 32
-  keyDash: 9
+  keyJump: 273
+  keyDash: 279
   keyLight: 122
   keyMedium: 120
   keyHeavy: 99
-  moveSpeed: 3
-  jumpHeight: 4
-  gravityScale: 1
-  fallGravityScale: 1
-  dashSpeed: 7
-  dashDuration: 0.5
+  moveSpeed: 10
+  jumpHeight: 5
+  gravityScale: 3
+  fallGravityScale: 4
+  dashSpeed: 2
+  dashDuration: 2
   airControl: 1
   groundMask:
     serializedVersion: 2
     m_Bits: 128
-  groundCheckOffset: {x: 0, y: 1}
-  groundCheckRadius: 1
+  groundCheckOffset: {x: 20, y: 10}
+  groundCheckRadius: 15
   lightAttack:
-    name: Swipe
-    anim: {fileID: 7400000, guid: a5f1b663fe1bbd74abb6979ab3655559, type: 2}
+    name: Weak Sword Slash
+    anim: {fileID: 7400000, guid: 92d2f9cbae6908b4aa5e8f0e9ea5e60d, type: 2}
     startup: 1
-    active: 0.5
+    active: 1
     recovery: 1
-    damage: 10
-    hitstun: 1
-    hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 1, y: 1}
-    knockback: {x: 0, y: 0}
+    damage: 4
+    hitstun: 2
+    hitboxOffset: {x: 4, y: 4}
+    hitboxSize: {x: 4, y: 4}
+    knockback: {x: 1, y: 2}
   mediumAttack:
-    name: Hit
-    anim: {fileID: 7400000, guid: 7f1e3271f86c11240b00cf25021c130f, type: 2}
-    startup: 2
-    active: 2
-    recovery: 1
-    damage: 20
-    hitstun: 1
-    hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 1, y: 1}
-    knockback: {x: 0, y: 0}
+    name: Sword Slash
+    anim: {fileID: 7400000, guid: 92d2f9cbae6908b4aa5e8f0e9ea5e60d, type: 2}
+    startup: 3
+    active: 3
+    recovery: 3
+    damage: 8
+    hitstun: 4
+    hitboxOffset: {x: 4, y: 4}
+    hitboxSize: {x: 4, y: 4}
+    knockback: {x: 2, y: 4}
   heavyAttack:
-    name: Clobber
-    anim: {fileID: 7400000, guid: c61e61cfa887e314ba32f0089c1b40d6, type: 2}
-    startup: 2
-    active: 4
-    recovery: 2
-    damage: 35
-    hitstun: 3
-    hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 1, y: 1}
-    knockback: {x: 1, y: 1}
-  maxHP: 200
+    name: Strong Sword Slash
+    anim: {fileID: 7400000, guid: 92d2f9cbae6908b4aa5e8f0e9ea5e60d, type: 2}
+    startup: 5
+    active: 5
+    recovery: 5
+    damage: 16
+    hitstun: 8
+    hitboxOffset: {x: 4, y: 4}
+    hitboxSize: {x: 4, y: 4}
+    knockback: {x: 4, y: 8}
+  maxHP: 100
   healthBarSprite: {fileID: 21300000, guid: e5ae61419f22360429498c6b7add730e, type: 3}
-  healthBarOffsetX: 0
-  healthBarOffsetY: 0
-  healthBarScaleX: 1
-  healthBarScaleY: 1
-  healthBarColorFull: {r: 0.9716981, g: 0.087086126, b: 0.087086126, a: 0}
-  healthBarColorEmpty: {r: 1, g: 1, b: 1, a: 0}
-  animIdle: {fileID: 7400000, guid: 880910f3ca04f464b82edeacf87d9f46, type: 2}
-  animWalk: {fileID: 7400000, guid: 4727d499a60b75e409d4804e98306e11, type: 2}
-  animJump: {fileID: 7400000, guid: 5b2402a381e26f245b868ada3c84b434, type: 2}
-  animFall: {fileID: 7400000, guid: 4a355123244ca5047bbf66d1419e5fa3, type: 2}
-  animDash: {fileID: 7400000, guid: 0388db8ec87ac9547a9f06fc34d58328, type: 2}
-  animHitstun: {fileID: 7400000, guid: 0c41542ecd7152b46ad21dc59cc808ba, type: 2}
-  animKO: {fileID: 7400000, guid: 8be903b3f60a3aa4bbd22747ecac5779, type: 2}
+  healthBarOffsetX: 3
+  healthBarOffsetY: 3
+  healthBarScaleX: 3
+  healthBarScaleY: 3
+  healthBarColorFull: {r: 0.5566038, g: 0, b: 0, a: 0}
+  healthBarColorEmpty: {r: 0, g: 0, b: 0, a: 0}
+  animIdle: {fileID: 7400000, guid: 92d2f9cbae6908b4aa5e8f0e9ea5e60d, type: 2}
+  animWalk: {fileID: 7400000, guid: 92d2f9cbae6908b4aa5e8f0e9ea5e60d, type: 2}
+  animJump: {fileID: 7400000, guid: 92d2f9cbae6908b4aa5e8f0e9ea5e60d, type: 2}
+  animFall: {fileID: 7400000, guid: 92d2f9cbae6908b4aa5e8f0e9ea5e60d, type: 2}
+  animDash: {fileID: 7400000, guid: 92d2f9cbae6908b4aa5e8f0e9ea5e60d, type: 2}
+  animHitstun: {fileID: 7400000, guid: 92d2f9cbae6908b4aa5e8f0e9ea5e60d, type: 2}
+  animKO: {fileID: 7400000, guid: 92d2f9cbae6908b4aa5e8f0e9ea5e60d, type: 2}
