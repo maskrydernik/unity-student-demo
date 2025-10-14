@@ -1590,6 +1590,26 @@ PrefabInstance:
       value: ChristopherVasquez_Vamplord
       objectReference: {fileID: 0}
     - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: dashSpeed
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: moveSpeed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: jumpHeight
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: dashDuration
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: customHealthBar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
       propertyPath: heavyAttack.active
       value: 2
       objectReference: {fileID: 0}
@@ -1632,6 +1652,54 @@ PrefabInstance:
     - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
       propertyPath: mediumAttack.recovery
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: heavyAttack.hitboxSize.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: heavyAttack.hitboxSize.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: lightAttack.hitboxSize.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: lightAttack.hitboxSize.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: mediumAttack.hitboxSize.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: mediumAttack.hitboxSize.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: heavyAttack.hitboxOffset.x
+      value: 2.82
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: heavyAttack.hitboxOffset.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: lightAttack.hitboxOffset.x
+      value: 2.82
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: lightAttack.hitboxOffset.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: mediumAttack.hitboxOffset.x
+      value: 2.82
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: mediumAttack.hitboxOffset.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5505855538116957390, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
       propertyPath: m_LocalPosition.x
