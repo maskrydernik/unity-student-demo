@@ -1589,6 +1589,50 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChristopherVasquez_Vamplord
       objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: heavyAttack.active
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: lightAttack.active
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: groundCheckOffset.x
+      value: -0.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: groundCheckOffset.y
+      value: -3.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: heavyAttack.startup
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: lightAttack.startup
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: mediumAttack.active
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: heavyAttack.recovery
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: lightAttack.recovery
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: mediumAttack.startup
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628873473341783293, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: mediumAttack.recovery
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5505855538116957390, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.43
@@ -1628,6 +1672,22 @@ PrefabInstance:
     - target: {fileID: 5505855538116957390, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6979668705691104015, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: m_Size.x
+      value: 3.0914927
+      objectReference: {fileID: 0}
+    - target: {fileID: 6979668705691104015, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: m_Size.y
+      value: 5.2565727
+      objectReference: {fileID: 0}
+    - target: {fileID: 6979668705691104015, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.19699907
+      objectReference: {fileID: 0}
+    - target: {fileID: 6979668705691104015, guid: 3b941afd15a5f674caee8e62c2468902, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.0035595894
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
