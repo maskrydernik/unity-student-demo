@@ -588,6 +588,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 652066773530269673, guid: 25e537f2bac04c74f978a51b4f0c7584, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -855094738, guid: 614a43df277dc6f49a95f2899de3c6d4, type: 3}
     - target: {fileID: 1534706654343400002, guid: 25e537f2bac04c74f978a51b4f0c7584, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.40402
@@ -658,7 +662,11 @@ PrefabInstance:
       objectReference: {fileID: 7400000, guid: 0c41542ecd7152b46ad21dc59cc808ba, type: 2}
     - target: {fileID: 6395141877757686771, guid: 25e537f2bac04c74f978a51b4f0c7584, type: 3}
       propertyPath: fighterName
-      value: The Fighter
+      value: The Mercenary
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 25e537f2bac04c74f978a51b4f0c7584, type: 3}
+      propertyPath: lightAttack.name
+      value: Light Slash
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 25e537f2bac04c74f978a51b4f0c7584, type: 3}
       propertyPath: groundCheckRadius
