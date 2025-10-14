@@ -4,6 +4,9 @@
 #
 # Ignore Unity ProjectVersion file so it's not accidentally committed by different editors
 ProjectSettings/ProjectVersion.txt
+Packages/packages-lock.json
+ProjectSettings/ShaderGraphSettings.asset
+ProjectSettings/URPProjectSettings.asset
 
 .utmp/
 /[Ll]ibrary/
