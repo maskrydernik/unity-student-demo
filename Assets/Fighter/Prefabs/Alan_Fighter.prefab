@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7993102713961623431}
   - component: {fileID: 6395141877757686771}
   m_Layer: 0
-  m_Name: Demo_Fighter
+  m_Name: Alan_Fighter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
