@@ -489,9 +489,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ryan_Fighter
       objectReference: {fileID: 0}
+    - target: {fileID: 3055691538161617343, guid: 737593e6bad159845a0548d1e3f9cdd6, type: 3}
+      propertyPath: customHealthBar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3055691538161617343, guid: 737593e6bad159845a0548d1e3f9cdd6, type: 3}
+      propertyPath: healthBarSprite
+      value: 
+      objectReference: {fileID: 1893815263, guid: e1f85006c5e119342aa8292110ef4f27, type: 3}
     - target: {fileID: 7488284921486897166, guid: 737593e6bad159845a0548d1e3f9cdd6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.89756
+      value: 0.34
       objectReference: {fileID: 0}
     - target: {fileID: 7488284921486897166, guid: 737593e6bad159845a0548d1e3f9cdd6, type: 3}
       propertyPath: m_LocalPosition.y
