@@ -129,6 +129,16 @@ public class BasicFighter2D : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────────
     public int GetCurrentHP() => hp;
     public int GetMaxHP() => maxHP;
+    
+    /// <summary>Debug method: Reduce HP by specified amount without knockback or hitstun</summary>
+    public void DebugReduceHP(int amount)
+    {
+        hp = Mathf.Max(0, hp - amount);
+        if (hp <= 0 && !isDead)
+        {
+            EnterDeathState();
+        }
+    }
 
     // ─────────────────────────────────────────────────────────────────────────────
     // DATA
