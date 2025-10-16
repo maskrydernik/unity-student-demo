@@ -463,11 +463,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: airControl
-      value: 20
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: jumpHeight
-      value: 15
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: animHitstun
@@ -479,7 +479,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: dashDuration
-      value: 25
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: gravityScale
@@ -515,7 +515,7 @@ PrefabInstance:
       objectReference: {fileID: 7400000, guid: c3adf81e2271c774d9c50d5db8aa3981, type: 2}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: heavyAttack.name
-      value: Heavy Knuckle
+      value: Hard Knuckle
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: lightAttack.anim
@@ -526,12 +526,20 @@ PrefabInstance:
       value: Swift Strike
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
+      propertyPath: groundCheckRadius
+      value: 0.34
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
+      propertyPath: groundMask.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: mediumAttack.anim
       value: 
       objectReference: {fileID: 7400000, guid: c3adf81e2271c774d9c50d5db8aa3981, type: 2}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: mediumAttack.name
-      value: Twist Kick
+      value: Twist Strike
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: heavyAttack.active
@@ -567,7 +575,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: mediumAttack.active
-      value: 0.03
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: mediumAttack.damage
@@ -603,7 +611,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: mediumAttack.startup
-      value: 0.3
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: healthBarColorEmpty.a
@@ -623,7 +631,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: mediumAttack.recovery
-      value: 0.03
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: heavyAttack.hitboxSize.x
