@@ -152,8 +152,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.5, y: 1}
+  m_Offset: {x: -0.19699907, y: 0.0035595894}
+  m_Size: {x: 3.0914927, y: 5.2565727}
   m_Direction: 0
 --- !u!95 &9019294207799190911
 Animator:
@@ -207,14 +207,14 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 128
-  groundCheckOffset: {x: 2, y: 2}
+  groundCheckOffset: {x: -0.54, y: -3.85}
   groundCheckRadius: 1
   lightAttack:
     name: Jab
     anim: {fileID: 7400000, guid: 9caed08a9f9b0af46b65bc3adb7a5ddd, type: 2}
-    startup: 5
-    active: 3
-    recovery: 4
+    startup: 0.05
+    active: 1.5
+    recovery: 0.25
     damage: 10
     hitstun: 2
     hitboxOffset: {x: 10, y: 10}
@@ -223,9 +223,9 @@ MonoBehaviour:
   mediumAttack:
     name: Swipe
     anim: {fileID: 7400000, guid: 2e4b26a8cc83e674aaa278f1508e8bd2, type: 2}
-    startup: 10
-    active: 7
-    recovery: 5
+    startup: 0.25
+    active: 1
+    recovery: 0.5
     damage: 15
     hitstun: 7
     hitboxOffset: {x: 10, y: 10}
@@ -234,15 +234,16 @@ MonoBehaviour:
   heavyAttack:
     name: Stab
     anim: {fileID: 7400000, guid: 56bd8c64ac7ba584fb3c4e2c2728997f, type: 2}
-    startup: 15
-    active: 10
-    recovery: 9
+    startup: 1.5
+    active: 2
+    recovery: 1.5
     damage: 25
     hitstun: 10
     hitboxOffset: {x: 10, y: 10}
     hitboxSize: {x: 10, y: 10}
     knockback: {x: 10, y: 10}
-  maxHP: 100
+  maxHP: 250
+  customHealthBar: 0
   healthBarSprite: {fileID: 21300000, guid: e5ae61419f22360429498c6b7add730e, type: 3}
   healthBarOffsetX: 1
   healthBarOffsetY: 1

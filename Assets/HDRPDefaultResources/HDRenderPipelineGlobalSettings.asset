@@ -192,7 +192,7 @@ MonoBehaviour:
       - rid: 5896195094318154052
       - rid: 5896195094318154053
       - rid: 5896195094318154054
-      - rid: 290507764573143040
+      - rid: 290507765241610240
     m_RuntimeSettings:
       m_List: []
   renderingLayerNames:
@@ -224,7 +224,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 290507764573143040
+    - rid: 290507765241610240
       type: {class: RenderingDebuggerRuntimeResources, ns: UnityEngine.Rendering, asm: Unity.RenderPipelines.Core.Runtime}
       data:
         m_version: 0

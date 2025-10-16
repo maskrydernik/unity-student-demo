@@ -338,6 +338,17 @@ public class BasicFighter2D : MonoBehaviour
                 break;
 
             case State.Jump:
+                // Transition to fall when moving downwards
+                if (rb.linearVelocity.y < 0f)
+                {
+                    state = State.Fall;
+                }
+                // Allow dashing and attacking in air
+                else if (dash) StartDash();
+                else if (TryAttack(light, medium, heavy)) { }
+                else if (grounded) state = (Mathf.Abs(move) > 0.05f) ? State.Walk : State.Idle;
+                break;
+
             case State.Fall:
                 // Allow dashing and attacking in air
                 if (dash) StartDash();
