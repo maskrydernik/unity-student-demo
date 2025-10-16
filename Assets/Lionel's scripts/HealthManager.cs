@@ -6,13 +6,15 @@ using UnityEngine.UI;
 public class HealthManager : MonoBehaviour
 {
     public Image healthBar;
-    public float healthAmount = 100f;
-    public float currentHealth;
+    public int healthAmount = 100;
+    public int currentHealth;
+
+    public BasicFighter2D fighter;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentHealth = healthAmount;
+        currentHealth = fighter.GetCurrentHP();
         UpdateHealthBar();
 
     }
@@ -22,6 +24,8 @@ public class HealthManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space)){
             TakeDamage(5);
+            //currentHealth = fightTrack.GetCurrentHP();
+            //maxHealth = fightTrack.GetMaxHP();
         }
 
         if(currentHealth <= 0)
@@ -30,14 +34,14 @@ public class HealthManager : MonoBehaviour
         }
     }
 
-    public void SetMaxHealth(float health)
+    public void SetMaxHealth(int health)
     {
         healthAmount = health;
         currentHealth = health;
         UpdateHealthBar();
     }
 
-    public void SetHealth(float health)
+    public void SetHealth(int health)
     {
         currentHealth = Mathf.Clamp(health, 0, healthAmount);
         UpdateHealthBar();
@@ -52,7 +56,7 @@ public class HealthManager : MonoBehaviour
         }
     }
     
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
         healthAmount -= damage;
         healthBar.fillAmount = healthAmount / 100f;
