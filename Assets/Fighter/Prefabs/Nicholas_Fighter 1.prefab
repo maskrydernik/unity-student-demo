@@ -116,6 +116,7 @@ GameObject:
   - component: {fileID: 3364902451960203819}
   - component: {fileID: 2931662938720740291}
   - component: {fileID: 5039345277593812944}
+  - component: {fileID: 7363229319646278605}
   m_Layer: 0
   m_Name: Nicholas_Fighter 1
   m_TagString: Untagged
@@ -159,6 +160,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -180,6 +183,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
@@ -310,7 +314,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 128
-  groundCheckOffset: {x: 0.57, y: -2.22}
+  groundCheckOffset: {x: 0.33, y: -2.58}
   groundCheckRadius: 0.7
   lightAttack:
     name: Light Swing
@@ -320,8 +324,8 @@ MonoBehaviour:
     recovery: 0.2
     damage: 10
     hitstun: 0.25
-    hitboxOffset: {x: 0.6, y: 0}
-    hitboxSize: {x: 1.19, y: 0.6}
+    hitboxOffset: {x: 1.1, y: -0.06}
+    hitboxSize: {x: 1.34, y: 1.28}
     knockback: {x: 2.5, y: 1}
   mediumAttack:
     name: Medium Swing
@@ -331,8 +335,8 @@ MonoBehaviour:
     recovery: 0.3
     damage: 20
     hitstun: 0.35
-    hitboxOffset: {x: 0.8, y: 0}
-    hitboxSize: {x: 1, y: 0.6}
+    hitboxOffset: {x: 1.76, y: -0.03}
+    hitboxSize: {x: 1.49, y: 1.53}
     knockback: {x: 3.5, y: 1.2}
   heavyAttack:
     name: Heavy Swing
@@ -342,10 +346,10 @@ MonoBehaviour:
     recovery: 0.4
     damage: 35
     hitstun: 0.45
-    hitboxOffset: {x: 1, y: 0}
-    hitboxSize: {x: 1.2, y: 0.8}
+    hitboxOffset: {x: 2.09, y: 0}
+    hitboxSize: {x: 1.2, y: 2.88}
     knockback: {x: 5, y: 2}
-  maxHP: 1000
+  maxHP: 100
   customHealthBar: 1
   healthBarSprite: {fileID: 21300000, guid: e5ae61419f22360429498c6b7add730e, type: 3}
   healthBarOffsetX: 0
@@ -361,6 +365,21 @@ MonoBehaviour:
   animDash: {fileID: 7400000, guid: 814185eee13685345bd2da6364f05a89, type: 2}
   animHitstun: {fileID: 7400000, guid: c379211f170b8a8408d3b9e966ea074d, type: 2}
   animKO: {fileID: 7400000, guid: 67da9f41cee4fef499234a591dedf946, type: 2}
+--- !u!114 &7363229319646278605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2867398540223656332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 303f4ace7c6d6804db627cc6628ab298, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Nicholas_Healthbar
+  fightTrack: {fileID: 5039345277593812944}
+  healthFill: {fileID: 4661104156912542969}
+  smoothSpeed: 10
 --- !u!1 &4548240964802224805
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,8 +414,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -260.96082, y: 187.11661}
-  m_SizeDelta: {x: 306.0784, y: 43.7668}
+  m_AnchoredPosition: {x: -155, y: 100}
+  m_SizeDelta: {x: 227.1838, y: 27.6025}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4799640503629042407
 CanvasRenderer:
