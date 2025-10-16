@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Raider
   - Door
+  - LionelFighter
   layers:
   - Default
   - TransparentFX
