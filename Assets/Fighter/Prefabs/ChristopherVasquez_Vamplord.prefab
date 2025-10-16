@@ -152,8 +152,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.19699907, y: 0.0035595894}
-  m_Size: {x: 3.0914927, y: 5.2565727}
+  m_Offset: {x: -0.19, y: 0.5}
+  m_Size: {x: 2.11, y: 4.44559}
   m_Direction: 0
 --- !u!95 &9019294207799190911
 Animator:
@@ -197,18 +197,18 @@ MonoBehaviour:
   keyLight: 122
   keyMedium: 120
   keyHeavy: 99
-  moveSpeed: 20
-  jumpHeight: 10
-  gravityScale: 10
+  moveSpeed: 10
+  jumpHeight: 5
+  gravityScale: 3.8
   fallGravityScale: 15
-  dashSpeed: 25
+  dashSpeed: 15
   dashDuration: 0.15
-  airControl: 10
+  airControl: 1
   groundMask:
     serializedVersion: 2
     m_Bits: 128
-  groundCheckOffset: {x: -0.54, y: -3.85}
-  groundCheckRadius: 1
+  groundCheckOffset: {x: -0.42, y: -1.53}
+  groundCheckRadius: 0.5
   lightAttack:
     name: Jab
     anim: {fileID: 7400000, guid: 9caed08a9f9b0af46b65bc3adb7a5ddd, type: 2}
@@ -243,14 +243,14 @@ MonoBehaviour:
     hitboxSize: {x: 2, y: 3}
     knockback: {x: 10, y: 10}
   maxHP: 250
-  customHealthBar: 0
+  customHealthBar: 1
   healthBarSprite: {fileID: 1307702230, guid: 49b338bdaa7ff5b4ca6ce43534aa1c62, type: 3}
   healthBarOffsetX: -3.75
   healthBarOffsetY: -1.23
   healthBarScaleX: 1
   healthBarScaleY: 1
   healthBarColorFull: {r: 1, g: 0.0072008977, b: 0, a: 0}
-  healthBarColorEmpty: {r: 0.03773582, g: 0.036845826, b: 0.036845826, a: 0}
+  healthBarColorEmpty: {r: 0, g: 0, b: 0, a: 0}
   animIdle: {fileID: 7400000, guid: 082e518e2d0e86e4dae1a6a1f50d4497, type: 2}
   animWalk: {fileID: 7400000, guid: c3836f2c495dea04d9c86fbac0efd03d, type: 2}
   animJump: {fileID: 7400000, guid: f5ad75e4871d9174aabc0eab1832205a, type: 2}
