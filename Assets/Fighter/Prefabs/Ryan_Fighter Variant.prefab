@@ -14,7 +14,7 @@ PrefabInstance:
       objectReference: {fileID: 719271553, guid: 310b1d7b19619d04abcbc5b07c516652, type: 3}
     - target: {fileID: 1534706654343400002, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.89756
+      value: 0.34
       objectReference: {fileID: 0}
     - target: {fileID: 1534706654343400002, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: m_LocalPosition.y
@@ -59,7 +59,7 @@ PrefabInstance:
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: animKO
       value: 
-      objectReference: {fileID: 7400000, guid: 8be903b3f60a3aa4bbd22747ecac5779, type: 2}
+      objectReference: {fileID: 7400000, guid: 52f6c0bd0f0218345a0266c6e2c36626, type: 2}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: keyDash
       value: 304
@@ -79,7 +79,7 @@ PrefabInstance:
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: animFall
       value: 
-      objectReference: {fileID: 7400000, guid: 4a355123244ca5047bbf66d1419e5fa3, type: 2}
+      objectReference: {fileID: 7400000, guid: c616ce1e678d05e479db275733a0c25e, type: 2}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: animIdle
       value: 
@@ -87,7 +87,7 @@ PrefabInstance:
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: animJump
       value: 
-      objectReference: {fileID: 7400000, guid: 5b2402a381e26f245b868ada3c84b434, type: 2}
+      objectReference: {fileID: 7400000, guid: c616ce1e678d05e479db275733a0c25e, type: 2}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: animWalk
       value: 
@@ -158,11 +158,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: healthBarOffsetX
-      value: -6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: healthBarOffsetY
-      value: 5
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: heavyAttack.anim
@@ -175,14 +175,14 @@ PrefabInstance:
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: lightAttack.anim
       value: 
-      objectReference: {fileID: 7400000, guid: 6c5edbe9942945d438551abe919ee897, type: 2}
+      objectReference: {fileID: 7400000, guid: ca7779e29e8f7e241bc4dee43ca46a6b, type: 2}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: lightAttack.name
       value: Punch :3
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: groundCheckRadius
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: groundMask.m_Bits
@@ -214,11 +214,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: groundCheckOffset.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: groundCheckOffset.y
-      value: 1
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 6395141877757686771, guid: 617716e5e0e9eb348a1fac8343d2f907, type: 3}
       propertyPath: heavyAttack.hitstun
