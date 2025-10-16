@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HealthBar : MonoBehaviour
+public class HealthBarSprite : MonoBehaviour
 {
     public BasicFighter2D fightTrack;
     public SpriteRenderer healthBarSprite; // Your HealthBar_0 sprite

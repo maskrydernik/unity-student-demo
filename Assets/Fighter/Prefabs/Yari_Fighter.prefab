@@ -14,8 +14,9 @@ GameObject:
   - component: {fileID: 4910670418889062700}
   - component: {fileID: 6171258881696500867}
   - component: {fileID: 6992112552921793414}
+  - component: {fileID: 293886935967014331}
   m_Layer: 0
-  m_Name: Yari_demo_fighter
+  m_Name: Yari_Fighter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,10 +31,11 @@ Transform:
   m_GameObject: {fileID: 1131781808329209255}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.64, y: -2.42, z: -0.01}
+  m_LocalPosition: {x: 4.69, y: -3.14, z: -0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 6163954931572705173}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1576202644720836581
@@ -153,7 +155,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.5, y: 1}
+  m_Size: {x: 2.5, y: 1.9}
   m_Direction: 0
 --- !u!95 &6171258881696500867
 Animator:
@@ -207,8 +209,8 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 128
-  groundCheckOffset: {x: 0, y: 0}
-  groundCheckRadius: 0.1
+  groundCheckOffset: {x: 0, y: -1.3}
+  groundCheckRadius: 0.5
   lightAttack:
     name: light
     anim: {fileID: 7400000, guid: a5f1b663fe1bbd74abb6979ab3655559, type: 2}
@@ -228,27 +230,28 @@ MonoBehaviour:
     recovery: 1
     damage: 2
     hitstun: 2
-    hitboxOffset: {x: 1, y: 1}
+    hitboxOffset: {x: -1.2, y: 0}
     hitboxSize: {x: 1, y: 1}
     knockback: {x: 1, y: 1}
   heavyAttack:
     name: heavy
     anim: {fileID: 7400000, guid: c61e61cfa887e314ba32f0089c1b40d6, type: 2}
-    startup: 3
-    active: 3
-    recovery: 3
+    startup: 0.5
+    active: 2
+    recovery: 2
     damage: 3
     hitstun: 3
     hitboxOffset: {x: 3, y: 3}
     hitboxSize: {x: 3, y: 3}
     knockback: {x: 3, y: 3}
   maxHP: 50
-  healthBarSprite: {fileID: 21300000, guid: e5ae61419f22360429498c6b7add730e, type: 3}
+  customHealthBar: 1
+  healthBarSprite: {fileID: 146211609, guid: 31da2373e8d9eeb46b1d12d09c267634, type: 3}
   healthBarOffsetX: 0
   healthBarOffsetY: -1.5
   healthBarScaleX: 1
   healthBarScaleY: 1
-  healthBarColorFull: {r: 0, g: 0, b: 0, a: 0}
+  healthBarColorFull: {r: 0.90943396, g: 0.13555704, b: 0.13555704, a: 0}
   healthBarColorEmpty: {r: 0, g: 0, b: 0, a: 0}
   animIdle: {fileID: 7400000, guid: 3f597a7455a4eeb4bbe851e35ed5c781, type: 2}
   animWalk: {fileID: 7400000, guid: a74864402bc0810439b8e58d2c744bc8, type: 2}
@@ -257,3 +260,104 @@ MonoBehaviour:
   animDash: {fileID: 7400000, guid: 9065aa6d9d1ce25459201f64ba903d87, type: 2}
   animHitstun: {fileID: 7400000, guid: 7364569b155645442940888d07ad10e6, type: 2}
   animKO: {fileID: 7400000, guid: 662de363b64292c40a86308bd7a3f7a7, type: 2}
+--- !u!114 &293886935967014331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131781808329209255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a36aaef5137df32419034389d1de6aef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fightTrack: {fileID: 6992112552921793414}
+  healthBarSprite: {fileID: 1047543320359836195}
+--- !u!1 &7892868033201234433
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6163954931572705173}
+  - component: {fileID: 1047543320359836195}
+  m_Layer: 0
+  m_Name: HealthBar_0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6163954931572705173
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7892868033201234433}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.9995843, z: -0, w: -0.028831653}
+  m_LocalPosition: {x: -0.21, y: 2.03, z: -0.03}
+  m_LocalScale: {x: 0.54038, y: 0.54038, z: 0.54038}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7063996997693329746}
+  m_LocalEulerAnglesHint: {x: 0, y: 183.304, z: 0}
+--- !u!212 &1047543320359836195
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7892868033201234433}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 50
+  m_Sprite: {fileID: 146211609, guid: 31da2373e8d9eeb46b1d12d09c267634, type: 3}
+  m_Color: {r: 1, g: 0.1415093, b: 0.1415093, a: 1}
+  m_FlipX: 1
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 4.8, y: 1.1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
