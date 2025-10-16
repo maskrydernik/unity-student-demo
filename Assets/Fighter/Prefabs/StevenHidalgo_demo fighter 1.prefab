@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7370474427804421467
+--- !u!1 &1562367035956748172
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,41 +8,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1534706654343400002}
-  - component: {fileID: 652066773530269673}
-  - component: {fileID: 7015546605788065540}
-  - component: {fileID: 2452925845457745080}
-  - component: {fileID: 7993102713961623431}
-  - component: {fileID: 6395141877757686771}
+  - component: {fileID: 2919166790707805738}
+  - component: {fileID: 3470896922144548074}
+  - component: {fileID: 5720762828618443923}
+  - component: {fileID: 8979823291804196281}
+  - component: {fileID: 222326308101133148}
+  - component: {fileID: 7200675982138507318}
   m_Layer: 0
-  m_Name: StevenHidalgo_demo fighter
+  m_Name: StevenHidalgo_demo fighter 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1534706654343400002
+--- !u!4 &2919166790707805738
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370474427804421467}
+  m_GameObject: {fileID: 1562367035956748172}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -4.23, y: -3.99, z: -0.79}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &652066773530269673
+--- !u!212 &3470896922144548074
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370474427804421467}
+  m_GameObject: {fileID: 1562367035956748172}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 50
   m_Sprite: {fileID: 325054144, guid: 5489af800944533498fa9af97d2041ba, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9150943, g: 0, b: 0, a: 1}
   m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
@@ -91,14 +91,14 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &7015546605788065540
+--- !u!50 &5720762828618443923
 Rigidbody2D:
   serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370474427804421467}
+  m_GameObject: {fileID: 1562367035956748172}
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
@@ -118,13 +118,13 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!70 &2452925845457745080
+--- !u!70 &8979823291804196281
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370474427804421467}
+  m_GameObject: {fileID: 1562367035956748172}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -155,14 +155,14 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.5, y: 1}
   m_Direction: 0
---- !u!95 &7993102713961623431
+--- !u!95 &222326308101133148
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370474427804421467}
+  m_GameObject: {fileID: 1562367035956748172}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: dab6e742619fba0498c96c04e01dbf03, type: 2}
@@ -177,19 +177,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6395141877757686771
+--- !u!114 &7200675982138507318
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7370474427804421467}
+  m_GameObject: {fileID: 1562367035956748172}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 521b01eee95fcd5468374cd9b2db015c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fighterName: blah
+  fighterName: RedKnight
   keyLeft: 97
   keyRight: 100
   keyJump: 32
@@ -201,54 +201,55 @@ MonoBehaviour:
   jumpHeight: 7
   gravityScale: 5
   fallGravityScale: 5
-  dashSpeed: 10
-  dashDuration: 2
+  dashSpeed: 20
+  dashDuration: 6
   airControl: 2
   groundMask:
     serializedVersion: 2
     m_Bits: 128
-  groundCheckOffset: {x: 0, y: 0}
-  groundCheckRadius: 0.1
+  groundCheckOffset: {x: 0.11, y: -0.85}
+  groundCheckRadius: 0.8
   lightAttack:
     name: light
     anim: {fileID: 7400000, guid: a5f1b663fe1bbd74abb6979ab3655559, type: 2}
-    startup: 1
-    active: 1
-    recovery: 1
-    damage: 1
-    hitstun: 1
-    hitboxOffset: {x: 1, y: 1}
-    hitboxSize: {x: 1, y: 1}
+    startup: 3
+    active: 3
+    recovery: 3
+    damage: 3
+    hitstun: 3
+    hitboxOffset: {x: -1.48, y: 0.15}
+    hitboxSize: {x: 2.43, y: 2.92}
     knockback: {x: 1, y: 1}
   mediumAttack:
     name: medium
     anim: {fileID: 7400000, guid: 7f1e3271f86c11240b00cf25021c130f, type: 2}
-    startup: 1
-    active: 1
-    recovery: 1
-    damage: 1
-    hitstun: 1
-    hitboxOffset: {x: 1, y: 1}
-    hitboxSize: {x: 1, y: 1}
-    knockback: {x: 1, y: 1}
+    startup: 4
+    active: 4
+    recovery: 4
+    damage: 4
+    hitstun: 4
+    hitboxOffset: {x: -1.41, y: 0.14}
+    hitboxSize: {x: 1.62, y: 2.76}
+    knockback: {x: 3, y: 3}
   heavyAttack:
     name: heavy
     anim: {fileID: 7400000, guid: c61e61cfa887e314ba32f0089c1b40d6, type: 2}
-    startup: 2
-    active: 2
-    recovery: 2
-    damage: 2
-    hitstun: 2
-    hitboxOffset: {x: 2, y: 2}
-    hitboxSize: {x: 2, y: 2}
+    startup: 5
+    active: 5
+    recovery: 5
+    damage: 5
+    hitstun: 5
+    hitboxOffset: {x: -1.01, y: 0.17}
+    hitboxSize: {x: 1.59, y: 3.42}
     knockback: {x: 2, y: 2}
   maxHP: 100
+  customHealthBar: 0
   healthBarSprite: {fileID: 21300000, guid: e5ae61419f22360429498c6b7add730e, type: 3}
-  healthBarOffsetX: 0
+  healthBarOffsetX: 1
   healthBarOffsetY: -1.5
   healthBarScaleX: 1
   healthBarScaleY: 1
-  healthBarColorFull: {r: 0, g: 0, b: 0, a: 0}
+  healthBarColorFull: {r: 0.990566, g: 0, b: 0, a: 0}
   healthBarColorEmpty: {r: 0, g: 0, b: 0, a: 0}
   animIdle: {fileID: 7400000, guid: 27e7f63f1cf4de145b60763be97fa80f, type: 2}
   animWalk: {fileID: 7400000, guid: 37f4eb57870c3bc47b60a2a0046a6c14, type: 2}
