@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthBar : MonoBehaviour
+public class ArthurBar : MonoBehaviour
 {
     public BasicFighter2D fightTrack;
     public Image healthBar;
