@@ -197,12 +197,12 @@ MonoBehaviour:
   keyLight: 122
   keyMedium: 120
   keyHeavy: 99
-  moveSpeed: 50
-  jumpHeight: 20
+  moveSpeed: 20
+  jumpHeight: 10
   gravityScale: 10
   fallGravityScale: 15
-  dashSpeed: 70
-  dashDuration: 5
+  dashSpeed: 25
+  dashDuration: 0.15
   airControl: 10
   groundMask:
     serializedVersion: 2
@@ -217,8 +217,8 @@ MonoBehaviour:
     recovery: 0.25
     damage: 10
     hitstun: 2
-    hitboxOffset: {x: 10, y: 10}
-    hitboxSize: {x: 10, y: 10}
+    hitboxOffset: {x: 2.82, y: 0}
+    hitboxSize: {x: 2, y: 3}
     knockback: {x: 3, y: 3}
   mediumAttack:
     name: Swipe
@@ -228,8 +228,8 @@ MonoBehaviour:
     recovery: 0.5
     damage: 15
     hitstun: 7
-    hitboxOffset: {x: 10, y: 10}
-    hitboxSize: {x: 10, y: 10}
+    hitboxOffset: {x: 2.82, y: 0}
+    hitboxSize: {x: 2, y: 3}
     knockback: {x: 5, y: 5}
   heavyAttack:
     name: Stab
@@ -239,18 +239,18 @@ MonoBehaviour:
     recovery: 1.5
     damage: 25
     hitstun: 10
-    hitboxOffset: {x: 10, y: 10}
-    hitboxSize: {x: 10, y: 10}
+    hitboxOffset: {x: 2.82, y: 0}
+    hitboxSize: {x: 2, y: 3}
     knockback: {x: 10, y: 10}
   maxHP: 250
   customHealthBar: 0
-  healthBarSprite: {fileID: 21300000, guid: e5ae61419f22360429498c6b7add730e, type: 3}
-  healthBarOffsetX: 1
-  healthBarOffsetY: 1
+  healthBarSprite: {fileID: 1307702230, guid: 49b338bdaa7ff5b4ca6ce43534aa1c62, type: 3}
+  healthBarOffsetX: -3.75
+  healthBarOffsetY: -1.23
   healthBarScaleX: 1
   healthBarScaleY: 1
   healthBarColorFull: {r: 1, g: 0.0072008977, b: 0, a: 0}
-  healthBarColorEmpty: {r: 1, g: 1, b: 1, a: 0}
+  healthBarColorEmpty: {r: 0.03773582, g: 0.036845826, b: 0.036845826, a: 0}
   animIdle: {fileID: 7400000, guid: 082e518e2d0e86e4dae1a6a1f50d4497, type: 2}
   animWalk: {fileID: 7400000, guid: c3836f2c495dea04d9c86fbac0efd03d, type: 2}
   animJump: {fileID: 7400000, guid: f5ad75e4871d9174aabc0eab1832205a, type: 2}

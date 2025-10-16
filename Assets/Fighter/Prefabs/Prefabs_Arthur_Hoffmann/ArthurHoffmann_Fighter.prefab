@@ -11,6 +11,10 @@ GameObject:
   - component: {fileID: 6192396615841880282}
   - component: {fileID: 6663331854708129139}
   - component: {fileID: 3987719287113820008}
+  - component: {fileID: 853200735589507629}
+  - component: {fileID: 1209288383330864785}
+  - component: {fileID: 1547176404762500982}
+  - component: {fileID: 8659744785697166418}
   m_Layer: 0
   m_Name: ArthurHoffmann_Fighter
   m_TagString: Untagged
@@ -27,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 3329350510184465251}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.24, y: 0, z: 0}
+  m_LocalPosition: {x: -6.6, y: -0.31, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -53,8 +57,6 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -76,13 +78,12 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
   m_Sprite: {fileID: 1798064950, guid: 02fed5cccd1cde84995572c8d3548afc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 4.3, y: 3.1}
@@ -111,17 +112,17 @@ MonoBehaviour:
   keyLight: 282
   keyMedium: 283
   keyHeavy: 284
-  moveSpeed: 15
-  jumpHeight: 15
+  moveSpeed: 12
+  jumpHeight: 10
   gravityScale: 10
-  fallGravityScale: 5
-  dashSpeed: 35
+  fallGravityScale: 10
+  dashSpeed: 25
   dashDuration: 2
   airControl: 10
   groundMask:
     serializedVersion: 2
     m_Bits: 128
-  groundCheckOffset: {x: 0, y: 0}
+  groundCheckOffset: {x: -0.54, y: -1.93}
   groundCheckRadius: 1
   lightAttack:
     name: Quick shoot
@@ -130,9 +131,9 @@ MonoBehaviour:
     active: 0.1
     recovery: 0.1
     damage: 5
-    hitstun: 0
-    hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
+    hitstun: 0.1
+    hitboxOffset: {x: 7.44, y: 0.19}
+    hitboxSize: {x: 12.81, y: 1.78}
     knockback: {x: 0, y: 0}
   mediumAttack:
     name: Aim shoot
@@ -141,9 +142,9 @@ MonoBehaviour:
     active: 0.3
     recovery: 0.3
     damage: 15
-    hitstun: 0
-    hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
+    hitstun: 0.1
+    hitboxOffset: {x: 7.52, y: 0.16}
+    hitboxSize: {x: 12.71, y: 1.72}
     knockback: {x: 0, y: 0}
   heavyAttack:
     name: Dark Arrow
@@ -153,15 +154,16 @@ MonoBehaviour:
     recovery: 0.6
     damage: 35
     hitstun: 0.5
-    hitboxOffset: {x: 0, y: 0}
-    hitboxSize: {x: 0, y: 0}
+    hitboxOffset: {x: 7.44, y: 0.14}
+    hitboxSize: {x: 12.26, y: 1.75}
     knockback: {x: 3.5, y: 2}
   maxHP: 150
-  healthBarSprite: {fileID: 21300000, guid: 31b20c97f43c0544ab1d770872897bbb, type: 3}
+  customHealthBar: 1
+  healthBarSprite: {fileID: 21300000, guid: 79fc3baa661223441b176a67687c2279, type: 3}
   healthBarOffsetX: -6.24
   healthBarOffsetY: 2.39
-  healthBarScaleX: 0
-  healthBarScaleY: 0
+  healthBarScaleX: 5.81
+  healthBarScaleY: 3.01
   healthBarColorFull: {r: 0.5801887, g: 0, b: 0, a: 0}
   healthBarColorEmpty: {r: 0, g: 0, b: 0, a: 0}
   animIdle: {fileID: 7400000, guid: 4da3d8807b4e57243be252229ad7465d, type: 2}
@@ -171,3 +173,103 @@ MonoBehaviour:
   animDash: {fileID: 7400000, guid: 1846825e3bf57924995ffddb4ec647d3, type: 2}
   animHitstun: {fileID: 7400000, guid: 2a7060f4e677d4f439a47377711d1b7b, type: 2}
   animKO: {fileID: 7400000, guid: 5723ae63746d3754cbfe93715d78dda3, type: 2}
+--- !u!70 &853200735589507629
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3329350510184465251}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.8, y: 0}
+  m_Size: {x: 1.7, y: 2.99}
+  m_Direction: 0
+--- !u!50 &1209288383330864785
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3329350510184465251}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 10
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
+--- !u!95 &1547176404762500982
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3329350510184465251}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d03715ffb2e152046a389a79af890cbb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8659744785697166418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3329350510184465251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb39b405de17124408966e3eed158cee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fightTrack: {fileID: 3987719287113820008}
+  healthBar: {fileID: 144704551130137564, guid: 86ff3bc9249567b4faf10476d76fae98, type: 3}
