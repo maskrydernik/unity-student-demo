@@ -1,32 +1,63 @@
 using UnityEngine;
 
-public class Healthbar : MonoBehaviour
+public class BloodHealthBar : MonoBehaviour
 {
-   
-
-
-
     public BasicFighter2D fightTrack;
+    public SpriteRenderer healthBarSprite; // Your HealthBar_0 sprite
 
-    private int maxHealth = 250;
-    private int currentHealth = 250;
+    private int maxHealth;
+    private int currentHealth;
+    private Vector3 fullScale;
+    private Vector3 startPosition;
+    private float spriteWidth;
 
-
-    void Start()
+    private void Start()
     {
+        if (fightTrack == null)
+            fightTrack = GetComponentInParent<BasicFighter2D>();
 
+        if (healthBarSprite != null)
+        {
+            fullScale = healthBarSprite.transform.localScale;
+            startPosition = healthBarSprite.transform.localPosition;
+            spriteWidth = healthBarSprite.bounds.size.x;
+        }
 
-        currentHealth = fightTrack.GetCurrentHP();
-        maxHealth = fightTrack.GetMaxHP();
-
-        print(currentHealth);
-        print(maxHealth);
-
-
+        if (fightTrack != null)
+        {
+            maxHealth = fightTrack.GetMaxHP();
+            currentHealth = fightTrack.GetCurrentHP();
+            UpdateHealthBar();
+        }
     }
 
-    void Awake()
+    private void Update()
     {
-        GetComponent<BasicFighter2D>();
+        if (fightTrack != null)
+        {
+            int newHP = fightTrack.GetCurrentHP();
+            if (newHP != currentHealth)
+            {
+                currentHealth = newHP;
+                UpdateHealthBar();
+            }
+        }
     }
-}
+
+    private void UpdateHealthBar()
+    {
+        if (healthBarSprite == null || maxHealth <= 0) return;
+
+        float healthPercent = Mathf.Clamp01((float)currentHealth / maxHealth);
+
+        // scale only X axis (shrinks bar)
+        Vector3 newScale = fullScale;
+        newScale.x = fullScale.x * healthPercent;
+        healthBarSprite.transform.localScale = newScale;
+
+        // move the sprite so it shrinks from right to left, not middle
+        Vector3 newPos = startPosition;
+        newPos.x = startPosition.x - (spriteWidth * (1 - healthPercent) / 2f);
+        healthBarSprite.transform.localPosition = newPos;
+    }
+} 
