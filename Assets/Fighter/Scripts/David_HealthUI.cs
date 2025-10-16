@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ArthurBar : MonoBehaviour
+public class HealthTrack : MonoBehaviour
 {
     public BasicFighter2D fightTrack;
     public Image healthBar;
@@ -24,7 +24,6 @@ public class ArthurBar : MonoBehaviour
             maxHealth = fightTrack.GetMaxHP();
             currentHealth = fightTrack.GetCurrentHP();
             SetupHealthBar();
-            UpdateHealthBar();
         }
     }
 
@@ -36,7 +35,6 @@ public class ArthurBar : MonoBehaviour
             if (newHP != currentHealth)
             {
                 currentHealth = newHP;
-                UpdateHealthBar();
             }
         }
     }
@@ -44,16 +42,9 @@ public class ArthurBar : MonoBehaviour
     private void SetupHealthBar()
     {
         {
-        if (healthBar != null)
-            healthBar.fillAmount = (float)currentHealth / maxHealth;
+            if (healthBar != null)
+                healthBar.fillAmount = (float)currentHealth / maxHealth;
         }
     }
 
-    private void UpdateHealthBar()
-    {
-        if (healthBar != null)
-        {
-            healthBar.fillAmount = (float)currentHealth / maxHealth;
-        }
-    }
 }
