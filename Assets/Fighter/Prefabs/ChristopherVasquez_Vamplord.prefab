@@ -243,14 +243,14 @@ MonoBehaviour:
     hitboxSize: {x: 2, y: 3}
     knockback: {x: 10, y: 10}
   maxHP: 250
-  customHealthBar: 1
+  customHealthBar: 0
   healthBarSprite: {fileID: 1307702230, guid: 49b338bdaa7ff5b4ca6ce43534aa1c62, type: 3}
-  healthBarOffsetX: 1
-  healthBarOffsetY: 1
+  healthBarOffsetX: -3.75
+  healthBarOffsetY: -1.23
   healthBarScaleX: 1
   healthBarScaleY: 1
   healthBarColorFull: {r: 1, g: 0.0072008977, b: 0, a: 0}
-  healthBarColorEmpty: {r: 1, g: 1, b: 1, a: 0}
+  healthBarColorEmpty: {r: 0.03773582, g: 0.036845826, b: 0.036845826, a: 0}
   animIdle: {fileID: 7400000, guid: 082e518e2d0e86e4dae1a6a1f50d4497, type: 2}
   animWalk: {fileID: 7400000, guid: c3836f2c495dea04d9c86fbac0efd03d, type: 2}
   animJump: {fileID: 7400000, guid: f5ad75e4871d9174aabc0eab1832205a, type: 2}
