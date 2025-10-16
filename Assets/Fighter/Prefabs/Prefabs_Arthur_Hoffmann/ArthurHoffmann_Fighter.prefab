@@ -53,8 +53,6 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -76,7 +74,6 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
@@ -157,6 +154,7 @@ MonoBehaviour:
     hitboxSize: {x: 0, y: 0}
     knockback: {x: 3.5, y: 2}
   maxHP: 150
+  customHealthBar: 1
   healthBarSprite: {fileID: 21300000, guid: 31b20c97f43c0544ab1d770872897bbb, type: 3}
   healthBarOffsetX: -6.24
   healthBarOffsetY: 2.39
