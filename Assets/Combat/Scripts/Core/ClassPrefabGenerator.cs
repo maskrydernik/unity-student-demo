@@ -70,7 +70,10 @@ namespace MiniWoW
             var renderer = visual.GetComponent<Renderer>();
             if (renderer != null)
             {
-                Material mat = new Material(Shader.Find("Standard"));
+                Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+                if (shader == null) shader = Shader.Find("HDRP/Lit");
+                if (shader == null) shader = Shader.Find("Standard");
+                Material mat = new Material(shader);
                 mat.color = template.classColor;
                 renderer.material = mat;
             }
@@ -106,7 +109,10 @@ namespace MiniWoW
             var shieldRenderer = shield.GetComponent<Renderer>();
             if (shieldRenderer != null)
             {
-                Material shieldMat = new Material(Shader.Find("Standard"));
+                Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+                if (shader == null) shader = Shader.Find("HDRP/Lit");
+                if (shader == null) shader = Shader.Find("Standard");
+                Material shieldMat = new Material(shader);
                 shieldMat.color = new Color(0.7f, 0.7f, 0.9f, 0.8f);
                 shieldMat.SetFloat("_Mode", 3); // Transparent mode
                 shieldMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
@@ -140,7 +146,10 @@ namespace MiniWoW
             var orbRenderer = orb.GetComponent<Renderer>();
             if (orbRenderer != null)
             {
-                Material orbMat = new Material(Shader.Find("Standard"));
+                Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+                if (shader == null) shader = Shader.Find("HDRP/Lit");
+                if (shader == null) shader = Shader.Find("Standard");
+                Material orbMat = new Material(shader);
                 orbMat.color = new Color(0.2f, 0.8f, 1f, 0.9f);
                 orbMat.EnableKeyword("_EMISSION");
                 orbMat.SetColor("_EmissionColor", new Color(0.1f, 0.4f, 0.5f));
@@ -179,6 +188,14 @@ namespace MiniWoW
             sword.transform.localPosition = new Vector3(0, 0, 0.8f);
             sword.transform.localScale = new Vector3(0.1f, 0.1f, 0.8f);
             sword.name = "Sword";
+            var sr = sword.GetComponent<Renderer>();
+            if (sr)
+            {
+                Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+                if (shader == null) shader = Shader.Find("HDRP/Lit");
+                if (shader == null) shader = Shader.Find("Standard");
+                sr.material = new Material(shader) { color = new Color(0.8f, 0.8f, 0.8f, 1f) };
+            }
         }
         
         private static void AddBowVisual(GameObject visual)
@@ -189,6 +206,14 @@ namespace MiniWoW
             bow.transform.localScale = new Vector3(0.1f, 0.1f, 0.6f);
             bow.transform.localRotation = Quaternion.Euler(0, 0, 90);
             bow.name = "Bow";
+            var br = bow.GetComponent<Renderer>();
+            if (br)
+            {
+                Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+                if (shader == null) shader = Shader.Find("HDRP/Lit");
+                if (shader == null) shader = Shader.Find("Standard");
+                br.material = new Material(shader) { color = new Color(0.6f, 0.4f, 0.2f, 1f) };
+            }
         }
         
         private static void AddStaffVisual(GameObject visual)
@@ -198,6 +223,14 @@ namespace MiniWoW
             staff.transform.localPosition = new Vector3(0, 0, 0.8f);
             staff.transform.localScale = new Vector3(0.1f, 0.1f, 0.8f);
             staff.name = "Staff";
+            var str = staff.GetComponent<Renderer>();
+            if (str)
+            {
+                Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+                if (shader == null) shader = Shader.Find("HDRP/Lit");
+                if (shader == null) shader = Shader.Find("Standard");
+                str.material = new Material(shader) { color = new Color(0.5f, 0.3f, 0.1f, 1f) };
+            }
         }
         
         private static void AddUtilityVisual(GameObject visual)
@@ -207,6 +240,14 @@ namespace MiniWoW
             utility.transform.localPosition = new Vector3(0, 1.2f, 0);
             utility.transform.localScale = Vector3.one * 0.2f;
             utility.name = "Utility";
+            var ur = utility.GetComponent<Renderer>();
+            if (ur)
+            {
+                Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+                if (shader == null) shader = Shader.Find("HDRP/Lit");
+                if (shader == null) shader = Shader.Find("Standard");
+                ur.material = new Material(shader) { color = new Color(0.9f, 0.9f, 0.2f, 1f) };
+            }
         }
         
         private static void AddClassSpecificComponents(GameObject classObject, ClassTemplate template)
@@ -271,7 +312,7 @@ namespace MiniWoW
                     {
                         string prefabPath = $"Assets/Combat/GeneratedContent/Prefabs/{template.className}Prefab.prefab";
                         PrefabUtility.SaveAsPrefabAsset(prefab, prefabPath);
-                        DestroyImmediate(prefab);
+                        UnityEngine.Object.DestroyImmediate(prefab);
                         Debug.Log($"Generated prefab for {template.className}: {prefabPath}");
                     }
                 }
@@ -279,6 +320,104 @@ namespace MiniWoW
             
             AssetDatabase.Refresh();
             EditorUtility.DisplayDialog("Success", "All class prefabs generated!", "OK");
+        }
+
+        [MenuItem("MiniWoW/Create Example Class Templates")]
+        public static void CreateExampleClassTemplates()
+        {
+            string baseDir = "Assets/Combat/GeneratedContent";
+            if (!AssetDatabase.IsValidFolder(baseDir))
+            {
+                AssetDatabase.CreateFolder("Assets/Combat", "GeneratedContent");
+            }
+            string dir = baseDir + "/ClassTemplates";
+            if (!AssetDatabase.IsValidFolder(dir))
+            {
+                AssetDatabase.CreateFolder(baseDir, "ClassTemplates");
+            }
+
+            CreateClassAsset(dir + "/Warrior.asset", t =>
+            {
+                t.className = "Warrior";
+                t.classRole = ClassTemplate.ClassRole.Tank;
+                t.armorType = ClassTemplate.ArmorType.Plate;
+                t.primaryResource = ClassTemplate.PrimaryResource.Rage;
+                t.classColor = new Color(0.8f, 0.2f, 0.2f, 1f);
+                t.baseHealth = 120;
+                t.healthPerLevel = 15;
+                t.coreStats = new List<ClassStat>
+                {
+                    new ClassStat{ statName = "Strength", baseValue = 15, perLevelGain = 3 },
+                    new ClassStat{ statName = "Agility", baseValue = 8, perLevelGain = 1 },
+                    new ClassStat{ statName = "Intellect", baseValue = 5, perLevelGain = 0.5f },
+                    new ClassStat{ statName = "Spirit", baseValue = 7, perLevelGain = 1 }
+                };
+            });
+
+            CreateClassAsset(dir + "/Mage.asset", t =>
+            {
+                t.className = "Mage";
+                t.classRole = ClassTemplate.ClassRole.Damage;
+                t.armorType = ClassTemplate.ArmorType.Cloth;
+                t.primaryResource = ClassTemplate.PrimaryResource.Mana;
+                t.classColor = new Color(0.2f, 0.6f, 1f, 1f);
+                t.baseHealth = 80;
+                t.baseResource = 150;
+                t.resourcePerLevel = 12;
+                t.coreStats = new List<ClassStat>
+                {
+                    new ClassStat{ statName = "Strength", baseValue = 5, perLevelGain = 0.5f },
+                    new ClassStat{ statName = "Agility", baseValue = 8, perLevelGain = 1 },
+                    new ClassStat{ statName = "Intellect", baseValue = 18, perLevelGain = 3.5f },
+                    new ClassStat{ statName = "Spirit", baseValue = 12, perLevelGain = 2 }
+                };
+            });
+
+            CreateClassAsset(dir + "/Priest.asset", t =>
+            {
+                t.className = "Priest";
+                t.classRole = ClassTemplate.ClassRole.Healer;
+                t.armorType = ClassTemplate.ArmorType.Cloth;
+                t.primaryResource = ClassTemplate.PrimaryResource.Mana;
+                t.classColor = new Color(1f, 1f, 0.8f, 1f);
+                t.baseHealth = 90;
+                t.baseResource = 130;
+                t.coreStats = new List<ClassStat>
+                {
+                    new ClassStat{ statName = "Strength", baseValue = 6, perLevelGain = 0.5f },
+                    new ClassStat{ statName = "Agility", baseValue = 7, perLevelGain = 1 },
+                    new ClassStat{ statName = "Intellect", baseValue = 16, perLevelGain = 3 },
+                    new ClassStat{ statName = "Spirit", baseValue = 15, perLevelGain = 2.5f }
+                };
+            });
+
+            CreateClassAsset(dir + "/Rogue.asset", t =>
+            {
+                t.className = "Rogue";
+                t.classRole = ClassTemplate.ClassRole.Damage;
+                t.armorType = ClassTemplate.ArmorType.Leather;
+                t.primaryResource = ClassTemplate.PrimaryResource.Energy;
+                t.classColor = new Color(0.8f, 0.8f, 0.2f, 1f);
+                t.baseHealth = 100;
+                t.coreStats = new List<ClassStat>
+                {
+                    new ClassStat{ statName = "Strength", baseValue = 8, perLevelGain = 1.5f },
+                    new ClassStat{ statName = "Agility", baseValue = 18, perLevelGain = 3.5f },
+                    new ClassStat{ statName = "Intellect", baseValue = 7, perLevelGain = 1 },
+                    new ClassStat{ statName = "Spirit", baseValue = 6, perLevelGain = 0.5f }
+                };
+            });
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            EditorUtility.DisplayDialog("Class Templates", "Created example ClassTemplate assets in GeneratedContent/ClassTemplates", "OK");
+        }
+
+        private static void CreateClassAsset(string path, System.Action<ClassTemplate> configure)
+        {
+            var asset = ScriptableObject.CreateInstance<ClassTemplate>();
+            configure?.Invoke(asset);
+            AssetDatabase.CreateAsset(asset, path);
         }
     }
 }

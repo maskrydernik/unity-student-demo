@@ -200,10 +200,16 @@ namespace MiniWoW
                 string path = EditorUtility.SaveFilePanelInProject("Save Class Template", currentTemplate.className, "asset", "Save Class Template");
                 if (!string.IsNullOrEmpty(path))
                 {
-                    AssetDatabase.CreateAsset(currentTemplate, path);
+                    // Ensure we're saving a distinct asset instance
+                    var asset = CreateInstance<ClassTemplate>();
+                    EditorJsonUtility.FromJsonOverwrite(EditorJsonUtility.ToJson(currentTemplate), asset);
+                    AssetDatabase.CreateAsset(asset, path);
                     AssetDatabase.SaveAssets();
                     EditorUtility.FocusProjectWindow();
-                    Selection.activeObject = currentTemplate;
+                    Selection.activeObject = asset;
+                    // Reset currentTemplate to a fresh instance after save
+                    currentTemplate = CreateInstance<ClassTemplate>();
+                    InitializeDefaultTemplate();
                 }
             }
             

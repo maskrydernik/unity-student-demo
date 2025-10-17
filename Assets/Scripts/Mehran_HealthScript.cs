@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using MiniWoW;
 
 
@@ -21,7 +22,7 @@ public class Mehran_HealthScript : MonoBehaviour
     {
         if (HealthAmount <= 0)
         {
-            Application.LoadLevel(Application.loadedLevel);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
         if (Input.GetKeyDown(KeyCode.Return))

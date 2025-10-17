@@ -223,11 +223,11 @@ namespace MiniWoW
             if (targetable) targetable.name = $"{selectedClass.className} Player";
             
             // Connect UI to player
-            if (abilityBarUI) abilityBarUI.abilitySystem = abilitySystem;
-            if (playerFrameUI) playerFrameUI.target = targetable;
+            if (abilityBarUI) abilityBarUI.Bind(abilitySystem);
+            if (playerFrameUI) playerFrameUI.playerHealth = health;
             
             // Set camera to follow player
-            if (cameraController) cameraController.target = player.transform;
+            if (cameraController) cameraController.SetTarget(player.transform, player.GetComponent<PlayerMotor>());
             
             Debug.Log($"[CombatSceneSetup] Spawned {selectedClass.className} player!");
         }

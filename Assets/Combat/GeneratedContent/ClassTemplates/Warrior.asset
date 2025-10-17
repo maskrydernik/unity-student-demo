@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18079d41900e3904aad7f035e7f3956c, type: 3}
+  m_Name: Warrior
+  m_EditorClassIdentifier: 
+  className: Warrior
+  shortConcept: A brief description of this class.
+  classRole: 0
+  armorType: 3
+  weaponTypes: 00000000
+  primaryResource: 4
+  coreStats:
+  - statName: Strength
+    baseValue: 15
+    perLevelGain: 3
+  - statName: Agility
+    baseValue: 8
+    perLevelGain: 1
+  - statName: Intellect
+    baseValue: 5
+    perLevelGain: 0.5
+  - statName: Spirit
+    baseValue: 7
+    perLevelGain: 1
+  uniqueMechanic: Describe what makes this class special.
+  startingAbilities:
+  - abilityName: 
+    abilityDefinition: {fileID: 0}
+    slotIndex: 0
+  - abilityName: 
+    abilityDefinition: {fileID: 0}
+    slotIndex: 0
+  - abilityName: 
+    abilityDefinition: {fileID: 0}
+    slotIndex: 0
+  - abilityName: 
+    abilityDefinition: {fileID: 0}
+    slotIndex: 0
+  - abilityName: 
+    abilityDefinition: {fileID: 0}
+    slotIndex: 0
+  classSummary: Write about 100 words describing your class, its theme, playstyle,
+    and what makes it fun or different.
+  characterPrefab: {fileID: 0}
+  classIcon: {fileID: 0}
+  classColor: {r: 0.8, g: 0.2, b: 0.2, a: 1}
+  classSound: {fileID: 0}
+  baseHealth: 120
+  baseResource: 100
+  healthPerLevel: 15
+  resourcePerLevel: 5
+  movementSpeed: 5

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7665333740081955600}
   - component: {fileID: 5565425727871251716}
-  - component: {fileID: 214386102330952202}
   - component: {fileID: 2111542362545213423}
   - component: {fileID: 1169830381199142239}
   - component: {fileID: 7983856426576292895}
@@ -48,29 +47,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4480720943358722237}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!136 &214386102330952202
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4480720943358722237}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &2111542362545213423
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -140,7 +116,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7983856426576292895
 MonoBehaviour:
   m_ObjectHideFlags: 0

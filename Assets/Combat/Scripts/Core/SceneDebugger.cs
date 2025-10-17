@@ -59,7 +59,7 @@ namespace MiniWoW
             if (spawner)
             {
                 Debug.Log($"SimplePlayerSpawner: Found on {spawner.gameObject.name}");
-                Debug.Log($"  - Player Prefabs: {(spawner.playerPrefabs != null ? spawner.playerPrefabs.Length : 0)}");
+                Debug.Log("  - Mode: ClassTemplates (auto-discovered)");
             }
             else
             {
