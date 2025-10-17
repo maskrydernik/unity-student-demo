@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0}
+  m_Name: RogueClass
+  className: Rogue
+  shortConcept: A stealthy assassin who strikes from the shadows with deadly precision.
+  classRole: 2
+  armorType: 1
+  weaponTypes:
+  - 3
+  - 4
+  - 5
+  primaryResource: 2
+  coreStats:
+  - statName: Strength
+    baseValue: 8
+    perLevelGain: 1.5
+  - statName: Agility
+    baseValue: 18
+    perLevelGain: 3.5
+  - statName: Intellect
+    baseValue: 7
+    perLevelGain: 1
+  - statName: Spirit
+    baseValue: 6
+    perLevelGain: 0.5
+  uniqueMechanic: Rogues build Combo Points through successful attacks, which can be spent on powerful finishing moves. They can also enter Stealth mode to become invisible and deal devastating critical strikes from behind enemies.
+  startingAbilities:
+  - abilityName: Backstab
+    abilityDefinition: {fileID: 0}
+    slotIndex: 0
+  - abilityName: Stealth
+    abilityDefinition: {fileID: 0}
+    slotIndex: 1
+  - abilityName: Poison
+    abilityDefinition: {fileID: 0}
+    slotIndex: 2
+  - abilityName: Evasion
+    abilityDefinition: {fileID: 0}
+    slotIndex: 3
+  - abilityName: Shadow Strike
+    abilityDefinition: {fileID: 0}
+    slotIndex: 4
+  classSummary: The Rogue is the ultimate stealth assassin, striking from the shadows with deadly precision and cunning tactics. Clad in light leather armor and wielding daggers or bows, rogues excel at dealing massive damage through critical strikes and combo attacks. Their unique stealth and combo point system creates an exciting gameplay style focused on positioning, timing, and devastating burst damage.
+  characterPrefab: {fileID: 0}
+  classIcon: {fileID: 0}
+  classColor: {r: 0.8, g: 0.8, b: 0.2, a: 1}
+  classSound: {fileID: 0}
+  baseHealth: 100
+  baseResource: 100
+  healthPerLevel: 12
+  resourcePerLevel: 8
+  movementSpeed: 6

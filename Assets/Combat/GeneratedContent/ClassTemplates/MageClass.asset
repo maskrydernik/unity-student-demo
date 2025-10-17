@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0}
+  m_Name: MageClass
+  className: Mage
+  shortConcept: A master of arcane magic who wields powerful spells from a distance.
+  classRole: 2
+  armorType: 0
+  weaponTypes:
+  - 6
+  - 7
+  primaryResource: 0
+  coreStats:
+  - statName: Strength
+    baseValue: 5
+    perLevelGain: 0.5
+  - statName: Agility
+    baseValue: 8
+    perLevelGain: 1
+  - statName: Intellect
+    baseValue: 18
+    perLevelGain: 3.5
+  - statName: Spirit
+    baseValue: 12
+    perLevelGain: 2
+  uniqueMechanic: Mages can channel their mana into powerful spell combinations. By casting spells in sequence, they can create devastating chain reactions and elemental synergies that multiply their damage output.
+  startingAbilities:
+  - abilityName: Fireball
+    abilityDefinition: {fileID: 0}
+    slotIndex: 0
+  - abilityName: Frost Bolt
+    abilityDefinition: {fileID: 0}
+    slotIndex: 1
+  - abilityName: Arcane Missiles
+    abilityDefinition: {fileID: 0}
+    slotIndex: 2
+  - abilityName: Teleport
+    abilityDefinition: {fileID: 0}
+    slotIndex: 3
+  - abilityName: Mana Shield
+    abilityDefinition: {fileID: 0}
+    slotIndex: 4
+  classSummary: The Mage is the ultimate ranged damage dealer, wielding the raw power of arcane magic to devastate enemies from afar. Clad in light cloth armor and wielding staves or wands, mages rely on their vast mana reserves and powerful spells to control the battlefield. Their unique spell combination system allows for creative and devastating attack patterns, making them both powerful and tactically interesting to play.
+  characterPrefab: {fileID: 0}
+  classIcon: {fileID: 0}
+  classColor: {r: 0.2, g: 0.6, b: 1, a: 1}
+  classSound: {fileID: 0}
+  baseHealth: 80
+  baseResource: 150
+  healthPerLevel: 8
+  resourcePerLevel: 12
+  movementSpeed: 5.5
