@@ -22,35 +22,50 @@ namespace MiniWoW
 
 		private void LoadAllClassTemplates()
 		{
+			Debug.Log("[SimplePlayerSpawner] Loading class templates...");
 #if UNITY_EDITOR
 			// Editor: use AssetDatabase to find all templates in the project
 			var guids = UnityEditor.AssetDatabase.FindAssets("t:ClassTemplate");
+			Debug.Log($"[SimplePlayerSpawner] Found {guids.Length} ClassTemplate assets");
 			var list = new System.Collections.Generic.List<ClassTemplate>();
 			foreach (var guid in guids)
 			{
 				var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
 				var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<ClassTemplate>(path);
-				if (asset) list.Add(asset);
+				if (asset) 
+				{
+					list.Add(asset);
+					Debug.Log($"[SimplePlayerSpawner] Loaded template: {asset.className}");
+				}
 			}
 			classTemplates = list.ToArray();
+			Debug.Log($"[SimplePlayerSpawner] Loaded {classTemplates.Length} templates total");
+			
 			if (classTemplates.Length == 0)
 			{
 				// Try to create example templates, then reload
 				Debug.Log("[SimplePlayerSpawner] No class templates found. Creating examples...");
 				ClassPrefabGenerator.CreateExampleClassTemplates();
 				guids = UnityEditor.AssetDatabase.FindAssets("t:ClassTemplate");
+				Debug.Log($"[SimplePlayerSpawner] After creating examples, found {guids.Length} assets");
 				list.Clear();
 				foreach (var guid in guids)
 				{
 					var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
 					var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<ClassTemplate>(path);
-					if (asset) list.Add(asset);
+					if (asset) 
+					{
+						list.Add(asset);
+						Debug.Log($"[SimplePlayerSpawner] Reloaded template: {asset.className}");
+					}
 				}
 				classTemplates = list.ToArray();
+				Debug.Log($"[SimplePlayerSpawner] After reload, have {classTemplates.Length} templates");
 			}
 #else
 			// Runtime/Build: load from Resources if present
 			classTemplates = Resources.LoadAll<ClassTemplate>("");
+			Debug.Log($"[SimplePlayerSpawner] Loaded {classTemplates.Length} templates from Resources");
 #endif
 		}
 
@@ -69,62 +84,91 @@ namespace MiniWoW
             
             go.AddComponent<GraphicRaycaster>();
 
-            // Panel background
-            var panel = new GameObject("Panel");
+            // Main panel
+            var panel = new GameObject("MainPanel");
             panel.transform.SetParent(go.transform, false);
             var prt = panel.AddComponent<RectTransform>();
             prt.anchorMin = new Vector2(0.5f, 0.5f);
             prt.anchorMax = new Vector2(0.5f, 0.5f);
-            prt.sizeDelta = new Vector2(600f, 200f);
+            prt.sizeDelta = new Vector2(400f, 500f);
             prt.anchoredPosition = Vector2.zero;
             var panelImg = panel.AddComponent<Image>();
-            panelImg.color = new Color(0f, 0f, 0f, 0.8f);
+            panelImg.color = new Color(0.1f, 0.1f, 0.1f, 0.9f);
 
-			// Load a default font (ensures Text renders in builds)
-			defaultFont = Resources.GetBuiltinResource<Font>("Arial.ttf");
+			// Load a default font
+			defaultFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
 
 			// Title
             var title = new GameObject("Title");
             title.transform.SetParent(panel.transform, false);
             var trt = title.AddComponent<RectTransform>();
-            trt.anchorMin = new Vector2(0.5f, 1f);
-            trt.anchorMax = new Vector2(0.5f, 1f);
-            trt.pivot = new Vector2(0.5f, 1f);
-            trt.anchoredPosition = new Vector2(0f, -10f);
-            trt.sizeDelta = new Vector2(500f, 40f);
+            trt.anchorMin = new Vector2(0f, 1f);
+            trt.anchorMax = new Vector2(1f, 1f);
+            trt.sizeDelta = new Vector2(0f, 60f);
+            trt.anchoredPosition = new Vector2(0f, -30f);
 			var titleText = title.AddComponent<Text>();
             titleText.alignment = TextAnchor.MiddleCenter;
             titleText.fontSize = 24;
-            titleText.text = "Choose Your Player";
+            titleText.text = "Choose Your Class";
             titleText.color = Color.white;
             titleText.fontStyle = FontStyle.Bold;
 			if (defaultFont) titleText.font = defaultFont;
 
+            // Button container with vertical layout
+            var buttonContainer = new GameObject("ButtonContainer");
+            buttonContainer.transform.SetParent(panel.transform, false);
+            var brt = buttonContainer.AddComponent<RectTransform>();
+            brt.anchorMin = new Vector2(0f, 0f);
+            brt.anchorMax = new Vector2(1f, 1f);
+            brt.offsetMin = new Vector2(20f, 80f);
+            brt.offsetMax = new Vector2(-20f, -20f);
+            
+            var layoutGroup = buttonContainer.AddComponent<VerticalLayoutGroup>();
+            layoutGroup.spacing = 10f;
+            layoutGroup.padding = new RectOffset(10, 10, 10, 10);
+            layoutGroup.childAlignment = TextAnchor.MiddleCenter;
+            layoutGroup.childControlHeight = false;
+            layoutGroup.childControlWidth = true;
+            layoutGroup.childForceExpandHeight = false;
+            layoutGroup.childForceExpandWidth = true;
+
 			// Create buttons
+			Debug.Log($"[SimplePlayerSpawner] About to create buttons. classTemplates is {(classTemplates != null ? "not null" : "NULL")}");
+			if (classTemplates != null)
+			{
+				Debug.Log($"[SimplePlayerSpawner] classTemplates.Length = {classTemplates.Length}");
+			}
+			
 			if (classTemplates != null && classTemplates.Length > 0)
 			{
-				int count = classTemplates.Length;
-				for (int i = 0; i < count; i++)
+				Debug.Log($"[SimplePlayerSpawner] Creating {classTemplates.Length} class buttons");
+				for (int i = 0; i < classTemplates.Length; i++)
 				{
-					CreateButton(panel.transform, i, count, classTemplates[i] ? classTemplates[i].className : $"Class {i+1}");
+					string className = classTemplates[i] ? classTemplates[i].className : $"Class {i+1}";
+					Debug.Log($"[SimplePlayerSpawner] Creating button for: {className}");
+					CreateButton(buttonContainer.transform, i, className);
 				}
+				Debug.Log($"[SimplePlayerSpawner] Finished creating buttons");
 			}
 			else
 			{
 				Debug.LogError("[SimplePlayerSpawner] No class templates found! Place ClassTemplate assets in the project or under Resources.");
 			}
+			
+			Debug.Log($"[SimplePlayerSpawner] UI creation complete. Canvas active: {selectionCanvas.gameObject.activeInHierarchy}");
         }
 
-		private void CreateButton(Transform parent, int index, int total, string labelTextValue)
+		private void CreateButton(Transform parent, int index, string labelTextValue)
         {
+			Debug.Log($"[SimplePlayerSpawner] Creating button {index}: {labelTextValue}");
 			var btnGO = new GameObject($"Button_{labelTextValue}");
             btnGO.transform.SetParent(parent, false);
             
             var brt = btnGO.AddComponent<RectTransform>();
-            brt.sizeDelta = new Vector2(160f, 60f);
-            float spacing = 180f;
-            float offset = (index - (total - 1) / 2f) * spacing;
-            brt.anchoredPosition = new Vector2(offset, -90f);
+            brt.sizeDelta = new Vector2(0f, 50f); // Height only, width controlled by layout
+            brt.anchorMin = new Vector2(0f, 0f);
+            brt.anchorMax = new Vector2(1f, 0f);
+            brt.anchoredPosition = Vector2.zero;
             
             var btnImg = btnGO.AddComponent<Image>();
             btnImg.color = new Color(0.2f, 0.4f, 0.8f, 1f);
@@ -153,9 +197,10 @@ namespace MiniWoW
 			labelText.fontStyle = FontStyle.Bold;
 			if (defaultFont) labelText.font = defaultFont;
 
-			// Button click handler
-			int idx = index;
-			button.onClick.AddListener(() => SpawnPlayerFromTemplate(idx));
+            // Button click handler
+            int idx = index;
+            button.onClick.AddListener(() => SpawnPlayerFromTemplate(idx));
+            Debug.Log($"[SimplePlayerSpawner] Button {labelTextValue} created");
         }
 
 		private void SpawnPlayerFromTemplate(int index)
