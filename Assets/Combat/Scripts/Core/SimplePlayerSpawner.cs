@@ -8,7 +8,7 @@ namespace MiniWoW
     /// </summary>
     public class SimplePlayerSpawner : MonoBehaviour
     {
-		private ClassTemplate[] classTemplates; // auto-populated at runtime
+		public ClassTemplate[] classTemplates; // auto-populated at runtime
         private Canvas selectionCanvas;
 		private Font defaultFont;
 

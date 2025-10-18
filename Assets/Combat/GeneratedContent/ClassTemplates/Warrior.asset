@@ -50,7 +50,7 @@ MonoBehaviour:
     slotIndex: 0
   classSummary: Write about 100 words describing your class, its theme, playstyle,
     and what makes it fun or different.
-  characterPrefab: {fileID: 0}
+  characterPrefab: {fileID: 4480720943358722237, guid: 67e3ec5f60dedde4b8789468c0c7ba6d, type: 3}
   classIcon: {fileID: 0}
   classColor: {r: 0.8, g: 0.2, b: 0.2, a: 1}
   classSound: {fileID: 0}

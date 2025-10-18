@@ -32,10 +32,13 @@ MonoBehaviour:
     baseValue: 15
     perLevelGain: 2.5
   uniqueMechanic: Describe what makes this class special.
-  startingAbilities: []
+  startingAbilities:
+  - abilityName: 
+    abilityDefinition: {fileID: 11400000, guid: fece0da396d28114aa2e2c77581a230a, type: 2}
+    slotIndex: 0
   classSummary: Write about 100 words describing your class, its theme, playstyle,
     and what makes it fun or different.
-  characterPrefab: {fileID: 0}
+  characterPrefab: {fileID: 4480720943358722237, guid: 67e3ec5f60dedde4b8789468c0c7ba6d, type: 3}
   classIcon: {fileID: 0}
   classColor: {r: 1, g: 1, b: 0.8, a: 1}
   classSound: {fileID: 0}
