@@ -61,6 +61,8 @@ public class BasicFighter2D : MonoBehaviour
     [Header("State Animations - REQUIRED")]
     [Tooltip("REQUIRED: Idle animation clip")]
     public AnimationClip animIdle;
+    [Tooltip("REQUIRED: LightAttack animation clip")]
+    public AnimationClip animLightAttack;
     [Tooltip("REQUIRED: Walk animation clip")]
     public AnimationClip animWalk;
     [Tooltip("REQUIRED: Jump animation clip")]
@@ -86,6 +88,7 @@ public class BasicFighter2D : MonoBehaviour
 
     // Animator parameter names (fixed)
     const string paramIdle = "Idle";
+    const string paramLightAttack = "LightAttack";
     const string paramWalk = "Walk";
     const string paramJump = "Jump";
     const string paramFall = "Fall";
@@ -96,7 +99,7 @@ public class BasicFighter2D : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────────
     // INTERNAL STATE
     // ─────────────────────────────────────────────────────────────────────────────
-    enum State { Idle, Walk, Jump, Fall, Dash, Attack, Hitstun, KO }
+    enum State { Idle, LightAttack, Walk, Jump, Fall, Dash, Attack, Hitstun, KO }
     State state;
     State prevState; // Track state changes for animation updates
     bool grounded;
@@ -420,6 +423,7 @@ public class BasicFighter2D : MonoBehaviour
 
         // Reset all state bools
         SetAnimBool(paramIdle, false);
+        SetAnimBool(paramLightAttack, false);
         SetAnimBool(paramWalk, false);
         SetAnimBool(paramJump, false);
         SetAnimBool(paramFall, false);
@@ -431,6 +435,7 @@ public class BasicFighter2D : MonoBehaviour
         switch (state)
         {
             case State.Idle: SetAnimBool(paramIdle, true); break;
+            case State.LightAttack: SetAnimBool(paramLightAttack, true); break;
             case State.Walk: SetAnimBool(paramWalk, true); break;
             case State.Jump: SetAnimBool(paramJump, true); break;
             case State.Fall: SetAnimBool(paramFall, true); break;
@@ -547,6 +552,7 @@ public class BasicFighter2D : MonoBehaviour
         if (healthBarScaleY <= 0f) Fail("healthBarScaleY must be > 0.");
 
         if (animIdle == null) Fail("animIdle is REQUIRED.");
+        if (animLightAttack == null) Fail("animLightAttack is REQUIRED.");
         if (animWalk == null) Fail("animWalk is REQUIRED.");
         if (animJump == null) Fail("animJump is REQUIRED.");
         if (animFall == null) Fail("animFall is REQUIRED.");
