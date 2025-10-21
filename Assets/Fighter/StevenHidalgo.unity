@@ -773,6 +773,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7200675982138507318, guid: 81b5a32340d4f0646a825d38b17d7731, type: 3}
+      propertyPath: dashDuration
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7200675982138507318, guid: 81b5a32340d4f0646a825d38b17d7731, type: 3}
       propertyPath: customHealthBar
       value: 1
       objectReference: {fileID: 0}
