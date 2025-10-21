@@ -489,6 +489,62 @@ PrefabInstance:
       propertyPath: m_Name
       value: ArthurHoffmann_Fighter
       objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: dashSpeed
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: moveSpeed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: jumpHeight
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: gravityScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: fallGravityScale
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: heavyAttack.hitboxSize.x
+      value: 12.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: heavyAttack.hitboxSize.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: lightAttack.hitboxSize.x
+      value: 9.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: lightAttack.hitboxSize.y
+      value: 0.84
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: mediumAttack.hitboxSize.x
+      value: 11.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: mediumAttack.hitboxSize.y
+      value: 0.84
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: heavyAttack.hitboxOffset.x
+      value: 7.58
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: lightAttack.hitboxOffset.x
+      value: 6.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3987719287113820008, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
+      propertyPath: mediumAttack.hitboxOffset.x
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6192396615841880282, guid: 497ce83b55a70454ebb13d5486f70134, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.6
