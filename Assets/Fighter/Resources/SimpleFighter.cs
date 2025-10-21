@@ -67,6 +67,8 @@ public class BasicFighter2D : MonoBehaviour
     [Header("State Animations - REQUIRED")]
     [Tooltip("REQUIRED: Idle animation clip")]
     public AnimationClip animIdle;
+    [Tooltip("REQUIRED: LightAttack animation clip")]
+    public AnimationClip animLightAttack;
     [Tooltip("REQUIRED: Walk animation clip")]
     public AnimationClip animWalk;
     [Tooltip("REQUIRED: Jump animation clip")]
@@ -104,7 +106,7 @@ public class BasicFighter2D : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────────
     // INTERNAL STATE
     // ─────────────────────────────────────────────────────────────────────────────
-    enum State { Idle, Walk, Jump, Fall, Dash, Attack, Hitstun, KO }
+    enum State { Idle, LightAttack, Walk, Jump, Fall, Dash, Attack, Hitstun, KO }
     State state;
     State prevState; // Track state changes for animation updates
     bool grounded;

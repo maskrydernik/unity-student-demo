@@ -6,59 +6,62 @@ using UnityEngine.UI;
 public class HealthManager : MonoBehaviour
 {
     public Image healthBar;
-    public int healthAmount = 100;
+    public int healthAmount; //MaxHp for fighter
     public int currentHealth;
 
     public BasicFighter2D fighter;
 
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentHealth = fighter.GetCurrentHP();
-        UpdateHealthBar();
+        if(fighter == null)
+        {
+            fighter = GetComponentInParent<BasicFighter2D>();
+        }
+        
+        //currentHealth = fighter.GetCurrentHP();
+        //healthAmount = fighter.GetMaxHP();
+
+        if(fighter != null)
+        {
+            healthAmount = fighter.GetMaxHP();
+            currentHealth = fighter.GetCurrentHP();
+            
+        }
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)){
-            TakeDamage(5);
-            //currentHealth = fightTrack.GetCurrentHP();
-            //maxHealth = fightTrack.GetMaxHP();
-        }
+        
 
-        if(currentHealth <= 0)
-        {
-
-        }
-    }
-
-    public void SetMaxHealth(int health)
-    {
-        healthAmount = health;
-        currentHealth = health;
-        UpdateHealthBar();
-    }
-
-    public void SetHealth(int health)
-    {
-        currentHealth = Mathf.Clamp(health, 0, healthAmount);
-        UpdateHealthBar();
-    }
-
-
-    public void UpdateHealthBar()
-    {
-        if(healthBar != null)
-        {
-            healthBar.fillAmount = currentHealth / healthAmount;
-        }
-    }
+            //if (Input.GetKeyDown(KeyCode.Space))
+            //{
+                if (fighter != null)
+                {
+                    int updateHP = fighter.GetCurrentHP();
+                    if (updateHP != currentHealth)
+                    {
+                        
+                        currentHealth = updateHP;
+                        TakeDamage(10);
     
+                    }
+                }
+
+            //}
+ 
+    }
     public void TakeDamage(int damage)
     {
-        healthAmount -= damage;
-        healthBar.fillAmount = healthAmount / 100f;
+        //if (healthBar == null || healthAmount <= 0) return;
+
+        currentHealth -= damage;
+        healthBar.fillAmount = currentHealth / 100f;
     }
+
+ 
+
 }
