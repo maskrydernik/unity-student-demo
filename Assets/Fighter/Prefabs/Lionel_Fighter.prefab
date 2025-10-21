@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1278275363528288675}
   - component: {fileID: 4669640460898719602}
   m_Layer: 0
-  m_Name: HealthManager
+  m_Name: Lionel_HealthManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,7 @@ MonoBehaviour:
   healthBar: {fileID: 6308973704909384692}
   healthAmount: 100
   currentHealth: 0
-  fighter: {fileID: 0}
+  fighter: {fileID: 7190508213665870367}
 --- !u!1 &1125671944037098180
 GameObject:
   m_ObjectHideFlags: 0
@@ -131,7 +131,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
-  m_Sprite: {fileID: 21300000, guid: ec6bbec68cf567b4b97f99f7202141f3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4a15fdd3df4faca49aae7effb925056f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -203,8 +203,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.5, y: 1}
+  m_Offset: {x: 0.27, y: -0.87}
+  m_Size: {x: 1.49, y: 3.46}
   m_Direction: 0
 --- !u!95 &976524432145447287
 Animator:
@@ -249,16 +249,16 @@ MonoBehaviour:
   keyMedium: 120
   keyHeavy: 99
   moveSpeed: 10
-  jumpHeight: 5
+  jumpHeight: 7
   gravityScale: 3
-  fallGravityScale: 4
-  dashSpeed: 15
-  dashDuration: 2.09
+  fallGravityScale: 7
+  dashSpeed: 20
+  dashDuration: 0.4
   airControl: 3
   groundMask:
     serializedVersion: 2
     m_Bits: 128
-  groundCheckOffset: {x: -0.66, y: -3}
+  groundCheckOffset: {x: 0.17, y: -0.73}
   groundCheckRadius: 3
   lightAttack:
     name: Weak Sword Slash
@@ -266,9 +266,9 @@ MonoBehaviour:
     startup: 1
     active: 1
     recovery: 1
-    damage: 4
-    hitstun: 2
-    hitboxOffset: {x: -0.57, y: -1.63}
+    damage: 10
+    hitstun: 5
+    hitboxOffset: {x: 2.95, y: -1.63}
     hitboxSize: {x: 2.8, y: 2.86}
     knockback: {x: 1, y: 2}
   mediumAttack:
@@ -277,9 +277,9 @@ MonoBehaviour:
     startup: 3
     active: 3
     recovery: 3
-    damage: 8
-    hitstun: 4
-    hitboxOffset: {x: -0.57, y: -1.63}
+    damage: 20
+    hitstun: 10
+    hitboxOffset: {x: 2.95, y: -1.63}
     hitboxSize: {x: 2.8, y: 2.86}
     knockback: {x: 2, y: 4}
   heavyAttack:
@@ -288,9 +288,9 @@ MonoBehaviour:
     startup: 5
     active: 5
     recovery: 5
-    damage: 16
-    hitstun: 8
-    hitboxOffset: {x: -0.57, y: -1.63}
+    damage: 30
+    hitstun: 15
+    hitboxOffset: {x: 2.95, y: -1.63}
     hitboxSize: {x: 2.8, y: 2.86}
     knockback: {x: 4, y: 8}
   maxHP: 100
@@ -316,7 +316,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1125671944037098180}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ad496315fccf8143955bf06c44e493b, type: 3}
   m_Name: 
@@ -351,9 +351,9 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5045055181069889127}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.17}
+  m_LocalScale: {x: 0.013124908, y: 0.013124908, z: 0.013124908}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 836187561562278354}
@@ -361,9 +361,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0.24, y: 1.8}
+  m_SizeDelta: {x: 800, y: 1088.6003}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &8052828138307778063
 Canvas:
   m_ObjectHideFlags: 0
@@ -373,7 +373,7 @@ Canvas:
   m_GameObject: {fileID: 5045055181069889127}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 2
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -385,7 +385,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 57
   m_TargetDisplay: 0
 --- !u!114 &4280530701830925782
 MonoBehaviour:
@@ -409,7 +409,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &1785839558564815877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -537,7 +537,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 60.7, y: 0}
+  m_AnchoredPosition: {x: -8, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5448197087059724756
