@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18079d41900e3904aad7f035e7f3956c, type: 3}
+  m_Name: Rogue
+  m_EditorClassIdentifier: 
+  className: Rogue
+  shortConcept: A brief description of this class.
+  classRole: 2
+  armorType: 1
+  weaponTypes: 
+  primaryResource: 2
+  coreStats:
+  - statName: Strength
+    baseValue: 8
+    perLevelGain: 1.5
+  - statName: Agility
+    baseValue: 18
+    perLevelGain: 3.5
+  - statName: Intellect
+    baseValue: 7
+    perLevelGain: 1
+  - statName: Spirit
+    baseValue: 6
+    perLevelGain: 0.5
+  uniqueMechanic: Describe what makes this class special.
+  startingAbilities: []
+  classSummary: Write about 100 words describing your class, its theme, playstyle,
+    and what makes it fun or different.
+  characterPrefab: {fileID: 4480720943358722237, guid: 67e3ec5f60dedde4b8789468c0c7ba6d, type: 3}
+  classIcon: {fileID: 0}
+  classColor: {r: 0.8, g: 0.8, b: 0.2, a: 1}
+  classSound: {fileID: 0}
+  baseHealth: 100
+  baseResource: 100
+  healthPerLevel: 10
+  resourcePerLevel: 5
+  movementSpeed: 5

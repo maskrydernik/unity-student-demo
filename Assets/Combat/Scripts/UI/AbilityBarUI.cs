@@ -97,7 +97,7 @@ namespace MiniWoW
             RefreshIcons();
         }
 
-        private void RefreshIcons()
+        public void RefreshIcons()
         {
             if (!abilitySystem) return;
             for (int i = 0; i < slots.Count; i++)
@@ -138,6 +138,29 @@ namespace MiniWoW
                 if (!def) { w.coolOverlay.fillAmount = 0f; continue; }
                 float rem = abilitySystem.GetCooldownRemaining(def);
                 w.coolOverlay.fillAmount = rem > 0f ? rem / Mathf.Max(0.001f, def.cooldown) : 0f;
+            }
+        }
+
+        public void Bind(AbilitySystem system)
+        {
+            abilitySystem = system;
+            if (slots.Count == 0)
+            {
+                if (!canvas)
+                {
+                    var go = new GameObject("AbilityBarCanvas", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
+                    canvas = go.GetComponent<Canvas>();
+                    canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                    canvas.sortingOrder = 100;
+                    var scaler = go.GetComponent<CanvasScaler>();
+                    scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+                    scaler.referenceResolution = new Vector2(1920, 1080);
+                }
+                BuildBar();
+            }
+            else
+            {
+                RefreshIcons();
             }
         }
     }
