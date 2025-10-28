@@ -67,6 +67,8 @@ public class BasicFighter2D : MonoBehaviour
     [Header("State Animations - REQUIRED")]
     [Tooltip("REQUIRED: Idle animation clip")]
     public AnimationClip animIdle;
+    [Tooltip("REQUIRED: LightAttack animation clip")]
+    public AnimationClip animLightAttack;
     [Tooltip("REQUIRED: Walk animation clip")]
     public AnimationClip animWalk;
     [Tooltip("REQUIRED: Jump animation clip")]
@@ -104,7 +106,7 @@ public class BasicFighter2D : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────────
     // INTERNAL STATE
     // ─────────────────────────────────────────────────────────────────────────────
-    enum State { Idle, Walk, Jump, Fall, Dash, Attack, Hitstun, KO }
+    enum State { Idle, LightAttack, Walk, Jump, Fall, Dash, Attack, Hitstun, KO }
     State state;
     State prevState; // Track state changes for animation updates
     bool grounded;
@@ -114,7 +116,6 @@ public class BasicFighter2D : MonoBehaviour
 
     private int hp;
     private bool isDead = false;
-    private float deathAnimTimer = 0f;
 
     Attack currentAttack;
     float attackTimer;
@@ -330,6 +331,12 @@ public class BasicFighter2D : MonoBehaviour
         bool light = Input.GetKeyDown(keyLight);
         bool medium = Input.GetKeyDown(keyMedium);
         bool heavy = Input.GetKeyDown(keyHeavy);
+
+        // Also check if AI is making us move (for AI-controlled fighters)
+        if (Mathf.Abs(move) < 0.05f && Mathf.Abs(rb.linearVelocity.x) > 0.5f)
+        {
+            move = Mathf.Sign(rb.linearVelocity.x);
+        }
 
         // Ground check and facing
         grounded = IsGrounded();
@@ -612,7 +619,6 @@ public class BasicFighter2D : MonoBehaviour
     {
         state = State.KO;
         isDead = true;
-        deathAnimTimer = 0f;
         
         // Stop and disable physics
         rb.linearVelocity = Vector2.zero;
@@ -643,9 +649,6 @@ public class BasicFighter2D : MonoBehaviour
             return;
         }
         
-        // Play death animation once, then freeze on last frame
-        deathAnimTimer += Time.deltaTime;
-        
         // Ensure we're playing the death animation
         if (currentClip != animKO)
         {
@@ -653,24 +656,59 @@ public class BasicFighter2D : MonoBehaviour
             animationTime = 0f;
         }
         
-        // Keep sampling the animation
+        // Play animation once, then freeze
         if (animationTime < animKO.length)
         {
-            // Continue playing
-            SampleCurrentAnimation();
+            animationTime += Time.deltaTime;
+            SampleCurrentAnimationNoLoop();
         }
         else
         {
-            // Freeze on last frame
-            animationTime = animKO.length - 0.001f; // Stay on last frame
-            SampleCurrentAnimation();
-            
-            // Disable the script after animation completes
+            // Freeze on last frame - don't sample again, just stay there
             if (enabled)
             {
                 enabled = false;
             }
         }
+    }
+    
+    void SampleCurrentAnimationNoLoop()
+    {
+        if (currentClip == null || sprite == null)
+        {
+            return;
+        }
+
+        // MANUAL SPRITE EXTRACTION from AnimationClip (NO LOOPING)
+        #if UNITY_EDITOR
+        var spriteBindings = UnityEditor.AnimationUtility.GetObjectReferenceCurveBindings(currentClip);
+        foreach (var binding in spriteBindings)
+        {
+            if (binding.propertyName == "m_Sprite" && binding.type == typeof(SpriteRenderer))
+            {
+                var keyframes = UnityEditor.AnimationUtility.GetObjectReferenceCurve(currentClip, binding);
+                if (keyframes.Length > 0)
+                {
+                    // Find the appropriate keyframe for current time
+                    Sprite targetSprite = null;
+                    for (int i = keyframes.Length - 1; i >= 0; i--)
+                    {
+                        if (animationTime >= keyframes[i].time)
+                        {
+                            targetSprite = keyframes[i].value as Sprite;
+                            break;
+                        }
+                    }
+                    
+                    if (targetSprite != null && sprite.sprite != targetSprite)
+                    {
+                        sprite.sprite = targetSprite;
+                    }
+                }
+                break;
+            }
+        }
+        #endif
     }
 
     // ─────────────────────────────────────────────────────────────────────────────

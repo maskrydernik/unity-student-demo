@@ -56,8 +56,6 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -79,7 +77,6 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
@@ -246,6 +243,7 @@ MonoBehaviour:
     hitboxSize: {x: 1, y: 1}
     knockback: {x: 1, y: 1}
   maxHP: 200
+  customHealthBar: 1
   healthBarSprite: {fileID: 21300000, guid: e5ae61419f22360429498c6b7add730e, type: 3}
   healthBarOffsetX: 0
   healthBarOffsetY: 0
@@ -254,6 +252,7 @@ MonoBehaviour:
   healthBarColorFull: {r: 0.9716981, g: 0.087086126, b: 0.087086126, a: 0}
   healthBarColorEmpty: {r: 1, g: 1, b: 1, a: 0}
   animIdle: {fileID: 7400000, guid: 880910f3ca04f464b82edeacf87d9f46, type: 2}
+  animLightAttack: {fileID: 0}
   animWalk: {fileID: 7400000, guid: 4727d499a60b75e409d4804e98306e11, type: 2}
   animJump: {fileID: 7400000, guid: 5b2402a381e26f245b868ada3c84b434, type: 2}
   animFall: {fileID: 7400000, guid: 4a355123244ca5047bbf66d1419e5fa3, type: 2}

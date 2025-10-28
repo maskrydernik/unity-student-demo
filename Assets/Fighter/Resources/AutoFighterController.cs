@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 using Random = UnityEngine.Random;
 
 public class AutoFightController : MonoBehaviour
@@ -14,8 +16,8 @@ public class AutoFightController : MonoBehaviour
     private float thinkInterval = 0.10f;
     private Vector2 attackCooldown = new Vector2(0.35f, 1.00f);
     private Vector2 dashCooldown = new Vector2(1.0f, 2.0f);
-    private float jumpChance = 0.08f;
-    private float hopCooldown = 1.8f;
+    private float jumpChance = 0.02f;
+    private float hopCooldown = 2.5f;
     private float retargetDelay = 0f;  // 0 = locked until target dies
 
     // Spacing
@@ -166,6 +168,12 @@ public class AutoFightController : MonoBehaviour
             var f = fighters[i];
             if (!f.Alive()) continue;
 
+            // Re-validate target in case it died during this Think() cycle
+            if (f.currentTarget != null && (!f.currentTarget.Exists() || !f.currentTarget.Alive()))
+            {
+                f.currentTarget = null;
+            }
+
             // No valid target - wander around
             if (f.currentTarget == null) 
             { 
@@ -217,38 +225,72 @@ public class AutoFightController : MonoBehaviour
 
     void DisplayVictoryText(string message, Color color)
     {
-        // Create a temporary GameObject with TextMesh for the announcement
+        // Create Canvas for UI rendering (visible in 2D)
+        GameObject canvasObj = new GameObject("VictoryCanvas");
+        Canvas canvas = canvasObj.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        
+        CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        
+        GraphicRaycaster raycaster = canvasObj.AddComponent<GraphicRaycaster>();
+        
+        // Create text object
         GameObject textObj = new GameObject("VictoryText");
-        TextMesh textMesh = textObj.AddComponent<TextMesh>();
+        textObj.transform.SetParent(canvasObj.transform, false);
         
-        textMesh.text = message;
-        textMesh.fontSize = 72;
-        textMesh.color = color;
-        textMesh.anchor = TextAnchor.MiddleCenter;
-        textMesh.alignment = TextAlignment.Center;
-        textMesh.characterSize = 0.1f;
+        Text textComponent = textObj.AddComponent<Text>();
+        textComponent.text = message;
+        textComponent.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        textComponent.fontSize = 45;
+        textComponent.fontStyle = FontStyle.Bold;
+        textComponent.alignment = TextAnchor.UpperCenter;
+        textComponent.color = color;
+        textComponent.horizontalOverflow = HorizontalWrapMode.Wrap;
+        textComponent.verticalOverflow = VerticalWrapMode.Truncate;
         
-        // Position at top-center of screen
-        Camera cam = Camera.main;
-        if (cam != null)
-        {
-            Vector3 worldPos = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.85f, 10f));
-            textObj.transform.position = worldPos;
-        }
-        else
-        {
-            textObj.transform.position = new Vector3(0f, 5f, 0f);
-        }
+        // Add shadow effect
+        Shadow shadow = textObj.AddComponent<Shadow>();
+        shadow.effectColor = Color.black;
+        shadow.effectDistance = new Vector2(2f, -2f);
         
-        // Add MeshRenderer and set sorting layer
-        MeshRenderer renderer = textObj.GetComponent<MeshRenderer>();
-        if (renderer != null)
-        {
-            renderer.sortingOrder = 1000; // Render on top
-        }
+        // Add outline effect
+        Outline outline = textObj.AddComponent<Outline>();
+        outline.effectColor = new Color(0, 0, 0, 0.5f);
+        outline.effectDistance = new Vector2(2f, -2f);
+        
+        // Position at top-center
+        RectTransform rectTransform = textObj.GetComponent<RectTransform>();
+        rectTransform.anchorMin = new Vector2(0.5f, 1f);
+        rectTransform.anchorMax = new Vector2(0.5f, 1f);
+        rectTransform.offsetMin = Vector2.zero;
+        rectTransform.offsetMax = Vector2.zero;
+        rectTransform.anchoredPosition = new Vector2(0f, -150f);
+        rectTransform.sizeDelta = new Vector2(1200f, 300f);
+        
+        // Add scale animation
+        StartCoroutine(AnimateVictoryText(textObj));
         
         // Destroy after 3 seconds
-        Destroy(textObj, 3f);
+        Destroy(canvasObj, 3f);
+    }
+    
+    System.Collections.IEnumerator AnimateVictoryText(GameObject textObj)
+    {
+        float elapsed = 0f;
+        float duration = 0.3f;
+        Vector3 startScale = Vector3.one * 0.8f;
+        Vector3 endScale = Vector3.one;
+        
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            textObj.transform.localScale = Vector3.Lerp(startScale, endScale, t);
+            yield return null;
+        }
+        
+        textObj.transform.localScale = endScale;
     }
 
     FProxy PickClosestTarget(FProxy self, int selfIndex)
@@ -332,8 +374,12 @@ public class AutoFightController : MonoBehaviour
         float keepMid = bodyWidth * keepDistanceMultiplier;
         float tooClose = bodyWidth * tooCloseMultiplier;
 
-        // Dynamic movement: add feints and repositioning
-        bool inCombatRange = distX <= keepMid;
+        // If far away, just walk towards target - no complex spacing
+        if (distX > engageFar * 1.5f)
+        {
+            f.desiredMoveX = dir;
+            return;
+        }
         
         // Aggressive dash-in from far range
         if (distX > engageFar && now >= f.nextDash && grounded && f.StartDash())
@@ -347,8 +393,8 @@ public class AutoFightController : MonoBehaviour
         // Dynamic spacing behavior
         if (distX > keepMid)
         {
-            // Approach with occasional hesitation
-            f.desiredMoveX = Random.value < 0.85f ? dir : dir * 0.3f;
+            // Approach steadily
+            f.desiredMoveX = dir;
         }
         else if (distX < tooClose)
         {
@@ -400,13 +446,10 @@ public class AutoFightController : MonoBehaviour
             }
         }
 
-        // More aggressive jumping in combat
+        // Jumping in combat - very rare
         if (grounded && now >= f.nextHop)
         {
-            float jumpRoll = Random.value;
-            bool shouldJump = inCombatRange ? jumpRoll < jumpChance * 1.2f : jumpRoll < jumpChance;
-            
-            if (shouldJump && f.StartJump())
+            if (Random.value < jumpChance * 0.5f && f.StartJump())
             {
                 f.nextHop = now + hopCooldown;
             }

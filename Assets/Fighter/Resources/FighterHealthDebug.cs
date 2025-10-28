@@ -15,7 +15,7 @@ public class FighterHealthDebug : MonoBehaviour
     
     void DamageAllFighters()
     {
-        BasicFighter2D[] allFighters = FindObjectsOfType<BasicFighter2D>();
+        BasicFighter2D[] allFighters = Object.FindObjectsByType<BasicFighter2D>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
         
         int damagedCount = 0;
         foreach (var fighter in allFighters)
